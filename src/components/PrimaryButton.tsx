@@ -7,11 +7,12 @@ interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   rotate?: boolean
 }
 
-const variantClasses: Record<PrimaryButtonProps['variant'], string> = {
+const variantClasses: Record<NonNullable<PrimaryButtonProps['variant']>, string> = {
   default: 'bg-blue-200 text-black hover:bg-blue-300',
   cta: 'bg-orange-400 text-black text-xl px-8 py-4 hover:bg-orange-500',
   ghost: 'bg-transparent text-white border border-white hover:bg-white hover:text-black',
 }
+
 
 const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   children,
