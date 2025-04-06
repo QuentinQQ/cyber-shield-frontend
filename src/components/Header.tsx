@@ -30,7 +30,7 @@ const Header: React.FC = () => {
         </PrimaryButton>
       </header>
 
-      {/* Fullscreen sliding Nav */}
+      {/* NavBar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
