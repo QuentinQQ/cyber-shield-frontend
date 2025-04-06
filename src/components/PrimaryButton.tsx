@@ -8,8 +8,8 @@ interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantClasses: Record<NonNullable<PrimaryButtonProps['variant']>, string> = {
-  default: 'bg-blue-200 text-black hover:bg-blue-300',
-  cta: 'bg-orange-400 text-black text-xl px-8 py-4 hover:bg-orange-500',
+  default: 'bg-[#C2E764] text-black hover:[#b1d64a]',
+  cta: 'bg-[#C2E764] text-black text-xl px-8 py-4 hover:[#b1d64a]',
   ghost: 'bg-transparent text-white border border-white hover:bg-white hover:text-black',
 }
 
