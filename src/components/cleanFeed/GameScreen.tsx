@@ -8,15 +8,24 @@ const GameScreen: React.FC<{
   onFinish: (submissions: GameSubmission[]) => void;
 }> = ({ comments, onFinish }) => {
   const [current, setCurrent] = useState(0);
-  const [startTime, setStartTime] = useState(Date.now());
-  const [submissions, setSubmissions] = useState<GameSubmission[]>([]);
+  const [startTime, setStartTime] = useState(Date.now()); // User starts the game
+  const [submissions, setSubmissions] = useState<GameSubmission[]>([]); // Store all submissions
 
+  /**
+   * @description Set the start time and timeout for the game
+   * @returns void
+   */
   useEffect(() => {
     setStartTime(Date.now());
     const timeout = setTimeout(() => onFinish(submissions), 60000);
     return () => clearTimeout(timeout);
   }, []);
 
+  /**
+   * @description Handle the comment response from the user (like/dislike)
+   * @param response_status 
+   * @returns void
+   */
   const handleResponse = (response_status: 'like' | 'dislike') => {
     const now = Date.now();
     const response_time = now - startTime;
