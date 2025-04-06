@@ -9,7 +9,7 @@ interface Comment {
   // Add other fields as per API response
 }
 
-const API_URL = "https://6gejnpoe61.execute-api.ap-southeast-2.amazonaws.com/api/feed-game/get-all-comments";
+const API_URL = "https://6gejnpoe61.execute-api.ap-southeast-2.amazonaws.com/prod/api/feed-game/get-all-comments";
 
 const CleanFeed: React.FC = () => {
   const [comments, setComments] = useState<Comment[]>([]);
