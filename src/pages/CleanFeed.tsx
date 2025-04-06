@@ -13,7 +13,6 @@ const CleanFeed: React.FC = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [comments, setComments] = useState<CommentData[]>([]);
-  const [submissions, setSubmissions] = useState<GameSubmission[]>([]);
   const [result, setResult] = useState<GameResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,13 +42,13 @@ const CleanFeed: React.FC = () => {
 
   const handleGameEnd = (submissions: GameSubmission[]) => {
     setGameOver(true);
-    setSubmissions(submissions);
-
+  
     axios
       .post(RESULTS_API, { submission: submissions })
       .then((res) => setResult(res.data))
       .catch(console.error);
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
