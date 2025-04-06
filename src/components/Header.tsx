@@ -1,39 +1,52 @@
-import React from 'react';
+// Header.tsx
+import React, { useState } from 'react';
+import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from 'framer-motion';
 import PrimaryButton from './PrimaryButton';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import NavBar from './NavBar';
 import { Button } from './ui/button';
-import { Menu } from "lucide-react";
 
-interface HeaderProps {
+const Header: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-}
-
-const Header: React.FC<HeaderProps> = () => {
   return (
-    // <header className="flex justify-between items-center p-4 w-full">
-    <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-transparent">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[240px] sm:w-[300px]">
-          <nav className="flex flex-col gap-4 mt-8">
-            {/* Todo: Change the items */}
-            <a href="/" className="text-lg font-medium hover:text-blue-500 transition-colors">Home</a>
-            <a href="/features" className="text-lg font-medium hover:text-blue-500 transition-colors">Features</a>
-            <a href="/about" className="text-lg font-medium hover:text-blue-500 transition-colors">About</a>
-            <a href="/contact" className="text-lg font-medium hover:text-blue-500 transition-colors">Contact</a>
-          </nav>
-        </SheetContent>
-      </Sheet>
-      
-      <PrimaryButton className="bg-orange-500 hover:bg-orange-600 text-white">
-        Get Help
-      </PrimaryButton>
-    </header>
+    <>
+      <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-transparent">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsOpen(!isOpen)}
+          className="text-white hover:bg-white/10 z-50 p-4 md:p-2"
+        >
+          {isOpen
+            ? <X className="h-10 w-10 md:h-8 md:w-8" />
+            : <Menu className="h-10 w-10 md:h-8 md:w-8" />
+          }
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+
+        <PrimaryButton className="bg-[#F4A261] hover:bg-[#f4ad61] text-white">
+          Get Help
+        </PrimaryButton>
+      </header>
+
+      {/* Fullscreen sliding Nav */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-40 bg-[#A8EE91] p-6 flex flex-col pt-24"
+          >
+            <div onClick={() => setIsOpen(false)}>
+              <NavBar />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
