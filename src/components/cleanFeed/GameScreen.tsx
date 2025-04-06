@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { CommentData, GameSubmission } from '../../types/types';
 import CommentCard from './CommentCard';
 import Timer from './Timer';
@@ -9,7 +9,7 @@ const GameScreen: React.FC<{
 }> = ({ comments, onFinish }) => {
   const [current, setCurrent] = useState(0);
   const [startTime, setStartTime] = useState(Date.now()); // User starts the game
-  const [submissions, setSubmissions] = useState<GameSubmission[]>([]); // Store all submissions
+  const submissionsRef = useRef<GameSubmission[]>([]); // Store all submissions
 
   /**
    * @description Set the start time and timeout for the game
@@ -17,7 +17,7 @@ const GameScreen: React.FC<{
    */
   useEffect(() => {
     setStartTime(Date.now());
-    const timeout = setTimeout(() => onFinish(submissions), 60000);
+    const timeout = setTimeout(() => onFinish(submissionsRef.current), 60000);
     return () => clearTimeout(timeout);
   }, []);
 
@@ -31,20 +31,19 @@ const GameScreen: React.FC<{
     const response_time = now - startTime;
     const currentComment = comments[current];
 
-    setSubmissions((prev) => [
-      ...prev,
+    submissionsRef.current.push(
       {
         comment_id: currentComment.comment_id,
         response_status,
         response_time,
-      },
-    ]);
+      }
+    );
 
     setStartTime(Date.now());
     if (current < comments.length - 1) {
       setCurrent(current + 1);
     } else {
-      onFinish(submissions);
+      onFinish(submissionsRef.current);
     }
   };
 
