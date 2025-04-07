@@ -23,7 +23,7 @@ const ResultScreen: React.FC<{ result: GameResult }> = ({ result }) => (
     <p className="text-lg">You answered {result.percent} of the questions correctly.</p>
     <p>Your score is <strong>{result.score}</strong>.</p>
     <p>You performed better than <strong>{result.comparison}</strong> of players.</p>
-    <p>Total Answered: {result.answered}, Correct: {result.answered_cor}</p>
+    <p>Total Answered: {result.answered}, Correct: {result.answered_correct}</p>
   </div>
 );
 

@@ -63,10 +63,19 @@ export const useCleanFeed = () => {
    * @returns {void}
    */
   const handleGameEnd = (submissions: GameSubmission[]) => {
-    setGameOver(true);
+    if (submissions.length === 0) {
+      setResult(null);
+      setGameOver(true);
+      return;
+    }
+    setIsLoading(true);
     postGameResult(submissions)
       .then((res) => setResult(res.data))
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => {
+        setIsLoading(false)
+        setGameOver(true);
+      });
   };
 
   return {
