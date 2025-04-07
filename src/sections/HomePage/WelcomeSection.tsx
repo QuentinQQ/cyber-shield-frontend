@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import PrimaryButton from "@/components/PrimaryButton";
 import SectionWrapper from "@/components/SectionWrapper";
-import happyImg from "@/assets/hero-happy.svg";
-import angryImg from "@/assets/hero-angry.svg";
+import happyImg from "@/assets/welcomePage/hero-happy.svg";
+import angryImg from "@/assets/welcomePage/hero-angry.svg";
 
 const WelcomeSection: React.FC = () => {
   const scrollToNext = () => {
