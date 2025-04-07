@@ -34,7 +34,7 @@ const navItems: { label: string; path: string }[] = [
  *
  * @returns {JSX.Element} A React functional component that displays the navigation list.
  */
-const NavBar: React.FC = () => {
+const NavBar: React.FC = (): JSX.Element => {
   return (
     <nav className="grid grid-rows-7 h-screen w-full">
       {navItems.map((item, index) => (
