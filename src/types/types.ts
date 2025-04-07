@@ -13,7 +13,7 @@ export interface GameSubmission {
 export interface GameResult {
   score: number;
   answered: number;
-  answered_cor: number;
+  answered_correct: number;
   percent: string;
   submission_id: number;
   comparison: string;
