@@ -7,6 +7,7 @@ function createIcon(gender, size, state = 'normal') {
     let iconSrc;
     let tooltipText;
 
+    // Determine the icon source based on gender and state
     if (gender === 'boy') {
     iconSrc = state === 'orange' ? 'boy_orange.svg' :
             state === 'maroon' ? 'boy_maroon.svg' : 'boy.svg';
@@ -14,6 +15,8 @@ function createIcon(gender, size, state = 'normal') {
     iconSrc = state === 'orange' ? 'girl_orange.svg' :
             state === 'maroon' ? 'girl_maroon.svg' : 'girl.svg';
     }
+
+    // Set tooltip text based on the state
     if (state === 'orange') {
     tooltipText = "You may feel isolated or afraid to speak up, but you're not alone. It’s important to reach out to someone you trust.";
     } else if (state === 'maroon') {
@@ -22,18 +25,21 @@ function createIcon(gender, size, state = 'normal') {
     tooltipText = "It’s great that you haven’t experienced bullying, but it's important to be aware and supportive of others who might be going through it.";
     }
 
+    // Set icon properties
     img.src = iconSrc;
     img.className = 'icon';
     img.style.setProperty('--icon-size', `${size}px`);
     img.setAttribute('title', tooltipText)
 
 
-    return img;
+    return img; // Return the created icon
 }
 
 export const generate = async () => {
     await sleep(100);
 
+
+    // Get references 
     const grid = document.getElementById("grid");
     const caption1 = document.getElementById("caption1");
     const caption2 = document.getElementById("caption2");
@@ -41,6 +47,7 @@ export const generate = async () => {
     const caption4 = document.getElementById("caption4");
     const pop = document.getElementById("pop") as HTMLAudioElement;
 
+    // Reset the grid and captions
     grid.innerHTML = '';
     caption1.classList.remove('show');
     caption2.classList.remove('show');
@@ -51,12 +58,14 @@ export const generate = async () => {
     caption3?.classList.add('hide');
     caption4?.classList.add('hide');
 
+    // Get the number of students from the input field
     let count = parseInt(document.getElementById("studentCount").value);
     if (isNaN(count) || count < 10 || count > 200) {
     alert("Enter a number between 10 and 200");
     return;
     }
-
+    
+    // Calculate icon size and set grid layout
     const iconSize = Math.max(24, 60 - (count - 10) * 0.2);
     grid.style.gridTemplateColumns = `repeat(auto-fill, minmax(${iconSize}px, 1fr))`;
 
@@ -78,6 +87,7 @@ export const generate = async () => {
     let boys = icons.filter(p => p.gender === 'boy');
     let bullied = [];
 
+    // Randomly select victims
     while (bullied.length < bulliedCount) {
         // Let's decide whom to choose: a girl or a boy
         let chooseGirl = Math.random() < 0.6; // 60% chance to choose a girl
@@ -93,7 +103,7 @@ export const generate = async () => {
         bullied.push(arr[idx]);
         arr.splice(idx, 1); 
     }
-
+    // Highlight victims 
     for (let i = 0; i < bullied.length; i++) {
         await sleep(100 + Math.random() * 100);
         const gender = bullied[i].gender;
@@ -105,18 +115,45 @@ export const generate = async () => {
         pop.volume = 1;
         await pop.play();
     }
-
+    // Show the first caption
     caption1?.classList.remove('hide');
     caption1.classList.add('show', 'orange');
 
-    // After a second, highlight 20% of the victims
+    
     await sleep(2100);
 
     caption1.classList.remove('show');
-    await sleep(1000);
+    await sleep(800);
     caption1.classList.add('hide');
+    
+    const highlightGirls = async () => {
+        for (let i = 0; i < bullied.length; i++) {
+          if (bullied[i].gender === 'girl') {
+            bullied[i].icon.classList.add('bright'); 
+          }
+        }
+      
+        await sleep(3000); 
+      
+        for (let i = 0; i < bullied.length; i++) {
+          if (bullied[i].gender === 'girl') {
+            bullied[i].icon.classList.remove('bright'); 
+          }
+        }
+      };
+
+    caption11.classList.remove('hide');
+    caption11.classList.add('show', 'orange');
+    await highlightGirls(); 
+    await sleep(1500);
+    caption11.classList.remove('show');
+    await sleep(800);
+    caption11.classList.add('hide');
+
+    // Show the second caption
     caption2.classList.remove('hide');
-    caption2.classList.add('show', 'maroon');
+    
+    // After a second, highlight 20% of the victims
     const disclosedCount = Math.max(1, Math.round(bulliedCount * 0.2));
     for (let i = 0; i < disclosedCount; i++) {
         await sleep(100 + Math.random() * 100);
@@ -128,18 +165,21 @@ export const generate = async () => {
         pop.currentTime = 0;
         await pop.play();
     }
-    await sleep(2000);
+    caption2.classList.add('show', 'maroon');
+    await sleep(4000);
     caption2.classList.remove('show');
-    await sleep(1000);
+    await sleep(800);
     caption2.classList.add('hide');
 
+    // Show the third caption
     caption3.classList.remove('hide');
     caption3.classList.add('show', 'green');
-    await sleep(2000);
+    await sleep(3200);
     caption3.classList.remove('show');
-    await sleep(1000);
+    await sleep(800);
     caption3.classList.add('hide');
 
+    // Show the fourth caption
     caption4.classList.remove('hide');
     caption4.classList.add('show', 'blue');
 }

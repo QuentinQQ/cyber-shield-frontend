@@ -23,11 +23,12 @@ const Infographic = () => {
                 maxWidth: '800px',
             }} id="grid"></div>
             {showCaptions && (
-                <div className="hide" id="captionContainer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', backgroundColor: '#FFFC35', borderRadius: 16, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', padding: '0 1rem 1rem 1rem', width: '100%', maxWidth: '600px' }}>
-                    <div className="caption hide" style={{ color: '#F8C128' }} id="caption1">30% of students have experienced cyberbullying.</div>
-                    <div className="caption hide" style={{ color: '#8C171D' }} id="caption2">Only one in five who face cyberbullying share their pain with their parents.</div>
-                    <div className="caption hide" style={{ color: '#C2E764' }} id="caption3">You don’t have to face this alone - reach out for support.</div>
-                    <div className="caption hide" style={{ color: 'black' }} id="caption4">Talk to an adult, and together we can stop it!</div>
+                <div className="hide" id="captionContainer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', backgroundColor: '#1DA9E0', borderRadius: 16, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', padding: '0 1rem 1rem 1rem', width: '100%', maxWidth: '600px' }}>
+                    <div className="caption hide" style={{ color: '#d81159' }} id="caption1">30% of students have experienced cyberbullying. </div>
+                    <div className="caption hide" style={{ color: '#d81159' }} id="caption11">Girls are more likely than boys to be targeted.</div>
+                    <div className="caption hide" style={{ color: '#F8C128' }} id="caption2">Only one in five who face cyberbullying share their pain with their parents.</div>
+                    <div className="caption hide" style={{ color: 'white' }} id="caption3">You don’t have to face this alone - reach out for support.</div>
+                    <div className="caption hide" style={{ color: 'white' }} id="caption4">Talk to an adult, and together we can stop it!</div>
                 </div>
             )}
             

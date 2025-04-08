@@ -46,3 +46,8 @@ input[type=number] {
     margin-bottom: 1rem;
     color: white;
 }
+
+.icon.bright {
+    filter: brightness(1.2); 
+    transition: filter 0.3s ease;
+  }
