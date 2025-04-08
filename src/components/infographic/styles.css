@@ -1,0 +1,48 @@
+.caption {
+    text-align: center;
+    margin-top: 1rem;
+    opacity: 0;
+    transition: all 0.8s ease;
+    font-weight: bold; 
+    font-size: 1.5rem;
+    display: block;
+}
+
+.caption.show {
+    opacity: 1;
+}
+
+.caption.hide {
+    display: none;
+}
+
+
+    /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.input {
+    width: 120px;
+    background-color: #D1E8FF;
+    border-radius:
+  16px;
+    padding: 3px 3px 3px 8px;
+  
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.question {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: white;
+}
