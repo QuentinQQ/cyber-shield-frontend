@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PrimaryButton from "@/components/PrimaryButton";
 import SectionWrapper from "@/components/SectionWrapper";
-import angryImg from "@/assets/hero-angry.svg";
-import happyImg from "@/assets/hero-happy.svg";
+import angryImg from "@/assets/welcomePage/hero-angry.svg";
+import happyImg from "@/assets/welcomePage/hero-happy.svg";
 import logoImg from "@/assets/logo.svg";
 import playgameImg from "@/assets/playgame.png";
 
