@@ -258,7 +258,7 @@ export const useInfographicViewModel = (): InfographicViewModel => {
    * @returns {string} Path to the icon image
    */
   const getIconSrc = (gender: 'boy' | 'girl', state: 'normal' | 'orange' | 'maroon') => {
-    const basePath = '/public/quizPage';
+    const basePath = '/quizPage';
   
     if (gender === 'boy') {
       if (state === 'normal') return `${basePath}/boy.svg`;
