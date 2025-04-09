@@ -1,25 +1,27 @@
-import { useEffect, useState } from 'react';
-import { CommentData, GameResult, GameSubmission } from '../types/types';
-import { fetchComments, postGameResult } from '../services/feedGameService';
+import { useEffect, useState } from "react";
+import { CommentData, GameResult, GameSubmission } from "../types/types";
+import { fetchComments, postGameResult } from "../services/feedGameService";
 
 /**
- * @function useCleanFeed
+ * @hook useCleanFeed
  * @description
- * Custom hook that manages the full lifecycle of the Clean Feed game session.
- * It loads initial data (comments), tracks the game start/finish state,
- * and submits results to the server after the game ends.
+ * ViewModel hook for Clean Feed Game. Manages game lifecycle, loading comments,
+ * submitting answers, restoring result from localStorage, and exposing control handlers.
  *
  * @returns {{
- *   gameStarted: boolean,
- *   gameOver: boolean,
- *   comments: CommentData[],
- *   result: GameResult | null,
- *   isLoading: boolean,
- *   error: string | null,
- *   startGame: () => void,
- *   handleGameEnd: (submissions: GameSubmission[]) => void
+ *   gameStarted: boolean;
+ *   gameOver: boolean;
+ *   comments: CommentData[];
+ *   result: GameResult | null;
+ *   isLoading: boolean;
+ *   error: string | null;
+ *   startGame: () => void;
+ *   handleGameEnd: (submissions: GameSubmission[]) => void;
+ *   resetGame: () => void;
  * }}
  */
+const CLEAN_FEED_RESULT_KEY = "cleanFeedResult";
+
 export const useCleanFeed = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -29,8 +31,70 @@ export const useCleanFeed = () => {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * @effect Loads comments from the server when the game starts.
-   * If comments have already been loaded, this effect does nothing.
+   * @function startGame
+   * @description Starts the game session. If a saved result exists, it shows the result screen directly.
+   */
+  const startGame = () => {
+    const saved = localStorage.getItem(CLEAN_FEED_RESULT_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed?.answered > 0) {
+        setResult(parsed);
+        setGameStarted(true);
+        setGameOver(true);
+        return;
+      }
+    }
+
+    setResult(null);
+    setGameStarted(true);
+    setGameOver(false);
+  };
+
+  /**
+   * @function resetGame
+   * @description Clears game state and removes saved result. Used to restart a new session.
+   */
+  const resetGame = () => {
+    localStorage.removeItem(CLEAN_FEED_RESULT_KEY);
+    setResult(null);
+    setGameStarted(false);
+    setGameOver(false);
+    setComments([]);
+  };
+
+  /**
+   * @function handleGameEnd
+   * @description Called when the game ends. If user answered, submits to backend.
+   * If no answers, skips submission and shows empty result state.
+   *
+   * @param {GameSubmission[]} submissions - All user answers
+   */
+  const handleGameEnd = (submissions: GameSubmission[]) => {
+    setGameOver(true);
+
+    if (submissions.length === 0) {
+      // No answers, skip submission
+      setResult(null);
+      return;
+    }
+
+    setIsLoading(true);
+    postGameResult(submissions)
+      .then((res) => {
+        setResult(res.data);
+        localStorage.setItem(CLEAN_FEED_RESULT_KEY, JSON.stringify(res.data));
+      })
+      .catch(() => {
+        setError("Failed to submit your answers. Please try again.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  /**
+   * @effect Load comments when game starts.
    */
   useEffect(() => {
     if (gameStarted && comments.length === 0) {
@@ -38,45 +102,30 @@ export const useCleanFeed = () => {
       fetchComments()
         .then((res) => {
           setComments(res.data.data || []);
-          setIsLoading(false);
         })
-        .catch((err) => {
-          console.error(err);
-          setError('Failed to load comments. Please try again.');
+        .catch(() => {
+          setError("Failed to load comments. Please try again.");
+        })
+        .finally(() => {
           setIsLoading(false);
         });
     }
   }, [gameStarted]);
 
   /**
-   * @function startGame
-   * @description Marks the game as started.
-   * @returns {void}
+   * @effect Restore game result on first load (refresh-safe).
    */
-  const startGame = () => setGameStarted(true);
-
-  /**
-   * @function handleGameEnd
-   * @description Called when the game ends. Posts all user responses to the backend.
-   *
-   * @param {GameSubmission[]} submissions - All responses recorded during the game.
-   * @returns {void}
-   */
-  const handleGameEnd = (submissions: GameSubmission[]) => {
-    if (submissions.length === 0) {
-      setResult(null);
-      setGameOver(true);
-      return;
-    }
-    setIsLoading(true);
-    postGameResult(submissions)
-      .then((res) => setResult(res.data))
-      .catch(console.error)
-      .finally(() => {
-        setIsLoading(false)
+  useEffect(() => {
+    const saved = localStorage.getItem(CLEAN_FEED_RESULT_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed?.answered > 0) {
+        setResult(parsed);
+        setGameStarted(true);
         setGameOver(true);
-      });
-  };
+      }
+    }
+  }, []);
 
   return {
     gameStarted,
@@ -87,5 +136,6 @@ export const useCleanFeed = () => {
     error,
     startGame,
     handleGameEnd,
+    resetGame,
   };
 };
