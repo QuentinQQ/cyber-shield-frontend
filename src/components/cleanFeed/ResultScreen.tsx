@@ -2,7 +2,6 @@ import React from "react";
 import { GameResult } from "../../types/types";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { on } from "events";
 
 /**
  * @component ResultScreen
