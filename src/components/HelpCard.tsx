@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-// Define HelpCard props
 type HelpDetail = {
   label: string;
   type?: "link";
@@ -9,9 +8,9 @@ type HelpDetail = {
 };
 
 type HelpCardProps = {
-  icon: React.ReactNode;  // icon can be a ReactNode like an emoji or an icon component
+  icon: React.ReactNode;  
   title: string;
-  details: HelpDetail[];  // details is an array of HelpDetail
+  details: HelpDetail[];  
 };
 
 export default function HelpCard({ icon, title, details }: HelpCardProps) {
