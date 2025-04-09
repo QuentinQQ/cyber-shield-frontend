@@ -40,7 +40,7 @@ const ResultScreen: React.FC<{
         transition={{ duration: 0.4 }}
         className="text-4xl font-bold text-white"
       >
-        Game Over!
+        Time's Up!
       </motion.h2>
 
       {/* Staggered result stats */}
