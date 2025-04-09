@@ -11,7 +11,33 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-const HELP_STEPS = [
+interface ContentItem {
+  label: string;
+  type?: "link";
+  href?: string;
+}
+
+interface HelpStep {
+  id: string;
+  icon: React.ReactNode;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  content: ContentItem[];
+  color: string;
+  borderColor: string;
+  textColor: string;
+  buttonColor: string;
+}
+
+interface HelpCardProps {
+  step: HelpStep;
+  index: number;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+const HELP_STEPS: HelpStep[] = [
   {
     id: "emergency",
     icon: <Phone className="text-red-500" size={24} />,
@@ -149,12 +175,20 @@ const HELP_STEPS = [
 
 const MOBILE_BREAKPOINT = 768;
 
-const GetHelp = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [characterPosition, setCharacterPosition] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const stepRefs = useRef([]);
+const GetHelp: React.FC = () => {
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [characterPosition, setCharacterPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Initialize the stepRefs array
+  useEffect(() => {
+    stepRefs.current = stepRefs.current.slice(0, HELP_STEPS.length);
+    while (stepRefs.current.length < HELP_STEPS.length) {
+      stepRefs.current.push(null);
+    }
+  }, []);
 
   const checkMobile = useCallback(() => {
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -167,9 +201,9 @@ const GetHelp = () => {
   }, [checkMobile]);
 
   const updateNinjaPosition = useCallback(
-    (index) => {
+    (index: number) => {
       if (stepRefs.current[index] && !isMobile) {
-        const currentStep = stepRefs.current[index].getBoundingClientRect();
+        const currentStep = stepRefs.current[index]!.getBoundingClientRect();
         setCharacterPosition({
           x: currentStep.left + currentStep.width / 2 - 20,
           y: currentStep.top - 40,
@@ -192,7 +226,7 @@ const GetHelp = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [activeStep, updateNinjaPosition]);
 
-  const moveCharacterTo = (index) => {
+  const moveCharacterTo = (index: number) => {
     setActiveStep(index);
     setShowDetails(true); 
   };
@@ -201,7 +235,7 @@ const GetHelp = () => {
     setShowDetails(!showDetails);
   };
 
-  const renderContentItem = (item, index) => {
+  const renderContentItem = (item: ContentItem, index: number) => {
     if (item.type === "link") {
       return (
         <a
@@ -219,7 +253,7 @@ const GetHelp = () => {
     return <p key={index} className="mb-2">{item.label}</p>;
   };
 
-  const MobileView = () => (
+  const MobileView: React.FC = () => (
     <div className="p-4 bg-gradient-to-b from-[#0064C5] to-[#1E90FF] min-h-screen">
       <div className="text-center text-white mb-6">
         <h1 className="text-3xl font-bold">Get Help</h1>
@@ -255,7 +289,7 @@ const GetHelp = () => {
     </div>
   );
 
-  const DesktopView = () => {
+  const DesktopView: React.FC = () => {
     const topRowSteps = HELP_STEPS.slice(0, 3);
     const bottomRowSteps = HELP_STEPS.slice(3);
 
@@ -285,7 +319,9 @@ const GetHelp = () => {
                 index={index}
                 isActive={activeStep === index}
                 onClick={() => moveCharacterTo(index)}
-                ref={(el) => (stepRefs.current[index] = el)}
+                ref={(el: HTMLDivElement | null) => {
+                  stepRefs.current[index] = el;
+                }}
               />
             ))}
           </div>
@@ -301,7 +337,9 @@ const GetHelp = () => {
                   index={actualIndex}
                   isActive={activeStep === actualIndex}
                   onClick={() => moveCharacterTo(actualIndex)}
-                  ref={(el) => (stepRefs.current[actualIndex] = el)}
+                  ref={(el: HTMLDivElement | null) => {
+                    stepRefs.current[actualIndex] = el;
+                  }}
                 />
               );
             })}
@@ -361,7 +399,7 @@ const GetHelp = () => {
     );
   };
 
-  const HelpCard = React.forwardRef(({ step, isActive, onClick }, ref) => (
+  const HelpCard = React.forwardRef<HTMLDivElement, HelpCardProps>(({ step, isActive, onClick }, ref) => (
     <div
       ref={ref}
       onClick={onClick}
