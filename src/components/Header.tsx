@@ -1,15 +1,20 @@
-// Header.tsx
 import React, { useState } from 'react';
-import { Menu, X } from "lucide-react";
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrimaryButton from './PrimaryButton';
 import NavBar from './NavBar';
 import { Button } from './ui/button';
 import logo from '@/assets/logo.svg';
-
+import { useNavigate } from 'react-router-dom';  // Import useNavigate for navigation
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false); // State to manage the menu open/close
+  const navigate = useNavigate();  // Initialize useNavigate hook
+
+  // Function to handle "Get Help" button click
+  const handleGetHelpClick = () => {
+    navigate('/get-help');  // Navigate to "/get-help" route
+  };
 
   return (
     <>
@@ -38,7 +43,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* Help Button */}
-        <PrimaryButton className="bg-[#F4A261] hover:bg-[#f4ad61] text-white">
+        <PrimaryButton className="bg-[#F4A261] hover:bg-[#f4ad61] text-white" onClick={handleGetHelpClick}>
           Get Help
         </PrimaryButton>
       </header>
