@@ -80,18 +80,31 @@ export const generate = async () => {
 
     // Let's identify the victims (30%): 60% girls, 40% boys
     const bulliedCount = Math.ceil(count * 0.3);
-    const numGirls = Math.floor(bulliedCount * 0.6);
+    const numGirls = Math.round(bulliedCount * 0.6);
     const numBoys = bulliedCount - numGirls;
 
     let girls = icons.filter(p => p.gender === 'girl');
     let boys = icons.filter(p => p.gender === 'boy');
     let bullied = [];
 
+    let selectedGirls = 0; // Counter for selected girls
+    let selectedBoys = 0; // Counter for selected boys
+
     // Randomly select victims
     while (bullied.length < bulliedCount) {
         // Let's decide whom to choose: a girl or a boy
         let chooseGirl = Math.random() < 0.6; // 60% chance to choose a girl
-        let arr = chooseGirl && girls.length > 0 ? girls : boys;
+        
+        // If the limit for girls is reached, force choosing a boy
+        if (selectedBoys >= numBoys) {
+            chooseGirl = true;
+        }
+        if (selectedGirls >= numGirls) {
+            chooseGirl = false;
+        }
+
+            // Select from the appropriate array
+        let arr = chooseGirl ? girls : boys;
 
         // If the selected gender array is empty, switch to the other
         if (arr.length === 0) {
@@ -99,9 +112,16 @@ export const generate = async () => {
         }
 
         // Select a random student from the array
-        let idx = Math.floor(Math.random() * arr.length);
+        const idx = Math.floor(Math.random() * arr.length);
         bullied.push(arr[idx]);
-        arr.splice(idx, 1); 
+        arr.splice(idx, 1);
+        
+        // Update the counters
+        if (chooseGirl) {
+            selectedGirls++;
+        } else {
+            selectedBoys++;
+        }
     }
     // Highlight victims 
     for (let i = 0; i < bullied.length; i++) {

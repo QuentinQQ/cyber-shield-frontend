@@ -7,7 +7,10 @@ const Infographic = () => {
     
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '1rem', padding: '2rem' }}>
-            <h1 className="question">How many students are there in your year level at your school?</h1>
+            <h1 className="question">
+            How many students are in your class?<br />
+            (or in your year level at your school)
+            </h1>
             <input className="input" type="number" id="studentCount" min="10" max="200" placeholder="e.g. 120"  />
             <button onClick={async () => {
                 setShowCaptions(true);
