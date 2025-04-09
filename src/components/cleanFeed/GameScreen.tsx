@@ -1,60 +1,118 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { CommentData, GameSubmission } from '../../types/types';
-import CommentCard from './CommentCard';
-import Timer from './Timer';
+import React, { useState } from "react";
+import { CommentData, GameSubmission } from "../../types/types";
+import CommentCard from "./CommentCard";
+import Timer from "./Timer";
+import useIsMobile from "@/hooks/useIsMobile";
+import { useGameController } from "@/hooks/useGameController";
+import { useMockupSize } from "@/hooks/useMockupSize";
+import { IPhoneMockup } from "react-device-mockup";
+import StandGuy from "@/assets/cleanFeed/stand-guy.svg";
+import { AnimatePresence, motion } from "framer-motion";
 
+/**
+ * @component GameScreen
+ * @description
+ * Main game screen for Clean Feed. Contains comment judgment with transition animations.
+ *
+ * @param {CommentData[]} comments - List of comments to judge
+ * @param {(submissions: GameSubmission[]) => void} onFinish - Called when game ends
+ */
 const GameScreen: React.FC<{
   comments: CommentData[];
   onFinish: (submissions: GameSubmission[]) => void;
 }> = ({ comments, onFinish }) => {
-  const [current, setCurrent] = useState(0);
-  const [startTime, setStartTime] = useState(Date.now()); // User starts the game
-  const submissionsRef = useRef<GameSubmission[]>([]); // Store all submissions
+  const isMobile = useIsMobile();
+  const mockupSize = useMockupSize();
+  const { currentComment, handleResponse } = useGameController(comments, onFinish);
+
+  const [isAnimating, setIsAnimating] = useState(false);
 
   /**
-   * @description Set the start time and timeout for the game
-   * @returns void
+   * Triggers comment change with animation delay to allow button + card transition.
    */
-  useEffect(() => {
-    setStartTime(Date.now());
-    const timeout = setTimeout(() => onFinish(submissionsRef.current), 60000);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  /**
-   * @description Handle the comment response from the user (like/dislike)
-   * @param response_status 
-   * @returns void
-   */
-  const handleResponse = (response_status: 'like' | 'dislike') => {
-    const now = Date.now();
-    const response_time = now - startTime;
-    const currentComment = comments[current];
-
-    submissionsRef.current.push(
-      {
-        comment_id: currentComment.comment_id,
-        response_status,
-        response_time,
-      }
-    );
-
-    setStartTime(Date.now());
-    if (current < comments.length - 1) {
-      setCurrent(current + 1);
-    } else {
-      onFinish(submissionsRef.current);
-    }
+  const handleDelayedResponse = (action: "like" | "dislike") => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setTimeout(() => {
+      handleResponse(action);
+      setIsAnimating(false);
+    }, 300); // Match exit animation duration
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col items-center space-y-6 max-w-full">
       <Timer duration={60} />
-      <CommentCard
-        comment={comments[current]}
-        onLike={() => handleResponse('like')}
-        onDislike={() => handleResponse('dislike')}
-      />
+
+      {isMobile ? (
+        // 📱 Mobile view
+        <div className="w-full px-4 max-w-md mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentComment.comment_id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <CommentCard
+                comment={currentComment}
+                onLike={() => handleDelayedResponse("like")}
+                onDislike={() => handleDelayedResponse("dislike")}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      ) : (
+        // 💻 Desktop view
+        <div className="w-full flex justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center w-full">
+            <div className="hidden md:flex justify-end pr-4">
+              <img src={StandGuy} alt="Decorative character" className="h-[600px] w-auto" />
+            </div>
+
+            <div className="flex justify-center">
+              <div style={{ width: mockupSize.width }}>
+                <IPhoneMockup
+                  screenWidth={mockupSize.width}
+                  isLandscape={false}
+                  screenType="island"
+                  frameColor="#E76F50"
+                  hideStatusBar={true}
+                  transparentNavBar={true}
+                >
+                  <div className="h-full w-full flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-200 p-4 overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentComment.comment_id}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="w-full"
+                      >
+                        <CommentCard
+                          comment={currentComment}
+                          onLike={() => handleDelayedResponse("like")}
+                          onDislike={() => handleDelayedResponse("dislike")}
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </IPhoneMockup>
+              </div>
+            </div>
+
+            <div className="hidden md:block" />
+          </div>
+        </div>
+      )}
+
+      {/* Tip Text */}
+      <div className="text-center max-w-md mx-auto px-4">
+        <p className="text-white text-sm opacity-80 mt-4">
+          Swipe through comments and indicate whether they are appropriate (Like) or inappropriate (Dislike).
+        </p>
+      </div>
     </div>
   );
 };

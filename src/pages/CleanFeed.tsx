@@ -1,8 +1,11 @@
-import React from 'react';
-import StartScreen from '../components/cleanFeed/StartScreen';
-import GameScreen from '../components/cleanFeed/GameScreen';
-import ResultScreen from '../components/cleanFeed/ResultScreen';
-import { useCleanFeed } from '../hooks/useCleanFeed';
+import React from "react";
+import StartScreen from "../components/cleanFeed/StartScreen";
+import GameScreen from "../components/cleanFeed/GameScreen";
+import ResultScreen from "../components/cleanFeed/ResultScreen";
+import { useCleanFeed } from "../hooks/useCleanFeed";
+import PageWrapper from "../components/PageWrapper";
+import EmptyAnswerScreen from "../components/cleanFeed/EmptyAnswerScreen";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 const CleanFeed: React.FC = () => {
   const {
@@ -14,14 +17,19 @@ const CleanFeed: React.FC = () => {
     error,
     startGame,
     handleGameEnd,
+    resetGame
   } = useCleanFeed();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
+    <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
+      {/* Onboarding Screen */}
       {!gameStarted && !gameOver && <StartScreen onStart={startGame} />}
+
+      {/* Game Screen */}
       {gameStarted && !gameOver && (
         <>
-          {isLoading && <p className="text-center text-xl mt-10">Loading comments...</p>}
+          {isLoading && <LoadingOverlay message="Loading..." />}
+
           {error && (
             <div className="text-center mt-10 space-y-4">
               <p className="text-red-200 text-lg">{error}</p>
@@ -38,8 +46,17 @@ const CleanFeed: React.FC = () => {
           )}
         </>
       )}
-      {gameOver && result && <ResultScreen result={result} />}
-    </div>
+
+      {/* Result Screen */}
+      {gameOver && result && result.answered > 0 && (
+        <ResultScreen result={result} onRestart={resetGame} />
+      )}
+
+      {/* If user didn't answer any question */}
+      {gameOver && !result && (
+        <EmptyAnswerScreen onRestart={startGame} />
+      )}
+    </PageWrapper>
   );
 };
 
