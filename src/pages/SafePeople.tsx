@@ -64,7 +64,7 @@ const SafePeople = () => {
     <div className="bg-gradient-to-b from-sky-200 to-blue-200 min-h-screen p-8">
       {/* Fun animated header with button resembling the image */}
       <header className="flex justify-center items-center mb-12 pt-8">
-        <style jsx>{`
+        <style>{`
           @keyframes shake {
             0% { transform: rotate(0deg); }
             25% { transform: rotate(-1deg); }
