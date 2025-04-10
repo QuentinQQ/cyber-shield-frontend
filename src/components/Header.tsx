@@ -6,16 +6,21 @@ import PrimaryButton from './PrimaryButton';
 import NavBar from './NavBar';
 import { Button } from './ui/button';
 import logo from '@/assets/logo.svg';
-
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
 const Header: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false); // State to manage the menu open/close
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate function
+
+  const handleGetHelpClick = () => {
+    // Navigate to GetHelp page
+    navigate('/get-help'); // Replace '/get-help' with the actual route of your GetHelp page
+  };
 
   return (
     <>
       <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-transparent">
         <div className="flex items-center gap-3">
-          {/* Menu Button */}
           <Button
             variant="ghost"
             size="icon"
@@ -29,7 +34,6 @@ const Header: React.FC = () => {
             <span className="sr-only">Toggle menu</span>
           </Button>
 
-          {/* Logo */}
           <img
             src={logo}
             alt="Logo"
@@ -38,12 +42,14 @@ const Header: React.FC = () => {
         </div>
 
         {/* Help Button */}
-        <PrimaryButton className="bg-[#F4A261] hover:bg-[#f4ad61] text-white">
+        <PrimaryButton
+          className="bg-[#F4A261] hover:bg-[#f4ad61] text-white"
+          onClick={handleGetHelpClick} // Use onClick to navigate to GetHelp
+        >
           Get Help
         </PrimaryButton>
       </header>
 
-      {/* NavBar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
