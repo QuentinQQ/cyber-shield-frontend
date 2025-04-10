@@ -76,7 +76,8 @@ const Infographic: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center space-y-6 p-8 w-full max-w-4xl mx-auto">
       <h1 className="text-center text-2xl md:text-3xl font-bold text-white">
-        How many students are in your year level at your school?
+        How many students are in your class?<br />
+        (Or in your year level at your school)
       </h1>
       
       <input
