@@ -17,12 +17,12 @@ import { Link } from "react-router-dom";
  * @property {string} path - The target route path for the navigation link
  */
 const navItems: { label: string; path: string }[] = [
-  { label: "Home page", path: "/" },
-  { label: "Quiz", path: "/quiz" },
-  { label: "Scenario Game", path: "/scenario" },
-  { label: "Story Time", path: "/story" },
-  { label: "Clean My Feed Game", path: "/clean-feed" },
-  { label: "Safe People", path: "/safe-people" },
+  { label: "Home", path: "/" },
+  { label: "What's Your Class Like?", path: "/quiz" },
+  { label: "Step Into the Story", path: "/scenario" },
+  { label: "Hear Their Voices", path: "/story" },
+  { label: "Clean My Feed", path: "/clean-feed" },
+  { label: "Someone Listens", path: "/safe-people" },
   { label: "How To Open Up", path: "/open-up" },
 ];
 
