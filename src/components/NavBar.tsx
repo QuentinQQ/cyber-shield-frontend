@@ -23,25 +23,38 @@ const navItems: { label: string; path: string }[] = [
   { label: "Hear Their Voices", path: "/story" },
   { label: "Clean My Feed", path: "/clean-feed" },
   { label: "Someone Listens", path: "/safe-people" },
-  { label: "How To Open Up", path: "/open-up" },
 ];
+
+/**
+ * NavBarProps interface
+ * @interface NavBarProps
+ * @description Optional props for the NavBar component
+ * @property {boolean} compact - Whether to use compact styling (for side menu)
+ */
+interface NavBarProps {
+  compact?: boolean;
+}
 
 /**
  * @component NavBar
  * @description
  * Renders a navigation bar in vertical layout where all navigation links are centered.
  * On hover, each link scales up and changes color for better user interactivity.
+ * Supports a compact mode for side menu display.
  *
  * @returns {JSX.Element} A React functional component that displays the navigation list.
  */
-const NavBar: React.FC = (): JSX.Element => {
+const NavBar: React.FC<NavBarProps> = ({ compact = false }): JSX.Element => {
   return (
-    <nav className="grid grid-rows-7 h-screen w-full">
+    <nav className={compact ? "flex flex-col w-full" : "grid grid-rows-7 h-screen w-full"}>
       {navItems.map((item, index) => (
         <Link
           key={index}
           to={item.path}
-          className="flex items-center justify-center text-2xl md:text-4xl font-semibold hover:bg-cyan-100 transition-all"
+          className={compact 
+            ? "flex items-center px-4 py-3 text-sm md:text-base font-medium text-white hover:bg-white/10 border-l-2 border-transparent hover:border-white transition-all duration-200 hover:translate-x-1"
+            : "flex items-center justify-center text-2xl md:text-4xl font-semibold hover:bg-cyan-100 transition-all"
+          }
         >
           {item.label}
         </Link>
@@ -49,6 +62,5 @@ const NavBar: React.FC = (): JSX.Element => {
     </nav>
   );
 };
-
 
 export default NavBar;
