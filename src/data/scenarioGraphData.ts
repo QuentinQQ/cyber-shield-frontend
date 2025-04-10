@@ -227,7 +227,7 @@ const scenarioData: Record<string, ScenarioNode> = {
   A011_1: {
     id: "A011_1",
     type: MediaType.IMAGE,
-    src: "/scenarioGame/A011.png",
+    src: "/scenarioGame/A011_1.png",
     caption: "Bill: Thanks man, I appreciate it, we should ask for help.",
     nextNodeId: "A011_2",
   },
@@ -235,7 +235,7 @@ const scenarioData: Record<string, ScenarioNode> = {
   A011_2: {
     id: "A011_2",
     type: MediaType.IMAGE,
-    src: "/scenarioGame/A011.png",
+    src: "/scenarioGame/A011_2.png",
     caption: "You and Bill asked for help from teachers and our website.",
     nextNodeId: "A011_3",
   },
@@ -243,7 +243,7 @@ const scenarioData: Record<string, ScenarioNode> = {
   A011_3: {
     id: "A011_3",
     type: MediaType.IMAGE,
-    src: "/scenarioGame/A011.png",
+    src: "/scenarioGame/A011_3.png",
     caption: "You and Bill post a video on how to do when you are being bullied and how to ask for help.",
     nextNodeId: "result_C",
   },
