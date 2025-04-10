@@ -1,6 +1,5 @@
 import React from "react";
 import WelcomeSection from "@/sections/HomePage/WelcomeSection";
-import PlayGameSection from "@/sections/HomePage/PlayGame";
 
 const HomePage: React.FC = () => {
   return (
@@ -11,7 +10,6 @@ const HomePage: React.FC = () => {
       {/* Main content */}
       <main className="snap-y snap-mandatory h-screen overflow-y-auto">
         <WelcomeSection />
-        <PlayGameSection />
       </main>
     </div>
   );
