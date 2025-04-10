@@ -3,13 +3,11 @@ import PrimaryButton from "@/components/PrimaryButton";
 import SectionWrapper from "@/components/SectionWrapper";
 import happyImg from "@/assets/welcomePage/hero-happy.svg";
 import angryImg from "@/assets/welcomePage/hero-angry.svg";
+import { useHomePage } from "@/hooks/useHomePage";
 
 const WelcomeSection: React.FC = () => {
-  const scrollToNext = () => {
-    const el = document.getElementById("demo");
-    el?.scrollIntoView({ behavior: "smooth" });
-  };
-
+  const { goToGame } = useHomePage();
+  
   return (
     <SectionWrapper id="welcome" withGrid gridRows={3} headerHeight={80}>
       {/* Row 1: Top Image - left to right */}
@@ -44,7 +42,7 @@ const WelcomeSection: React.FC = () => {
           transition={{ duration: 2.2, delay: 0.3, type: "spring", stiffness: 100, damping: 10 }}
           className="mt-6"
         >
-          <PrimaryButton variant="cta" rotate onClick={scrollToNext}>
+          <PrimaryButton variant="cta" rotate onClick={goToGame}>
             Let's Play A Game
           </PrimaryButton>
         </motion.div>
