@@ -121,7 +121,7 @@ const ScenarioGame: React.FC = () => {
               rotate
               onClick={() => navigate("/story")}
             >
-              NEXT: See Their Story
+              See Their Story
             </PrimaryButton>
           </motion.div>
         </div>

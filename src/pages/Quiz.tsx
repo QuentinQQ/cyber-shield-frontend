@@ -30,7 +30,7 @@ const QuizPage: React.FC = () => {
           className="mt-10 flex justify-center"
         >
           <PrimaryButton variant="cta" rotate onClick={goToScenario}>
-            NEXT: Let's play a Scenario Game
+            Let's play a Scenario Game
           </PrimaryButton>
         </motion.div>
       </div>

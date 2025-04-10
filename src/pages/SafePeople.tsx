@@ -96,7 +96,7 @@ const SafePeople = () => {
             onClick={() => setActiveSection('messages')}
           >
             <MessageCircle size={20} />
-            Next: Get Help Messages
+            Get Help Messages
           </button>
         ) : (
           <button
