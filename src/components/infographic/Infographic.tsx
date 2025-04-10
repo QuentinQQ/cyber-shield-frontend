@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useInfographicViewModel } from '@/hooks/useInfoGraphic';
-import { motion } from 'framer-motion';
+import './Infographic.css';
 
 /**
- * @component Infographic
- * @description
- * Interactive visualization that demonstrates cyberbullying statistics.
+ * Interactive visualization demonstrating cyberbullying statistics.
  * Takes user input for class size and generates a visual representation
  * of how many students might be experiencing cyberbullying.
- *
- * @returns {JSX.Element} The rendered component
+ * 
+ * @component
+ * @example
+ * <Infographic />
  */
 const Infographic: React.FC = () => {
   const {
@@ -28,14 +28,20 @@ const Infographic: React.FC = () => {
   // Calculate icon size based on student count
   const iconSize = calculateIconSize(studentCount);
   
-  // Tooltip texts for different states
+  // Tooltip texts for different icon states
   const tooltipTexts = {
     normal: "It's great that you haven't experienced bullying, but it's important to be aware and supportive of others who might be going through it.",
     orange: "You may feel isolated or afraid to speak up, but you're not alone. It's important to reach out to someone you trust.",
     maroon: "Talking to your parents is a great first step in getting the support you need. They care about you and want to help."
   };
   
-  // Update grid template columns when icon size changes
+  /**
+   * Updates grid layout when student count changes
+   * 
+   * @effect
+   * @dependency {number} iconSize - Current calculated icon size
+   * @dependency {number} studentCount - Number of students entered by user
+   */
   useEffect(() => {
     if (gridRef.current && studentCount > 0) {
       gridRef.current.style.gridTemplateColumns = `repeat(auto-fill, minmax(${iconSize}px, 1fr))`;
@@ -43,8 +49,8 @@ const Infographic: React.FC = () => {
   }, [iconSize, studentCount]);
   
   /**
-   * @function handleInputChange
-   * @description Updates state when input value changes
+   * Updates state when input value changes
+   * 
    * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event
    */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,8 +59,8 @@ const Infographic: React.FC = () => {
   };
   
   /**
-   * @function handleSubmit
-   * @description Validates input and starts the visualization
+   * Validates user input and starts the visualization sequence
+   * Shows an alert if value is outside valid range (10-200)
    */
   const handleSubmit = () => {
     if (isAnimating) return;
@@ -69,13 +75,12 @@ const Infographic: React.FC = () => {
   
   return (
     <div className="flex flex-col items-center justify-center space-y-6 p-8 w-full max-w-4xl mx-auto">
-      <h1 className="text-center text-xl md:text-2xl font-bold">
-        How many students are in your class?<br />
-        (or in your year level at your school)
+      <h1 className="text-center text-2xl md:text-3xl font-bold text-white">
+        How many students are in your year level at your school?
       </h1>
       
       <input
-        className="px-4 py-3 rounded-lg border-2 border-amber-400 text-xl text-center w-32 md:w-48"
+        className="px-4 py-3 rounded-2xl bg-[#D1E8FF] text-xl text-center w-32 shadow-md"
         type="number"
         min="10"
         max="200"
@@ -102,9 +107,7 @@ const Infographic: React.FC = () => {
             key={icon.id}
             src={getIconSrc(icon.gender, icon.state)}
             className={`transition-all duration-300 ${
-              currentStep === 2 && icon.state === 'orange' && icon.gender === 'girl' 
-                ? 'brightness-150 scale-110' 
-                : ''
+              icon.highlighted ? 'brightness-120 scale-105' : ''
             }`}
             style={{ width: iconSize, height: iconSize }}
             title={tooltipTexts[icon.state]}
@@ -113,64 +116,39 @@ const Infographic: React.FC = () => {
         ))}
       </div>
       
-      {/* Captions */}
+      {/* Animated caption container */}
       {showCaptions && (
-        <div className="bg-sky-500 rounded-2xl shadow-lg p-6 w-full max-w-2xl">
-          <motion.div 
-            className={`text-xl md:text-2xl font-bold text-center my-4 text-white ${currentStep === 1 ? 'opacity-100' : 'opacity-0'}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: currentStep === 1 ? 1 : 0, y: currentStep === 1 ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-          >
+        <div className="bg-[#1DA9E0] rounded-2xl shadow-lg p-6 w-full max-w-[600px]">
+          <div className={`caption ${currentStep === 1 ? 'show orange' : 'hide'}`}>
             30% of students have experienced cyberbullying.
-          </motion.div>
+          </div>
           
-          <motion.div 
-            className={`text-xl md:text-2xl font-bold text-center my-4 text-white ${currentStep === 2 ? 'opacity-100' : 'opacity-0'}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: currentStep === 2 ? 1 : 0, y: currentStep === 2 ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className={`caption ${currentStep === 2 ? 'show orange' : 'hide'}`}>
             Girls are more likely than boys to be targeted.
-          </motion.div>
+          </div>
           
-          <motion.div 
-            className={`text-xl md:text-2xl font-bold text-center my-4 text-white ${currentStep === 3 ? 'opacity-100' : 'opacity-0'}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: currentStep === 3 ? 1 : 0, y: currentStep === 3 ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className={`caption ${currentStep === 3 ? 'show maroon' : 'hide'}`}>
             Only one in five who face cyberbullying share their pain with their parents.
-          </motion.div>
+          </div>
           
-          <motion.div 
-            className={`text-xl md:text-2xl font-bold text-center my-4 text-white ${currentStep === 4 ? 'opacity-100' : 'opacity-0'}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: currentStep === 4 ? 1 : 0, y: currentStep === 4 ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className={`caption ${currentStep === 4 ? 'show green' : 'hide'}`}>
             You don't have to face this alone - reach out for support.
-          </motion.div>
+          </div>
           
-          <motion.div 
-            className={`text-xl md:text-2xl font-bold text-center my-4 text-white ${currentStep === 5 ? 'opacity-100' : 'opacity-0'}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: currentStep === 5 ? 1 : 0, y: currentStep === 5 ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className={`caption ${currentStep === 5 ? 'show blue' : 'hide'}`}>
             Talk to an adult, and together we can stop it!
-          </motion.div>
+          </div>
         </div>
       )}
       
-      {/* Audio file for pop sound */}
+      {/* Sound effect for icon transitions */}
       <audio 
         ref={audioRef}
-        src="/sounds/95265__department64__tree_pop.wav"
+        src="/quizPage/95265__department64__tree_pop.wav"
         preload="auto"
       />
       
-      {/* Reset button - shown after animation completes */}
+      {/* Reset button appears after animation completes */}
       {!isAnimating && showCaptions && (
         <button 
           className="px-8 py-3 bg-amber-400 text-gray-800 font-bold rounded-lg hover:bg-amber-300 transition-colors"
