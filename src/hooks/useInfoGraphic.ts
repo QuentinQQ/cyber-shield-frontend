@@ -20,9 +20,16 @@ export const useInfographicViewModel = (): InfographicViewModel => {
     currentStep: 0,
   });
 
-  // References with correct typing
+  // References with correct typing to match the InfographicViewModel interface
   const audioRef = useRef<HTMLAudioElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  
+  // // Constants
+  // const tooltipTexts: TooltipTexts = {
+  //   normal: "It's great that you haven't experienced bullying, but it's important to be aware and supportive of others who might be going through it.",
+  //   orange: "You may feel isolated or afraid to speak up, but you're not alone. It's important to reach out to someone you trust.",
+  //   maroon: "Talking to your parents is a great first step in getting the support you need. They care about you and want to help."
+  // };
 
   /**
    * @function sleep
@@ -46,7 +53,6 @@ export const useInfographicViewModel = (): InfographicViewModel => {
       id: uuidv4(),
       gender,
       state,
-      highlighted: false,
     };
   };
 
@@ -110,135 +116,118 @@ export const useInfographicViewModel = (): InfographicViewModel => {
    * @param {number} count - Total number of students
    */
   const animateInfographic = async (initialIcons: IconData[], count: number): Promise<void> => {
+    // Copy the icons array so we can modify it
+    let icons = [...initialIcons];
+    
     // Step 1: Identify victims (30%): 60% girls, 40% boys
     const bulliedCount = Math.ceil(count * 0.3);
     const numGirls = Math.round(bulliedCount * 0.6);
     const numBoys = bulliedCount - numGirls;
-    
-    // Create separate arrays for boys and girls
-    const girlIndices: number[] = [];
-    const boyIndices: number[] = [];
-    
-    initialIcons.forEach((icon, index) => {
-      if (icon.gender === 'girl') {
-        girlIndices.push(index);
-      } else {
-        boyIndices.push(index);
-      }
-    });
-    
-    // Shuffle arrays to ensure random selection
-    girlIndices.sort(() => Math.random() - 0.5);
-    boyIndices.sort(() => Math.random() - 0.5);
-    
-    // Select victims
-    const selectedGirlIndices = girlIndices.slice(0, numGirls);
-    const selectedBoyIndices = boyIndices.slice(0, numBoys);
-    const selectedIndices = [...selectedGirlIndices, ...selectedBoyIndices];
-    
-    // Shuffle the victim indices to randomize the order of highlighting
-    selectedIndices.sort(() => Math.random() - 0.5);
-    
-    // Start with all initial icons
-    let updatedIcons = [...initialIcons];
-    
-    // Highlight victims one by one
-    for (let i = 0; i < selectedIndices.length; i++) {
-      const idx = selectedIndices[i];
+
+    // Separate icons by gender
+    let girls = icons.filter(p => p.gender === 'girl');
+    let boys = icons.filter(p => p.gender === 'boy');
+    let bullied: IconData[] = [];
+
+    // Randomly select victims
+    let selectedGirls = 0;
+    let selectedBoys = 0;
+
+    while (bullied.length < bulliedCount) {
+      // Determine whether to choose a girl or boy next
+      let chooseGirl = Math.random() < 0.6; // 60% chance
       
+      // Adjust based on remaining quota
+      if (selectedGirls >= numGirls) chooseGirl = false;
+      if (selectedBoys >= numBoys) chooseGirl = true;
+
+      // Select from appropriate array
+      let arr = chooseGirl ? girls : boys;
+      if (arr.length === 0) {
+        arr = arr === girls ? boys : girls;
+      }
+
+      const idx = Math.floor(Math.random() * arr.length);
+      bullied.push({...arr[idx], state: 'orange'});
+      
+      // Update counters
+      if (chooseGirl) selectedGirls++;
+      else selectedBoys++;
+      
+      // Remove selected icon from available pool
+      if (chooseGirl) {
+        girls = girls.filter((_, i) => i !== idx);
+      } else {
+        boys = boys.filter((_, i) => i !== idx);
+      }
+    }
+
+    // Update icons with victims
+    for (let i = 0; i < bullied.length; i++) {
       await sleep(100 + Math.random() * 100);
       
-      // Update state to 'orange'
-      updatedIcons = updatedIcons.map((icon, index) => 
-        index === idx ? { ...icon, state: 'orange' } : icon
-      );
+      // Find the index of this icon in the overall array
+      const targetIdx = icons.findIndex(icon => 
+        icon.gender === bullied[i].gender && icon.state === 'normal');
       
-      // Play sound
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.volume = 1;
-        try {
-          await audioRef.current.play();
-        } catch (e) {
-          console.error("Audio play error:", e);
+      if (targetIdx !== -1) {
+        // Update the icon state to 'orange'
+        const updatedIcons = [...icons];
+        updatedIcons[targetIdx] = {...updatedIcons[targetIdx], state: 'orange'};
+        
+        // Play sound
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.volume = 1;
+          await audioRef.current.play().catch(e => console.error("Audio play error:", e));
         }
+        
+        // Update state
+        setState(prev => ({
+          ...prev,
+          icons: updatedIcons,
+          currentStep: 1
+        }));
+        
+        icons = updatedIcons;
       }
-      
-      // Update state
-      setState(prev => ({
-        ...prev,
-        icons: updatedIcons,
-        currentStep: 1
-      }));
     }
-    
+
     // Wait for first caption to be read
     await sleep(2000);
     
-    // Step 2: Highlight girls among victims
+    // Highlight girls among victims
     setState(prev => ({
       ...prev,
-      currentStep: 2,
+      currentStep: 2
     }));
-    
-    // Highlight only girls who were selected as victims
-    const victimGirlIndices = selectedIndices.filter(idx => 
-      updatedIcons[idx].gender === 'girl' && updatedIcons[idx].state === 'orange'
-    );
-    
-    // Apply highlight to victim girls
-    updatedIcons = updatedIcons.map((icon, index) => 
-      victimGirlIndices.includes(index) ? { ...icon, highlighted: true } : icon
-    );
-    
-    setState(prev => ({
-      ...prev,
-      icons: updatedIcons
-    }));
-    
+
     await sleep(3000);
     
-    // Remove highlighting
-    updatedIcons = updatedIcons.map(icon => ({ ...icon, highlighted: false }));
+    // Step 2: Highlight those who disclosed (20% of victims)
+    const disclosedCount = Math.max(1, Math.round(bulliedCount * 0.2));
+    const orangeIndices = icons
+      .map((icon, index) => icon.state === 'orange' ? index : -1)
+      .filter(index => index !== -1)
+      .slice(0, disclosedCount);
     
-    setState(prev => ({
-      ...prev,
-      icons: updatedIcons
-    }));
-    
-    // Step 3: Highlight those who disclosed (20% of victims)
     setState(prev => ({
       ...prev,
       currentStep: 3
     }));
-    
-    // Select 20% of victims to disclose (randomly)
-    let orangeIndices = selectedIndices.filter(idx => updatedIcons[idx].state === 'orange');
-    // Shuffle to select random victims
-    orangeIndices.sort(() => Math.random() - 0.5);
-    const disclosedCount = Math.max(1, Math.round(orangeIndices.length * 0.2));
-    orangeIndices = orangeIndices.slice(0, disclosedCount);
-    
-    // Update disclosed victims to maroon one by one
+
+    // Update disclosed victims to maroon
     for (let i = 0; i < orangeIndices.length; i++) {
-      const idx = orangeIndices[i];
-      
       await sleep(100 + Math.random() * 100);
       
-      // Update to maroon state
-      updatedIcons = updatedIcons.map((icon, index) => 
-        index === idx ? { ...icon, state: 'maroon' } : icon
-      );
+      const idx = orangeIndices[i];
+      const updatedIcons = [...icons];
+      updatedIcons[idx] = {...updatedIcons[idx], state: 'maroon'};
       
       // Play sound
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
-        audioRef.current.volume = 1;
-        try {
-          await audioRef.current.play();
-        } catch (e) {
-          console.error("Audio play error:", e);
-        }
+        await audioRef.current.play().catch(e => console.error("Audio play error:", e));
       }
       
       // Update state
@@ -246,6 +235,8 @@ export const useInfographicViewModel = (): InfographicViewModel => {
         ...prev,
         icons: updatedIcons
       }));
+      
+      icons = updatedIcons;
     }
     
     // Final captions
@@ -281,6 +272,8 @@ export const useInfographicViewModel = (): InfographicViewModel => {
   
     return '';
   };
+  
+  
 
   /**
    * @function resetInfographic
@@ -298,8 +291,8 @@ export const useInfographicViewModel = (): InfographicViewModel => {
 
   return {
     state,
-    audioRef: audioRef as React.RefObject<HTMLAudioElement>,
-    gridRef: gridRef as React.RefObject<HTMLDivElement>,
+    audioRef,
+    gridRef,
     handleStudentCountChange,
     generateIcons,
     resetInfographic,
