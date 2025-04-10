@@ -5,7 +5,7 @@ import Header from './components/Header';
 import QuizPage from './pages/Quiz';
 import SafePeople from './pages/SafePeople'; 
 import ScenarioGame from './pages/ScenarioGame';
-
+import GetHelp from './pages/GetHelp'; 
 
 function App() {
   return (
@@ -19,6 +19,7 @@ function App() {
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/safe-people" element={<SafePeople />} />
           <Route path="/scenario" element={<ScenarioGame />} />
+          <Route path="/get-help" element={<GetHelp />} />
         </Routes>
       </div>
     </BrowserRouter>
