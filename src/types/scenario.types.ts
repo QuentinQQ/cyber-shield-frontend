@@ -4,6 +4,7 @@
 export enum MediaType {
   VIDEO = 'video',
   IMAGE = 'image',
+  TEXT = 'text',
 }
 
 /**
@@ -22,6 +23,7 @@ export interface ScenarioNode {
   id: string;
   type: MediaType;
   src: string;
+  title?: string;
   caption?: string;
   options?: ScenarioOption[];
   nextNodeId?: string;
