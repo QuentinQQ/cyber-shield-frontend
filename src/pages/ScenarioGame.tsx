@@ -9,6 +9,9 @@ import StartScreen from "../components/scenario/StartScreen";
 import PageWrapper from "../components/PageWrapper";
 import LoadingOverlay from "../components/LoadingOverlay";
 import TextDisplay from "../components/scenario/TextDisplay";
+import PrimaryButton from "../components/PrimaryButton";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 /**
  * @component ScenarioGame
@@ -26,6 +29,7 @@ const ScenarioGame: React.FC = () => {
     handleOptionSelect,
     handleContinue,
   } = useScenarioPlayer();
+  const navigate = useNavigate();
 
   // Error handling to prevent page crashes
   if (!currentNode) {
@@ -97,6 +101,29 @@ const ScenarioGame: React.FC = () => {
             Watch the videos and make choices that reflect how you would respond
             in real life.
           </p>
+        </div>
+
+        <div className="mt-6 max-w-2xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 2.2,
+              delay: 0.3,
+              type: "spring",
+              stiffness: 100,
+              damping: 10,
+            }}
+            className="mt-4 md:mt-0"
+          >
+            <PrimaryButton
+              variant="cta"
+              rotate
+              onClick={() => navigate("/story")}
+            >
+              NEXT: See Their Story
+            </PrimaryButton>
+          </motion.div>
         </div>
       </div>
     </PageWrapper>

@@ -2,6 +2,7 @@ import React from "react";
 import WelcomeSection from "@/sections/HomePage/WelcomeSection";
 
 const HomePage: React.FC = () => {
+
   return (
     <div className="relative overflow-x-hidden">
       {/* Fixed background gradient */}

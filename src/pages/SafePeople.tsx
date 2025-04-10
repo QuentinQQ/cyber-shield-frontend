@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Copy, CheckCircle, Heart, Send, Smile, Users, MessageCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface MessageTemplate {
   id: number;
@@ -11,6 +12,7 @@ const SafePeople = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [activeSection, setActiveSection] = useState<'people' | 'messages'>('people');
   const [showConfetti, setShowConfetti] = useState(false);
+  const navigate = useNavigate();
 
   const messageTemplates: MessageTemplate[] = [
     {
@@ -78,6 +80,7 @@ const SafePeople = () => {
         `}</style>
         <button
           className="bg-[#c2e764] text-black font-bold text-xl py-4 px-10 rounded-full shadow-lg transform -rotate-2 hover:scale-105 transition-transform duration-300 shake-animate"
+          onClick={() => navigate('/get-help')}
         >
           <span className="animate-pulse">🆘</span>
           <span className="mx-2">Get Help Now</span>
