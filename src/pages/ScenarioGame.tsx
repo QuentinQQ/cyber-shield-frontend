@@ -1,13 +1,14 @@
-import React from 'react';
-import { useScenarioPlayer } from '../hooks/useScenarioPlayer';
-import { MediaType } from '../types/scenario.types';
-import VideoPlayer from '../components/scenario/VideoPlayer';
-import ImageDisplay from '../components/scenario/ImageDisplay';
-import OptionsOverlay from '../components/scenario/OptionsOverlay';
-import CaptionDisplay from '../components/scenario/CaptionDisplay';
-import StartScreen from '../components/scenario/StartScreen';
-import PageWrapper from '../components/PageWrapper';
-import LoadingOverlay from '../components/LoadingOverlay';
+import React from "react";
+import { useScenarioPlayer } from "../hooks/useScenarioPlayer";
+import { MediaType } from "../types/scenario.types";
+import VideoPlayer from "../components/scenario/VideoPlayer";
+import ImageDisplay from "../components/scenario/ImageDisplay";
+import OptionsOverlay from "../components/scenario/OptionsOverlay";
+import CaptionDisplay from "../components/scenario/CaptionDisplay";
+import StartScreen from "../components/scenario/StartScreen";
+import PageWrapper from "../components/PageWrapper";
+import LoadingOverlay from "../components/LoadingOverlay";
+import TextDisplay from "../components/scenario/TextDisplay";
 
 /**
  * @component ScenarioGame
@@ -23,6 +24,7 @@ const ScenarioGame: React.FC = () => {
     startScenario,
     handleMediaEnd,
     handleOptionSelect,
+    handleContinue,
   } = useScenarioPlayer();
 
   // Error handling to prevent page crashes
@@ -40,28 +42,37 @@ const ScenarioGame: React.FC = () => {
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-8 text-center">
           Cyberbullying Interactive Scenario
         </h1>
-        
+
         {/* Player container with separate video and caption sections */}
         <div className="w-full max-w-4xl mx-auto bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
-          {/* Video/Image container */}
+          {/* Video/Image/Text container */}
           <div className="relative w-full aspect-video bg-black">
             {!started ? (
               <StartScreen onStart={startScenario} />
             ) : (
               <>
-                {currentNode.type === MediaType.VIDEO ? (
+                {currentNode.type === MediaType.VIDEO && (
                   <VideoPlayer
                     src={currentNode.src}
                     onEnded={handleMediaEnd}
                     videoRef={videoRef}
                   />
-                ) : (
-                  <ImageDisplay
-                    src={currentNode.src}
-                    onLoad={handleMediaEnd}
+                )}
+
+                {currentNode.type === MediaType.IMAGE && (
+                  <ImageDisplay src={currentNode.src} onLoad={handleMediaEnd} />
+                )}
+
+                {currentNode.type === MediaType.TEXT && (
+                  <TextDisplay
+                    text={currentNode.caption || ""}
+                    title={currentNode.title}
+                    onContinue={
+                      currentNode.nextNodeId ? handleContinue : undefined
+                    }
                   />
                 )}
-                
+
                 {/* Options overlay - stays in the player area */}
                 {showOptions && currentNode.options && (
                   <OptionsOverlay
@@ -72,17 +83,19 @@ const ScenarioGame: React.FC = () => {
               </>
             )}
           </div>
-          
+
           {/* Caption area - outside the player */}
           {started && <CaptionDisplay text={caption} />}
         </div>
-        
+
         <div className="mt-6 max-w-2xl text-center">
           <p className="text-white text-opacity-90 text-lg">
-            Your decisions in this scenario will influence the outcome and demonstrate the impact of cyberbullying.
+            Your decisions in this scenario will influence the outcome and
+            demonstrate the impact of cyberbullying.
           </p>
           <p className="text-white text-opacity-70 text-sm mt-2">
-            Watch the videos and make choices that reflect how you would respond in real life.
+            Watch the videos and make choices that reflect how you would respond
+            in real life.
           </p>
         </div>
       </div>
