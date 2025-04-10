@@ -1,49 +1,55 @@
-// Header.tsx
 import React, { useState } from 'react';
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 import PrimaryButton from './PrimaryButton';
 import NavBar from './NavBar';
-import { Button } from './ui/button';
 import logo from '@/assets/logo.svg';
-
+import { useNavigate, Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false); // State to manage the menu open/close
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleGetHelpClick = () => {
+    navigate('/get-help');
+  };
 
   return (
     <>
       <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-transparent">
         <div className="flex items-center gap-3">
           {/* Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
+          <div
             onClick={() => setIsOpen(!isOpen)}
-            className="text-white hover:bg-white/10 z-50 p-4 md:p-2"
+            className="cursor-pointer z-50 p-2 rounded-full hover:bg-white/10"
           >
             {isOpen
-              ? <X className="h-10 w-10 md:h-8 md:w-8" />
-              : <Menu className="h-10 w-10 md:h-8 md:w-8" />
+              ? <X className="h-12 w-12 text-white" />
+              : <Menu className="h-12 w-12 text-white" />
             }
             <span className="sr-only">Toggle menu</span>
-          </Button>
+          </div>
 
-          {/* Logo */}
-          <img
-            src={logo}
-            alt="Logo"
-            className="h-10 w-auto md:h-8"
-          />
+          {/* Logo wrapped in Link to navigate to homepage */}
+          <Link to="/" className="flex items-center">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-12 w-auto"
+            />
+          </Link>
         </div>
 
         {/* Help Button */}
-        <PrimaryButton className="bg-[#F4A261] hover:bg-[#f4ad61] text-white">
+        <PrimaryButton
+          className="bg-[#F4A261] hover:bg-[#f4ad61] text-white text-base px-6 py-3"
+          onClick={handleGetHelpClick}
+        >
           Get Help
         </PrimaryButton>
+
       </header>
 
-      {/* NavBar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
