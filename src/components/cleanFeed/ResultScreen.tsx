@@ -2,6 +2,7 @@ import React from "react";
 import { GameResult } from "../../types/types";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import PrimaryButton from "@/components/PrimaryButton";
 
 /**
  * @component ResultScreen
@@ -12,9 +13,9 @@ import { useNavigate } from "react-router-dom";
  * @param {GameResult} props.result - Game result data (score, percent, etc.)
  * @returns {JSX.Element}
  */
-const ResultScreen: React.FC<{ 
-  result: GameResult
-  onRestart: () => void
+const ResultScreen: React.FC<{
+  result: GameResult;
+  onRestart: () => void;
 }> = ({ result, onRestart }) => {
   const navigate = useNavigate();
 
@@ -27,7 +28,8 @@ const ResultScreen: React.FC<{
     const percent = Number(result.percent);
     if (percent >= 90) return "Amazing! You're a cyber safety pro!";
     if (percent >= 70) return "Well done! You know your stuff.";
-    if (percent >= 50) return "Nice try! A bit more practice and you'll ace it.";
+    if (percent >= 50)
+      return "Nice try! A bit more practice and you'll ace it.";
     return "Don't worry, it's a great start. Let's try again!";
   };
 
@@ -95,14 +97,28 @@ const ResultScreen: React.FC<{
         >
           Try Again
         </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => navigate("/")}
-          className="px-6 py-2 border border-white text-white rounded-lg font-semibold hover:bg-white hover:text-cyan-700 transition"
+      </div>
+      <div className="flex gap-4 pt-6">
+      <motion.div
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 2.2,
+            delay: 0.3,
+            type: "spring",
+            stiffness: 100,
+            damping: 10,
+          }}
+          className="mt-4 md:mt-0"
         >
-          Back to Home
-        </motion.button>
+          <PrimaryButton
+            variant="cta"
+            rotate
+            onClick={() => navigate("/safe-people")}
+          >
+            Don't Wait, Get Help
+          </PrimaryButton>
+        </motion.div>
       </div>
     </div>
   );
