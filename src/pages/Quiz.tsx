@@ -5,6 +5,14 @@ import PrimaryButton from "@/components/PrimaryButton";
 import { motion } from "framer-motion";
 import { useQuizPage } from "@/hooks/useQuizPage";
 
+/**
+ * Quiz page containing the interactive cyberbullying infographic visualization
+ * and a button to navigate to the scenario game.
+ * 
+ * @page
+ * @example
+ * <QuizPage />
+ */
 const QuizPage: React.FC = () => {
   const { goToScenario } = useQuizPage();
 
@@ -13,6 +21,7 @@ const QuizPage: React.FC = () => {
       <div className="container mx-auto py-10">
         <Infographic />
 
+        {/* Animated button with spring animation */}
         <motion.div
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
