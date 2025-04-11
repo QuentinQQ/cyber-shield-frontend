@@ -8,7 +8,7 @@ const VideoPage: React.FC = () => {
 
     const videoId = 'qA1TJjJgdz8';
 
-    // 播放器配置选项
+    // Player Configuration Options
     const opts = {
         height: '700',
         width: '1100',
