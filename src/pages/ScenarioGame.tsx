@@ -43,10 +43,6 @@ const ScenarioGame: React.FC = () => {
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
       <div className="container mx-auto py-8 flex flex-col items-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-8 text-center">
-          Cyberbullying Interactive Scenario
-        </h1>
-
         {/* Player container with separate video and caption sections */}
         <div className="w-full max-w-4xl mx-auto bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
           {/* Video/Image/Text container */}
@@ -94,12 +90,8 @@ const ScenarioGame: React.FC = () => {
 
         <div className="mt-6 max-w-2xl text-center">
           <p className="text-white text-opacity-90 text-lg">
-            Your decisions in this scenario will influence the outcome and
-            demonstrate the impact of cyberbullying.
-          </p>
-          <p className="text-white text-opacity-70 text-sm mt-2">
-            Watch the videos and make choices that reflect how you would respond
-            in real life.
+            See how your decisions play out & the impact of cyberbullying.
+            Choose like it's happening to you.
           </p>
         </div>
 
