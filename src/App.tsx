@@ -6,6 +6,8 @@ import QuizPage from './pages/Quiz';
 import SafePeople from './pages/SafePeople'; 
 import ScenarioGame from './pages/ScenarioGame';
 import GetHelp from './pages/GetHelp'; 
+import Story from './pages/Story'; 
+import Video from './pages/Video'; 
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/safe-people" element={<SafePeople />} />
           <Route path="/scenario" element={<ScenarioGame />} />
           <Route path="/get-help" element={<GetHelp />} />
+          <Route path="/story" element={<Story />} />
+          <Route path="/video" element={<Video />} />
         </Routes>
       </div>
     </BrowserRouter>

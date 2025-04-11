@@ -25,10 +25,11 @@ const ResultScreen: React.FC<{
    * @returns {string}
    */
   const getFeedback = (): string => {
-    const percent = Number(result.percent);
-    if (percent >= 90) return "Amazing! You're a cyber safety pro!";
-    if (percent >= 70) return "Well done! You know your stuff.";
-    if (percent >= 50)
+    const raw = typeof result.percent === "string" ? result.percent : "";
+    const percentNumber = Number(raw.replace("%", ""));
+    if (percentNumber >= 90) return "Amazing! You're a cyber safety pro!";
+    if (percentNumber >= 70) return "Well done! You know your stuff.";
+    if (percentNumber >= 50)
       return "Nice try! A bit more practice and you'll ace it.";
     return "Don't worry, it's a great start. Let's try again!";
   };

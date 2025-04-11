@@ -52,8 +52,12 @@ const CleanFeed: React.FC = () => {
         <ResultScreen result={result} onRestart={resetGame} />
       )}
 
+      {gameOver && !result && isLoading && (
+        <LoadingOverlay message="Loading result..." />
+      )}
+
       {/* If user didn't answer any question */}
-      {gameOver && !result && (
+      {gameOver && result && result.answered === 0 && (
         <EmptyAnswerScreen onRestart={startGame} />
       )}
     </PageWrapper>
