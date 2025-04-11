@@ -1,5 +1,4 @@
 import React from "react";
-import PrimaryButton from "../components/PrimaryButton";
 import PageWrapper from "../components/PageWrapper";
 import friendlyOnesSitting2 from "@/assets/storyPage/friendlyOnesSitting2.png";
 import YouTube from 'react-youtube';
