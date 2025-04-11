@@ -2,10 +2,14 @@ import React from "react";
 import PageWrapper from "../components/PageWrapper";
 import friendlyOnesSitting2 from "@/assets/storyPage/friendlyOnesSitting2.png";
 import YouTube from 'react-youtube';
+import PrimaryButton from "../components/PrimaryButton";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const VideoPage: React.FC = () => {
 
     const videoId = 'qA1TJjJgdz8';
+    const navigate = useNavigate();
 
     // Player Configuration Options
     const opts = {
@@ -45,6 +49,29 @@ const VideoPage: React.FC = () => {
                     <p style={{ color : 'black', fontSize: '20px'}}>This is Emma’s story</p>
                     <p style={{ color : 'black', fontSize: '20px'}}>Emma was bullied by her best friend, “cyber bullying is hard to deal with by yourself”, let’s learn how Emma asked for help to end the cyber bully.</p>
                 </div>
+            </div>
+
+          {/* Nav to next page: Clean Feed */}
+            <div className="container mx-auto flex justify-center mt-10 mb-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 100 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                        duration: 2.2,
+                        delay: 0.3,
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 10,
+                    }}
+                >
+                    <PrimaryButton
+                        variant="cta"
+                        rotate
+                        onClick={() => navigate("/clean-feed")}
+                    >
+                        Clean Your Feed
+                    </PrimaryButton>
+                </motion.div>
             </div>
 
         </PageWrapper >
