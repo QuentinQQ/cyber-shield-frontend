@@ -43,6 +43,7 @@ const ScenarioGame: React.FC = () => {
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
       <div className="container mx-auto py-8 flex flex-col items-center">
+
         {/* Player container with separate video and caption sections */}
         <div className="w-full max-w-4xl mx-auto bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
           {/* Video/Image/Text container */}
@@ -90,8 +91,7 @@ const ScenarioGame: React.FC = () => {
 
         <div className="mt-6 max-w-2xl text-center">
           <p className="text-white text-opacity-90 text-lg">
-            See how your decisions play out & the impact of cyberbullying.
-            Choose like it's happening to you.
+          See how your decisions play out & the impact of cyberbullying. Choose like it's happening to you.
           </p>
         </div>
 
