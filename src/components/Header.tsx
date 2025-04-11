@@ -13,7 +13,7 @@ const CoolNavBar = () => {
     { label: "Home", path: "/", icon: Home },
     { label: "What's Your Class Like?", path: "/quiz", icon: Users },
     { label: "Step Into the Story", path: "/scenario", icon: BookOpen },
-    { label: "Hear Their Voices", path: "/story", icon: Headphones },
+    // { label: "Hear Their Voices", path: "/story", icon: Headphones },
     { label: "Clean My Feed", path: "/clean-feed", icon: Shield },
     { label: "Someone Listens", path: "/safe-people", icon: Heart },
   ];

@@ -108,12 +108,19 @@ const ScenarioGame: React.FC = () => {
             }}
             className="mt-4 md:mt-0"
           >
-            <PrimaryButton
+            {/* <PrimaryButton
               variant="cta"
               rotate
               onClick={() => navigate("/story")}
             >
               See Their Story
+            </PrimaryButton> */}
+            <PrimaryButton
+              variant="cta"
+              rotate
+              onClick={() => navigate("/clean-feed")}
+            >
+              Clean Your Feed
             </PrimaryButton>
           </motion.div>
         </div>
