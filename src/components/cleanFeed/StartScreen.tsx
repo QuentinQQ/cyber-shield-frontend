@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable no-irregular-whitespace */
+import React, { JSX } from 'react';
 import PrimaryButton from '@/components/PrimaryButton';
 
 /**
@@ -12,7 +13,7 @@ import PrimaryButton from '@/components/PrimaryButton';
  *
  * @returns {JSX.Element} Rendered start screen
  */
-const StartScreen: React.FC<{ onStart: () => void }> = ({ onStart }) => (
+const StartScreen: React.FC<{ onStart: () => void }> = ({ onStart }: { onStart: () => void; }): JSX.Element => (
   <div className="flex flex-col items-center justify-center h-[80vh] text-center space-y-6">
     <h1 className="text-4xl font-bold">Ready to Clean the Feed?</h1>
     <p className="text-lg">You have 1 minute to like or dislike as many comments as you can!</p>
