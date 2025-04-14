@@ -25,7 +25,6 @@ const ResultScreen: React.FC<{
    * @returns {string}
    */
   const getFeedback = (): string => {
-    // const percentNumber = Number(result.percent);
     const raw = typeof result.percent === "string" ? result.percent : "";
     const percentNumber = Number(raw.replace("%", ""));
     if (percentNumber >= 90) return "Amazing! You're a cyber safety pro!";
@@ -61,7 +60,7 @@ const ResultScreen: React.FC<{
         className="space-y-2 text-white text-lg"
       >
         {[
-          `You answered ${result.percent} correctly.`,
+          `You answered ${result.percent}% correctly.`,
           `Your score is ${result.score}.`,
           `You performed better than ${result.comparison}% of players.`,
           `Total Answered: ${result.answered}, Correct: ${result.answered_correct}.`,

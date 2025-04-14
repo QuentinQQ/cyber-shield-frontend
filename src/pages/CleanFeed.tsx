@@ -17,7 +17,7 @@ const CleanFeed: React.FC = () => {
     error,
     startGame,
     handleGameEnd,
-    resetGame,
+    resetGame
   } = useCleanFeed();
 
   return (
