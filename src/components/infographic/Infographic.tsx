@@ -15,6 +15,7 @@ const Infographic: React.FC = () => {
   } = useInfographicViewModel();
 
   const { studentCount, showCaptions, icons, isAnimating, currentStep } = state;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   // Calculate icon size based on student count
