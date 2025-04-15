@@ -16,7 +16,7 @@ const Infographic: React.FC = () => {
 
   const { studentCount, showCaptions, icons, isAnimating, currentStep } = state;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [, setIsButtonClicked] = useState(false);
 
   // Calculate icon size based on student count
   const iconSize = calculateIconSize(studentCount);
@@ -27,17 +27,11 @@ const Infographic: React.FC = () => {
   // Check if all animations have completed
   const allStepsCompleted = showCaptions && currentStep >= totalSteps;
 
-  const tooltipTexts = {
-    normal: "It's great that you haven't experienced bullying, but it's important to be aware and supportive of others who might be going through it.",
-    orange: "You may feel isolated or afraid to speak up, but you're not alone. It's important to reach out to someone you trust.",
-    maroon: "Talking to your parents is a great first step in getting the support you need. They care about you and want to help."
-  };
-
   useEffect(() => {
     if (gridRef.current && studentCount > 0) {
       gridRef.current.style.gridTemplateColumns = `repeat(auto-fill, minmax(${iconSize}px, 1fr))`;
     }
-  }, [iconSize, studentCount]);
+  }, [gridRef, iconSize, studentCount]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
@@ -111,7 +105,6 @@ const Infographic: React.FC = () => {
               icon.highlighted ? 'brightness-120 scale-105' : ''
             }`}
             style={{ width: iconSize, height: iconSize }}
-            title={tooltipTexts[icon.state]}
             alt={`${icon.gender} icon`}
           />
         ))}
