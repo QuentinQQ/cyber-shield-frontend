@@ -1,67 +1,262 @@
 import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import SectionWrapper from "@/components/SectionWrapper";
 import happyImg from "@/assets/welcomePage/hero-happy.svg";
-import angryImg from "@/assets/welcomePage/hero-angry.svg";
 import { useHomePage } from "@/hooks/useHomePage";
 
 const WelcomeSection: React.FC = () => {
   const { goToQuiz } = useHomePage();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [cursorHovered, setCursorHovered] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
+  const [splashes, setSplashes] = useState<Array<{id: number, x: number, y: number, color: string}>>([]);
+  const nextId = useRef(0);
   
-  return (
-    <SectionWrapper id="welcome" withGrid gridRows={3} headerHeight={80}>
-      {/* Row 1: Top Image - left to right */}
-      <div className="relative flex items-center justify-end px-20 overflow-hidden">
-        <motion.img
-          src={angryImg}
-          alt="Hero Angry"
-          initial={{ x: -800, opacity: 0, rotate: 360 }}
-          animate={{ x: 0, opacity: 1, rotate: 0 }}
-          transition={{
-            duration: 1,
-            rotate: { type: "spring", stiffness: 100 },
-          }}
-          className="w-40 sm:w-52 md:w-60"
-        />
-      </div>
+  // Colors for watercolor splashes
+  const splashColors = [
+    "rgba(255, 183, 197, 0.6)", // pink
+    "rgba(173, 216, 230, 0.6)", // light blue
+    "rgba(152, 251, 152, 0.6)", // light green
+    "rgba(255, 255, 153, 0.6)", // light yellow
+    "rgba(221, 160, 221, 0.6)", // plum
+  ];
 
-      {/* Row 2: Center text and button */}
-      <div className="flex flex-col justify-center items-center text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 100 }}
+  // Update mouse position for cursor effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      
+      // Create splash effect on movement (less frequently)
+      if (Math.random() > 0.92) {
+        addSplash(e.clientX, e.clientY);
+      }
+    };
+    
+    const handleMouseDown = () => {
+      setIsClicking(true);
+      // Always create splash on click
+      addSplash(mousePosition.x, mousePosition.y);
+    };
+    
+    const handleMouseUp = () => {
+      setIsClicking(false);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [mousePosition]);
+
+  // Clean up old splashes when there are too many
+  useEffect(() => {
+    if (splashes.length > 15) {
+      setSplashes(current => current.slice(Math.max(current.length - 15, 0)));
+    }
+  }, [splashes]);
+
+  // Add a new splash at the position
+  const addSplash = (x: number, y: number) => {
+    const colorIndex = Math.floor(Math.random() * splashColors.length);
+    setSplashes(current => [...current, {
+      id: nextId.current++,
+      x,
+      y,
+      color: splashColors[colorIndex]
+    }]);
+  };
+
+  return (
+    <SectionWrapper id="welcome" withGrid gridRows={2} headerHeight={80}>
+      {/* Watercolor splashes */}
+      {splashes.map(splash => (
+        <motion.div
+          key={splash.id}
+          className="fixed pointer-events-none z-0 rounded-full blur-md opacity-60"
+          style={{
+            left: splash.x - 75,
+            top: splash.y - 75,
+            width: 150,
+            height: 150,
+            background: splash.color,
+          }}
+          initial={{ scale: 0.2, opacity: 0.8 }}
+          animate={{ 
+            scale: [0.2, 1.2, 1.5],
+            opacity: [0.8, 0.5, 0]
+          }}
+          transition={{ 
+            duration: 3.5,
+            ease: "easeOut"
+          }}
+          onAnimationComplete={() => {
+            setSplashes(current => current.filter(s => s.id !== splash.id));
+          }}
+        />
+      ))}
+      
+      {/* Cursor follower */}
+      <motion.div
+        className="fixed pointer-events-none z-0 rounded-full blur-md"
+        style={{
+          left: mousePosition.x - 20,
+          top: mousePosition.y - 20,
+          width: isClicking ? 80 : 40,
+          height: isClicking ? 80 : 40,
+          background: isClicking ? 
+            "rgba(120, 220, 232, 0.8)" : 
+            "rgba(173, 216, 230, 0.5)",
+          mixBlendMode: "screen"
+        }}
+        animate={{ 
+          scale: isClicking ? [1, 1.4, 1.2] : 1,
+          opacity: isClicking ? [0.8, 0.9, 0.7] : 0.7
+        }}
+        transition={{ duration: 0.4 }}
+      />
+
+      {/* Row 1: Title with overlapping text effect and puzzle piece */}
+      <div className="flex flex-col justify-center items-start px-10 md:px-20 relative pt-20">
+        {/* Title with shadow effects and hover motion */}
+        <div className="relative">
+          {/* Go Beyond with fun hover movement */}
+          <motion.div
+            whileHover={{ x: [0, 5, -5, 5, -5, 0], rotate: [0, 2, -2, 2, -2, 0] }}
+            transition={{ duration: 0.6 }}
+            className="relative mb-2 cursor-default"
+          >
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white relative z-10"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.5, type: "spring", stiffness: 100, damping: 10 }}
+            >
+              Go Beyond
+            </motion.h1>
+
+            <motion.div
+              className="absolute z-0 text-4xl sm:text-5xl md:text-6xl font-bold text-black/30 top-1 left-1"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5, delay: 0.3 }}
+            >
+              Go Beyond
+            </motion.div>
+          </motion.div>
+
+          {/* Cyberbully with hover wiggle effect */}
+          <motion.div
+            whileHover={{ y: [0, -4, 4, -4, 4, 0] }}
+            transition={{ duration: 0.6 }}
+            className="relative mb-2 cursor-default"
+          >
+            <motion.h1
+              className="text-5xl sm:text-6xl md:text-7xl font-bold text-white relative z-10"
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.5, delay: 0.2, type: "spring", stiffness: 100, damping: 10 }}
+            >
+              Cyberbully
+            </motion.h1>
+
+            <motion.div
+              className="absolute z-0 text-5xl sm:text-6xl md:text-7xl font-bold text-black/40 top-2 left-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5, delay: 0.4 }}
+            >
+              Cyberbully
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Tagline */}
+        <motion.p
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 2, type: "spring", stiffness: 100, damping: 10 }}
-          className="text-2xl sm:text-3xl md:text-4xl font-semibold max-w-xl text-white"
+          transition={{ duration: 1.8, delay: 0.6, type: "spring" }}
+          className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mt-4"
         >
           "Remember, Words Can Wound"
-        </motion.h1>
+        </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 2.2, delay: 0.3, type: "spring", stiffness: 100, damping: 10 }}
-          className="mt-6"
-        >
-          <PrimaryButton variant="cta" rotate onClick={goToQuiz}>
-            Let's Play A Quiz
-          </PrimaryButton>
-        </motion.div>
+        {/* Puzzle piece with watercolor glow effect */}
+        <div className="cursor-pointer absolute top-0 right-10 md:right-20">
+          <motion.div
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            className="relative"
+            onMouseEnter={() => setCursorHovered(true)}
+            onMouseLeave={() => setCursorHovered(false)}
+            onClick={() => addSplash(mousePosition.x, mousePosition.y)}
+          >
+            {/* Watercolor glow behind puzzle */}
+            <motion.div
+              className="absolute inset-0 rounded-full blur-lg z-0"
+              style={{
+                background: "rgba(255, 223, 100, 0.6)",
+              }}
+              animate={{ 
+                scale: cursorHovered ? [1, 1.2, 1.1] : [1, 1.1, 1],
+                opacity: cursorHovered ? 0.8 : 0.6
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            />
+            
+            {/* Tooltip that appears on hover */}
+            <motion.div
+              className="absolute -top-16 right-0 bg-white rounded-xl px-4 py-2 text-black font-bold text-sm z-20 shadow-lg origin-bottom-right"
+              initial={{ opacity: 0, scale: 0, rotateZ: 10 }}
+              animate={{ 
+                opacity: cursorHovered ? 1 : 0, 
+                scale: cursorHovered ? 1 : 0,
+                rotateZ: cursorHovered ? 0 : 10
+              }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            >
+              What's your class like?
+              <div className="absolute bottom-0 right-5 w-4 h-4 bg-white transform rotate-45 translate-y-2"></div>
+            </motion.div>
+            
+            {/* Puzzle image */}
+            <motion.img
+              src={happyImg}
+              alt="Quiz Start"
+              className="w-28 sm:w-36 md:w-44 relative z-10"
+              onClick={goToQuiz}
+              whileHover={{ scale: 1.1, rotate: [0, -5, 5, -5, 0] }}
+              whileTap={{ scale: 0.95 }}
+              transition={{
+                rotate: { duration: 0.5 },
+                scale: { duration: 0.2 }
+              }}
+            />
+          </motion.div>
+        </div>
       </div>
 
-      {/* Row 3: Bottom Image - right to left */}
-      <div className="relative flex items-center px-20 justify-start overflow-hidden">
-        <motion.img
-          src={happyImg}
-          alt="Hero Happy"
-          initial={{ x: 800, opacity: 0, rotate: 360 }}
-          animate={{ x: 0, opacity: 1, rotate: 0 }}
-          transition={{
-            duration: 1,
-            rotate: { type: "spring", stiffness: 100 },
-            damping: 10,
-          }}
-          className="w-40 sm:w-52 md:w-60"
-        />
+      {/* Row 2: Button at the bottom right */}
+      <div className="flex justify-end items-center px-10 md:px-20">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.8 }}
+        >
+          <PrimaryButton variant="cta" onClick={goToQuiz}>
+            Let's Start!!
+          </PrimaryButton>
+        </motion.div>
       </div>
     </SectionWrapper>
   );
