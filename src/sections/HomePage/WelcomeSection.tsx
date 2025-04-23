@@ -10,43 +10,36 @@ const WelcomeSection: React.FC = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorHovered, setCursorHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
-  const [splashes, setSplashes] = useState<Array<{id: number, x: number, y: number, color: string}>>([]);
+  const [splashes, setSplashes] = useState<
+    Array<{ id: number; x: number; y: number; color: string }>
+  >([]);
   const nextId = useRef(0);
-  
-  // Colors for watercolor splashes
+
   const splashColors = [
-    "rgba(255, 183, 197, 0.6)", // pink
-    "rgba(173, 216, 230, 0.6)", // light blue
-    "rgba(152, 251, 152, 0.6)", // light green
-    "rgba(255, 255, 153, 0.6)", // light yellow
-    "rgba(221, 160, 221, 0.6)", // plum
+    "rgba(255, 183, 197, 0.6)",
+    "rgba(173, 216, 230, 0.6)",
+    "rgba(152, 251, 152, 0.6)",
+    "rgba(255, 255, 153, 0.6)",
+    "rgba(221, 160, 221, 0.6)",
   ];
 
-  // Update mouse position for cursor effect
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
-      
-      // Create splash effect on movement (less frequently)
-      if (Math.random() > 0.92) {
-        addSplash(e.clientX, e.clientY);
-      }
+      if (Math.random() > 0.92) addSplash(e.clientX, e.clientY);
     };
-    
+
     const handleMouseDown = () => {
       setIsClicking(true);
-      // Always create splash on click
       addSplash(mousePosition.x, mousePosition.y);
     };
-    
-    const handleMouseUp = () => {
-      setIsClicking(false);
-    };
+
+    const handleMouseUp = () => setIsClicking(false);
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
-    
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mousedown", handleMouseDown);
@@ -54,28 +47,29 @@ const WelcomeSection: React.FC = () => {
     };
   }, [mousePosition]);
 
-  // Clean up old splashes when there are too many
   useEffect(() => {
     if (splashes.length > 15) {
-      setSplashes(current => current.slice(Math.max(current.length - 15, 0)));
+      setSplashes((current) => current.slice(-15));
     }
   }, [splashes]);
 
-  // Add a new splash at the position
   const addSplash = (x: number, y: number) => {
     const colorIndex = Math.floor(Math.random() * splashColors.length);
-    setSplashes(current => [...current, {
-      id: nextId.current++,
-      x,
-      y,
-      color: splashColors[colorIndex]
-    }]);
+    setSplashes((current) => [
+      ...current,
+      {
+        id: nextId.current++,
+        x,
+        y,
+        color: splashColors[colorIndex],
+      },
+    ]);
   };
 
   return (
     <SectionWrapper id="welcome" withGrid gridRows={2} headerHeight={80}>
       {/* Watercolor splashes */}
-      {splashes.map(splash => (
+      {splashes.map((splash) => (
         <motion.div
           key={splash.id}
           className="fixed pointer-events-none z-0 rounded-full blur-md opacity-60"
@@ -87,20 +81,16 @@ const WelcomeSection: React.FC = () => {
             background: splash.color,
           }}
           initial={{ scale: 0.2, opacity: 0.8 }}
-          animate={{ 
-            scale: [0.2, 1.2, 1.5],
-            opacity: [0.8, 0.5, 0]
-          }}
-          transition={{ 
-            duration: 3.5,
-            ease: "easeOut"
-          }}
-          onAnimationComplete={() => {
-            setSplashes(current => current.filter(s => s.id !== splash.id));
-          }}
+          animate={{ scale: [0.2, 1.2, 1.5], opacity: [0.8, 0.5, 0] }}
+          transition={{ duration: 3.5, ease: "easeOut" }}
+          onAnimationComplete={() =>
+            setSplashes((current) =>
+              current.filter((s) => s.id !== splash.id)
+            )
+          }
         />
       ))}
-      
+
       {/* Cursor follower */}
       <motion.div
         className="fixed pointer-events-none z-0 rounded-full blur-md"
@@ -109,25 +99,27 @@ const WelcomeSection: React.FC = () => {
           top: mousePosition.y - 20,
           width: isClicking ? 80 : 40,
           height: isClicking ? 80 : 40,
-          background: isClicking ? 
-            "rgba(120, 220, 232, 0.8)" : 
-            "rgba(173, 216, 230, 0.5)",
-          mixBlendMode: "screen"
+          background: isClicking
+            ? "rgba(120, 220, 232, 0.8)"
+            : "rgba(173, 216, 230, 0.5)",
+          mixBlendMode: "screen",
         }}
-        animate={{ 
+        animate={{
           scale: isClicking ? [1, 1.4, 1.2] : 1,
-          opacity: isClicking ? [0.8, 0.9, 0.7] : 0.7
+          opacity: isClicking ? [0.8, 0.9, 0.7] : 0.7,
         }}
         transition={{ duration: 0.4 }}
       />
 
-      {/* Row 1: Title with overlapping text effect and puzzle piece */}
-      <div className="flex flex-col justify-center items-start px-10 md:px-20 relative pt-20">
-        {/* Title with shadow effects and hover motion */}
+      {/* Title block */}
+      <div className="flex flex-col justify-start items-start px-10 md:px-20 relative pt-10">
         <div className="relative">
-          {/* Go Beyond with fun hover movement */}
+          {/* Go Beyond */}
           <motion.div
-            whileHover={{ x: [0, 5, -5, 5, -5, 0], rotate: [0, 2, -2, 2, -2, 0] }}
+            whileHover={{
+              x: [0, 5, -5, 5, -5, 0],
+              rotate: [0, 2, -2, 2, -2, 0],
+            }}
             transition={{ duration: 0.6 }}
             className="relative mb-2 cursor-default"
           >
@@ -135,11 +127,15 @@ const WelcomeSection: React.FC = () => {
               className="text-4xl sm:text-5xl md:text-6xl font-bold text-white relative z-10"
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.5, type: "spring", stiffness: 100, damping: 10 }}
+              transition={{
+                duration: 1.5,
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
+              }}
             >
               Go Beyond
             </motion.h1>
-
             <motion.div
               className="absolute z-0 text-4xl sm:text-5xl md:text-6xl font-bold text-black/30 top-1 left-1"
               initial={{ opacity: 0 }}
@@ -150,7 +146,7 @@ const WelcomeSection: React.FC = () => {
             </motion.div>
           </motion.div>
 
-          {/* Cyberbully with hover wiggle effect */}
+          {/* Cyberbully */}
           <motion.div
             whileHover={{ y: [0, -4, 4, -4, 4, 0] }}
             transition={{ duration: 0.6 }}
@@ -160,11 +156,16 @@ const WelcomeSection: React.FC = () => {
               className="text-5xl sm:text-6xl md:text-7xl font-bold text-white relative z-10"
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.5, delay: 0.2, type: "spring", stiffness: 100, damping: 10 }}
+              transition={{
+                duration: 1.5,
+                delay: 0.2,
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
+              }}
             >
               Cyberbully
             </motion.h1>
-
             <motion.div
               className="absolute z-0 text-5xl sm:text-6xl md:text-7xl font-bold text-black/40 top-2 left-2"
               initial={{ opacity: 0 }}
@@ -181,12 +182,12 @@ const WelcomeSection: React.FC = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.8, delay: 0.6, type: "spring" }}
-          className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mt-4"
+          className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mt-2"
         >
           "Remember, Words Can Wound"
         </motion.p>
 
-        {/* Puzzle piece with watercolor glow effect */}
+        {/* Puzzle */}
         <div className="cursor-pointer absolute top-0 right-10 md:right-20">
           <motion.div
             initial={{ x: 100, opacity: 0 }}
@@ -197,66 +198,71 @@ const WelcomeSection: React.FC = () => {
             onMouseLeave={() => setCursorHovered(false)}
             onClick={() => addSplash(mousePosition.x, mousePosition.y)}
           >
-            {/* Watercolor glow behind puzzle */}
+            {/* Watercolor glow */}
             <motion.div
               className="absolute inset-0 rounded-full blur-lg z-0"
               style={{
                 background: "rgba(255, 223, 100, 0.6)",
               }}
-              animate={{ 
+              animate={{
                 scale: cursorHovered ? [1, 1.2, 1.1] : [1, 1.1, 1],
-                opacity: cursorHovered ? 0.8 : 0.6
+                opacity: cursorHovered ? 0.8 : 0.6,
               }}
-              transition={{ 
+              transition={{
                 duration: 2,
                 repeat: Infinity,
-                repeatType: "reverse"
+                repeatType: "reverse",
               }}
             />
-            
-            {/* Tooltip that appears on hover */}
+
+            {/* Cute Tooltip */}
             <motion.div
-              className="absolute -top-16 right-0 bg-white rounded-xl px-4 py-2 text-black font-bold text-sm z-20 shadow-lg origin-bottom-right"
-              initial={{ opacity: 0, scale: 0, rotateZ: 10 }}
-              animate={{ 
-                opacity: cursorHovered ? 1 : 0, 
-                scale: cursorHovered ? 1 : 0,
-                rotateZ: cursorHovered ? 0 : 10
-              }}
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+  className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-yellow-50/80 text-black rounded-2xl px-5 py-4 font-bold text-base shadow-xl z-30 whitespace-nowrap border-2 border-yellow-300 backdrop-blur-md"
+  initial={{ opacity: 0, scale: 0.8 }}
+  animate={{
+    opacity: cursorHovered ? 1 : 0,
+    scale: cursorHovered ? 1 : 0.8,
+  }}
+  transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              What's your class like?
-              <div className="absolute bottom-0 right-5 w-4 h-4 bg-white transform rotate-45 translate-y-2"></div>
+              What’s your class like?
+              <div className="absolute top-1/2 left-full -translate-y-1/2 w-3 h-3 bg-yellow-200 transform rotate-45 ml-[-2px] shadow-sm"></div>
             </motion.div>
-            
-            {/* Puzzle image */}
+
             <motion.img
               src={happyImg}
               alt="Quiz Start"
-              className="w-28 sm:w-36 md:w-44 relative z-10"
+              className="w-36 sm:w-44 md:w-52 relative z-10"
               onClick={goToQuiz}
               whileHover={{ scale: 1.1, rotate: [0, -5, 5, -5, 0] }}
               whileTap={{ scale: 0.95 }}
               transition={{
                 rotate: { duration: 0.5 },
-                scale: { duration: 0.2 }
+                scale: { duration: 0.2 },
               }}
             />
           </motion.div>
         </div>
       </div>
 
-      {/* Row 2: Button at the bottom right */}
+      {/* Bottom right CTA */}
       <div className="flex justify-end items-center px-10 md:px-20">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.8 }}
-        >
-          <PrimaryButton variant="cta" onClick={goToQuiz}>
-            Let's Start!!
-          </PrimaryButton>
-        </motion.div>
+      <motion.div
+  initial={{ opacity: 0, y: 30 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1.2, delay: 0.8 }}
+  whileHover={{
+    rotate: [0, 5, -5, 5, -5, 0], // tilt shake effect
+    transition: { duration: 0.6 }
+  }}
+  onMouseEnter={() => setCursorHovered(false)}  // Disable cursor effect when hovering over the button
+  onMouseLeave={() => setCursorHovered(true)}   // Re-enable cursor effect when leaving the button
+>
+  <PrimaryButton variant="cta" onClick={goToQuiz}>
+    Let's Start!!
+  </PrimaryButton>
+</motion.div>
+
       </div>
     </SectionWrapper>
   );
