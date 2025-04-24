@@ -4,6 +4,7 @@ import PrimaryButton from "@/components/PrimaryButton";
 import SectionWrapper from "@/components/SectionWrapper";
 import happyImg from "@/assets/welcomePage/hero-happy.svg";
 import { useHomePage } from "@/hooks/useHomePage";
+import RunningCharacter from "@/components/RunningCharacter"; // Import the new component
 
 const WelcomeSection: React.FC = () => {
   const { goToQuiz } = useHomePage();
@@ -14,6 +15,26 @@ const WelcomeSection: React.FC = () => {
     Array<{ id: number; x: number; y: number; color: string }>
   >([]);
   const nextId = useRef(0);
+
+  // Added cyberbullying facts for the rotating facts component
+  const cyberbullyingFacts = [
+    "1 in 3 young people have experienced cyberbullying",
+    "Telling a trusted adult is the first step to stopping cyberbullying",
+    "Standing up for others online can help stop cyberbullying",
+    "Taking a screenshot is a good way to document cyberbullying",
+    "It's never too late to get help with cyberbullying",
+  ];
+  
+  // State to track the current fact being displayed
+  const [currentFactIndex, setCurrentFactIndex] = useState(0);
+  
+  // Rotate through facts every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFactIndex((prev) => (prev + 1) % cyberbullyingFacts.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const splashColors = [
     "rgba(255, 183, 197, 0.6)",
@@ -68,6 +89,9 @@ const WelcomeSection: React.FC = () => {
 
   return (
     <SectionWrapper id="welcome" withGrid gridRows={2} headerHeight={80}>
+      {/* Running Character Animation */}
+      <RunningCharacter />
+      
       {/* Watercolor splashes */}
       {splashes.map((splash) => (
         <motion.div
@@ -112,7 +136,7 @@ const WelcomeSection: React.FC = () => {
       />
 
       {/* Title block */}
-      <div className="flex flex-col justify-start items-start px-10 md:px-20 relative pt-10">
+      <div className="flex flex-col justify-start items-start px-10 md:px-20 relative pt-30">
         <div className="relative">
           {/* Go Beyond */}
           <motion.div
@@ -186,9 +210,28 @@ const WelcomeSection: React.FC = () => {
         >
           "Remember, Words Can Wound"
         </motion.p>
+        
+        {/* "Did you know?" facts component */}
+        <motion.div 
+          className="mt-26 bg-white/20 backdrop-blur-md p-4 rounded-xl max-w-xl border border-white/30"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+        >
+          <h4 className="text-black font-bold mb-1">Did you know?</h4>
+          <motion.p 
+            key={currentFactIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-white text-lg"
+          >
+            {cyberbullyingFacts[currentFactIndex]}
+          </motion.p>
+        </motion.div>
 
         {/* Puzzle */}
-        <div className="cursor-pointer absolute top-0 right-10 md:right-20">
+        <div className="cursor-pointer absolute top-30 right-10 md:right-40">
           <motion.div
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -217,15 +260,15 @@ const WelcomeSection: React.FC = () => {
 
             {/* Cute Tooltip */}
             <motion.div
-  className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-yellow-50/80 text-black rounded-2xl px-5 py-4 font-bold text-base shadow-xl z-30 whitespace-nowrap border-2 border-yellow-300 backdrop-blur-md"
-  initial={{ opacity: 0, scale: 0.8 }}
-  animate={{
-    opacity: cursorHovered ? 1 : 0,
-    scale: cursorHovered ? 1 : 0.8,
-  }}
-  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-yellow-50/80 text-black rounded-2xl px-5 py-4 font-bold text-base shadow-xl z-30 whitespace-nowrap border-2 border-yellow-300 backdrop-blur-md"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{
+                opacity: cursorHovered ? 1 : 0,
+                scale: cursorHovered ? 1 : 0.8,
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              What’s your class like?
+              What's your class like?
               <div className="absolute top-1/2 left-full -translate-y-1/2 w-3 h-3 bg-yellow-200 transform rotate-45 ml-[-2px] shadow-sm"></div>
             </motion.div>
 
@@ -247,22 +290,21 @@ const WelcomeSection: React.FC = () => {
 
       {/* Bottom right CTA */}
       <div className="flex justify-end items-center px-10 md:px-20">
-      <motion.div
-  initial={{ opacity: 0, y: 30 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 1.2, delay: 0.8 }}
-  whileHover={{
-    rotate: [0, 5, -5, 5, -5, 0], // tilt shake effect
-    transition: { duration: 0.6 }
-  }}
-  onMouseEnter={() => setCursorHovered(false)}  // Disable cursor effect when hovering over the button
-  onMouseLeave={() => setCursorHovered(true)}   // Re-enable cursor effect when leaving the button
->
-  <PrimaryButton variant="cta" onClick={goToQuiz}>
-    Let's Start!!
-  </PrimaryButton>
-</motion.div>
-
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.8 }}
+          whileHover={{
+            rotate: [0, 5, -5, 5, -5, 0], // tilt shake effect
+            transition: { duration: 0.6 }
+          }}
+          onMouseEnter={() => setCursorHovered(false)}  // Disable cursor effect when hovering over the button
+          onMouseLeave={() => setCursorHovered(true)}   // Re-enable cursor effect when leaving the button
+        >
+          <PrimaryButton variant="cta" onClick={goToQuiz}>
+            Let's Go!
+          </PrimaryButton>
+        </motion.div>
       </div>
     </SectionWrapper>
   );

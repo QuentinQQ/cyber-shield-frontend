@@ -126,7 +126,7 @@ const Header = () => {
           </Link>
         </div>
       <PrimaryButton
-        className="bg-[#F4A261] hover:bg-[#f4ad61] text-white text-base px-6 py-3 cursor-pointer"
+        className="bg-[#F4A261] hover:bg-[#f4ad61] text-black text-base px-6 py-3 cursor-pointer"
         onClick={handleGetHelpClick}
       >
         Get Help
