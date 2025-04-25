@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, NavigateFunction } from "react-router-dom";
 import PageWrapper from "@/components/PageWrapper";
 import PrimaryButton from "@/components/PrimaryButton";
+import NetworkBackground from "@/components/NetworkBackground";
 
 // Add proper TypeScript interfaces
 interface CharacterDialogProps {
@@ -68,8 +69,17 @@ const CustomCharacter = () => {
   );
 };
 
+
 const CharacterIntroPage: React.FC = () => {
-  const navigate = useNavigate();
+  // Use try-catch to avoid potential errors with useNavigate
+  let navigate: NavigateFunction = () => {};
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, react-hooks/rules-of-hooks
+    navigate = useNavigate();
+  } catch (e) {
+    console.error("useNavigate hook failed:", e);
+  }
+  
   const [stage, setStage] = useState(0);
   const [imageError] = useState(false);
   
@@ -107,38 +117,38 @@ const CharacterIntroPage: React.FC = () => {
     }
   }, [stage]);
   
-  // Navigate to the ScenarioGame page
-  const goToScenarioGame = () => {
-    navigate("/scenarioGame");
+  // Navigate fallback function if Link doesn't work
+  const handleDirectNavigation = () => {
+    console.log("Direct navigation fallback to /scenario");
+    window.location.href = "/scenario";
   };
   
   return (
-    <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white relative">
-      {/* Background elements - colorful bubbles for fun atmosphere */}
-      <div className="absolute inset-0 w-full h-full">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={`bubble-${i}`}
-            className="absolute rounded-full bg-blue-200 opacity-20"
-            style={{
-              width: Math.random() * 200 + 50,
-              height: Math.random() * 200 + 50,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -20, 0],
-              x: [0, Math.random() * 20 - 10, 0],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: Math.random() * 5 + 5,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+    <PageWrapper className="min-h-screen relative text-white">
+      {/* Background Image - Full Screen */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-center bg-cover bg-no-repeat z-0"
+        style={{ 
+          backgroundImage: `url('/living-room.png')`, // Your space-themed living room image
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      
+      {/* Optional slight overlay to ensure text readability */}
+      <div className="absolute inset-0 bg-black/10 z-0"></div>
+      
+      {/* Network Background with colors to match the pastel theme */}
+      <NetworkBackground 
+        dotColor="rgba(255, 183, 197, 0.6)" // Pink to match the pastel theme
+        lineColor="rgba(100, 100, 100, 0.15)" // Very subtle lines
+        dotCount={70}
+        connectionDistance={150}
+        dotSize={1.5}
+        lineWidth={0.15}
+        speed={0.5}
+        interactive={true}
+      />
       
       <div id="character-intro" className="w-full h-full flex flex-col items-center justify-center relative pt-10 pb-10 z-10">
         {/* Character container */}
@@ -201,11 +211,11 @@ const CharacterIntroPage: React.FC = () => {
           </AnimatePresence>
         </div>
         
-        {/* Button section */}
+        {/* Button section with Link for navigation */}
         <AnimatePresence>
           {stage === 3 && (
             <motion.div
-              className="absolute bottom-32"
+              className="absolute bottom-32 right-10 md:right-1/4" 
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, type: "spring" }}
@@ -220,13 +230,15 @@ const CharacterIntroPage: React.FC = () => {
                   ease: "easeInOut",
                 }}
               >
-                <PrimaryButton 
-                  variant="cta" 
-                  onClick={goToScenarioGame}
-                  className="text-xl px-8 py-4"
-                >
-                  How about a game?
-                </PrimaryButton>
+                <Link to="/scenario" style={{ textDecoration: 'none' }}>
+                  <PrimaryButton 
+                    variant="cta" 
+                    onClick={handleDirectNavigation} // Fallback if Link doesn't work
+                    className="text-xl px-8 py-4"
+                  >
+                    How about a game?
+                  </PrimaryButton>
+                </Link>
               </motion.div>
             </motion.div>
           )}
