@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
@@ -6,14 +7,149 @@ import happyImg from "@/assets/welcomePage/hero-happy.svg";
 import { useHomePage } from "@/hooks/useHomePage";
 import RunningCharacter from "@/components/RunningCharacter"; // Import the new component
 
+// Space Hole component
+interface SpaceHoleProps {
+  size: number;
+  top?: string;
+  left?: string;
+  right?: string;
+  bottom?: string;
+  delay?: number;
+}
+
+const SpaceHole: React.FC<SpaceHoleProps> = ({ size, top, left, right, bottom, delay = 0 }) => {
+  return (
+    <motion.div 
+      className="absolute pointer-events-none"
+      style={{ 
+        top: top || undefined, 
+        left: left || undefined,
+        right: right || undefined,
+        bottom: bottom || undefined,
+        width: size,
+        height: size,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(20, 24, 82, 0.8) 0%, rgba(8, 15, 40, 0.9) 50%, rgba(0, 0, 0, 0) 100%)',
+        boxShadow: 'inset 0 0 20px rgba(111, 168, 220, 0.5), 0 0 30px rgba(111, 168, 220, 0.3)',
+        zIndex: 1,
+      }}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ 
+        opacity: 1, 
+        scale: 1,
+        rotate: 360,
+      }}
+      transition={{ 
+        delay,
+        duration: 2,
+        rotate: {
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear"
+        }
+      }}
+    >
+      {/* Stars inside the hole */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-white"
+          style={{
+            width: Math.random() * 3 + 1,
+            height: Math.random() * 3 + 1,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            opacity: [0.2, 1, 0.2],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: Math.random() * 3 + 2,
+            repeat: Infinity,
+            delay: Math.random() * 2,
+          }}
+        />
+      ))}
+    </motion.div>
+  );
+};
+
+// Cosmic Star component for cursor trail
+interface CosmicStarProps {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  onComplete: () => void;
+}
+
+const CosmicStar: React.FC<CosmicStarProps> = ({ id, x, y, size, color, onComplete }) => {
+  return (
+    <motion.div
+      key={id}
+      className="fixed pointer-events-none z-10"
+      style={{
+        left: x - size/2,
+        top: y - size/2,
+        width: size,
+        height: size,
+      }}
+      initial={{ opacity: 0.8, scale: 0.2 }}
+      animate={{ 
+        opacity: [0.8, 0.5, 0],
+        scale: [0.2, 1, 0.8],
+        rotate: 360,
+      }}
+      transition={{ duration: 2.5, ease: "easeOut" }}
+      onAnimationComplete={onComplete}
+    >
+      {/* Star shape */}
+      <motion.div
+        className="w-full h-full absolute"
+        style={{
+          background: `radial-gradient(circle, ${color} 0%, rgba(255,255,255,0) 70%)`,
+          borderRadius: '50%',
+          boxShadow: `0 0 10px ${color}, 0 0 20px rgba(255,255,255,0.3)`,
+        }}
+      />
+      
+      {/* Star points */}
+      {[...Array(5)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute"
+          style={{
+            width: '100%',
+            height: '100%',
+            transform: `rotate(${i * 72}deg)`,
+          }}
+        >
+          <motion.div
+            className="absolute"
+            style={{
+              width: size * 0.1,
+              height: size * 0.6,
+              background: `linear-gradient(to top, ${color}, transparent)`,
+              borderRadius: '50%',
+              left: '50%',
+              marginLeft: -(size * 0.05),
+              top: -size * 0.1,
+            }}
+          />
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+};
+
 const WelcomeSection: React.FC = () => {
   const { goToQuiz } = useHomePage();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorHovered, setCursorHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
-  const [splashes, setSplashes] = useState<
-    Array<{ id: number; x: number; y: number; color: string }>
-  >([]);
+  const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; color: string }[]>([]);
   const nextId = useRef(0);
 
   // Added cyberbullying facts for the rotating facts component
@@ -36,23 +172,24 @@ const WelcomeSection: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const splashColors = [
-    "rgba(255, 183, 197, 0.6)",
-    "rgba(173, 216, 230, 0.6)",
-    "rgba(152, 251, 152, 0.6)",
-    "rgba(255, 255, 153, 0.6)",
-    "rgba(221, 160, 221, 0.6)",
+  // Space-themed colors
+  const spaceColors = [
+    "rgba(191, 217, 250, 0.8)", // Blue
+    "rgba(215, 182, 255, 0.8)", // Purple
+    "rgba(251, 179, 212, 0.8)", // Pink
+    "rgba(181, 255, 214, 0.8)", // Teal
+    "rgba(252, 213, 181, 0.8)", // Orange
   ];
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
-      if (Math.random() > 0.92) addSplash(e.clientX, e.clientY);
+      if (Math.random() > 0.92) addStar(e.clientX, e.clientY);
     };
 
     const handleMouseDown = () => {
       setIsClicking(true);
-      addSplash(mousePosition.x, mousePosition.y);
+      addStar(mousePosition.x, mousePosition.y, true);
     };
 
     const handleMouseUp = () => setIsClicking(false);
@@ -69,74 +206,111 @@ const WelcomeSection: React.FC = () => {
   }, [mousePosition]);
 
   useEffect(() => {
-    if (splashes.length > 15) {
-      setSplashes((current) => current.slice(-15));
+    if (stars.length > 15) {
+      setStars((current) => current.slice(-15));
     }
-  }, [splashes]);
+  }, [stars]);
 
-  const addSplash = (x: number, y: number) => {
-    const colorIndex = Math.floor(Math.random() * splashColors.length);
-    setSplashes((current) => [
+  const addStar = (x: number, y: number, isLarge = false) => {
+    const colorIndex = Math.floor(Math.random() * spaceColors.length);
+    const size = isLarge ? Math.random() * 30 + 30 : Math.random() * 20 + 10;
+    setStars((current) => [
       ...current,
       {
         id: nextId.current++,
         x,
         y,
-        color: splashColors[colorIndex],
+        size,
+        color: spaceColors[colorIndex],
       },
     ]);
   };
 
   return (
     <SectionWrapper id="welcome" withGrid gridRows={2} headerHeight={80}>
+      {/* Space Holes/Portals */}
+      <SpaceHole size={120} top="15%" left="5%" delay={0.3} right={undefined} bottom={undefined} />
+      <SpaceHole size={180} bottom="15%" left="15%" delay={0.8} top={undefined} right={undefined} />
+      <SpaceHole size={150} top="10%" left="60%" delay={0.5} right={undefined} bottom={undefined} /> 
+      <SpaceHole size={100} bottom="85%" right="8%" delay={1.2} top={undefined} left={undefined} />
+      <SpaceHole size={90} bottom="10%" right="30%" delay={0.7} top={undefined} left={undefined} /> 
+
       {/* Running Character Animation */}
       <RunningCharacter />
       
-      {/* Watercolor splashes */}
-      {splashes.map((splash) => (
-        <motion.div
-          key={splash.id}
-          className="fixed pointer-events-none z-0 rounded-full blur-md opacity-60"
-          style={{
-            left: splash.x - 75,
-            top: splash.y - 75,
-            width: 150,
-            height: 150,
-            background: splash.color,
-          }}
-          initial={{ scale: 0.2, opacity: 0.8 }}
-          animate={{ scale: [0.2, 1.2, 1.5], opacity: [0.8, 0.5, 0] }}
-          transition={{ duration: 3.5, ease: "easeOut" }}
-          onAnimationComplete={() =>
-            setSplashes((current) =>
-              current.filter((s) => s.id !== splash.id)
-            )
+      {/* Cosmic Stars */}
+      {stars.map((star) => (
+        <CosmicStar
+          key={star.id}
+          id={star.id}
+          x={star.x}
+          y={star.y}
+          size={star.size}
+          color={star.color}
+          onComplete={() => 
+            setStars((current) => current.filter((s) => s.id !== star.id))
           }
         />
       ))}
 
-      {/* Cursor follower */}
+      {/* Space-themed cursor */}
       <motion.div
-        className="fixed pointer-events-none z-0 rounded-full blur-md"
+        className="fixed pointer-events-none z-10"
         style={{
           left: mousePosition.x - 20,
           top: mousePosition.y - 20,
           width: isClicking ? 80 : 40,
           height: isClicking ? 80 : 40,
-          background: isClicking
-            ? "rgba(120, 220, 232, 0.8)"
-            : "rgba(173, 216, 230, 0.5)",
-          mixBlendMode: "screen",
         }}
-        animate={{
-          scale: isClicking ? [1, 1.4, 1.2] : 1,
-          opacity: isClicking ? [0.8, 0.9, 0.7] : 0.7,
-        }}
-        transition={{ duration: 0.4 }}
-      />
+      >
+        {/* Core glow */}
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: isClicking
+              ? "radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(120, 180, 255, 0.7) 40%, rgba(120, 120, 255, 0) 70%)"
+              : "radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(120, 180, 255, 0.5) 40%, rgba(120, 120, 255, 0) 70%)",
+            boxShadow: "0 0 15px rgba(120, 180, 255, 0.8)",
+          }}
+          animate={{
+            scale: isClicking ? [1, 1.4, 1.2] : [1, 1.1, 1],
+            opacity: isClicking ? [1, 0.9, 0.8] : [0.8, 0.7, 0.8],
+          }}
+          transition={{ 
+            duration: 0.4,
+            scale: { repeat: Infinity, repeatType: "reverse" },
+            opacity: { repeat: Infinity, repeatType: "reverse" },
+          }}
+        />
+        
+        {/* Orbiting particles */}
+        {[...Array(3)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: isClicking ? 4 : 3,
+              height: isClicking ? 4 : 3,
+              boxShadow: "0 0 5px rgba(255, 255, 255, 0.8)",
+              top: "50%",
+              left: "50%",
+            }}
+            animate={{
+              x: [0, Math.cos(i * (Math.PI * 2 / 3)) * 20, 0],
+              y: [0, Math.sin(i * (Math.PI * 2 / 3)) * 20, 0],
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
+          />
+        ))}
+      </motion.div>
 
       {/* Title block */}
-      <div className="flex flex-col justify-start items-start px-10 md:px-20 relative pt-30">
+      <div className="flex flex-col justify-start items-start px-10 md:px-20 relative pt-30 z-20">
         <div className="relative">
           {/* Go Beyond */}
           <motion.div
@@ -211,27 +385,53 @@ const WelcomeSection: React.FC = () => {
           "Remember, Words Can Wound"
         </motion.p>
         
-        {/* "Did you know?" facts component */}
-        <motion.div 
-          className="mt-26 bg-white/20 backdrop-blur-md p-4 rounded-xl max-w-xl border border-white/30"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-        >
-          <h4 className="text-black font-bold mb-1">Did you know?</h4>
-          <motion.p 
-            key={currentFactIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-white text-lg"
-          >
-            {cyberbullyingFacts[currentFactIndex]}
-          </motion.p>
-        </motion.div>
+    {/* "Did you know?" facts component - Simple Enhancement */}
+<motion.div 
+  className="mt-26 bg-white/20 backdrop-blur-md p-4 rounded-xl max-w-xl border border-blue-300/50 z-20"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.8, duration: 0.8 }}
+  whileHover={{ boxShadow: "0 0 15px rgb(16, 80, 158)" }}
+>
+  <div className="flex items-center gap-2 mb-1">
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      className="text-blue-800"
+    >
+      ✦
+    </motion.div>
+    <h4 className="text-blue-800 font-bold">Did you know?</h4>
+  </div>
+  
+  <motion.p 
+    key={currentFactIndex}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="text-white text-lg"
+  >
+    {cyberbullyingFacts[currentFactIndex]}
+  </motion.p>
+  
+  {/* Subtle star in the corner */}
+  <motion.div 
+    className="absolute bottom-2 right-2 text-blue-300/30 text-xs"
+    animate={{ 
+      rotate: 360,
+      scale: [0.8, 1.2, 0.8]
+    }}
+    transition={{ 
+      rotate: { duration: 10, repeat: Infinity, ease: "linear" },
+      scale: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+    }}
+  >
+    ★
+  </motion.div>
+</motion.div>
 
-        {/* Puzzle */}
-        <div className="cursor-pointer absolute top-30 right-10 md:right-40">
+        {/* Puzzle - Space Theme with White Glow Effect */}
+        <div className="cursor-pointer absolute top-30 right-10 md:right-40 z-20">
           <motion.div
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -239,17 +439,18 @@ const WelcomeSection: React.FC = () => {
             className="relative"
             onMouseEnter={() => setCursorHovered(true)}
             onMouseLeave={() => setCursorHovered(false)}
-            onClick={() => addSplash(mousePosition.x, mousePosition.y)}
+            onClick={() => addStar(mousePosition.x, mousePosition.y, true)}
           >
-            {/* Watercolor glow */}
+            {/* Space portal glow effect */}
             <motion.div
               className="absolute inset-0 rounded-full blur-lg z-0"
               style={{
-                background: "rgba(255, 223, 100, 0.6)",
+                background: "radial-gradient(circle, rgba(120, 180, 255, 0.7) 0%, rgba(100, 100, 255, 0.4) 70%, transparent 100%)",
+                boxShadow: "0 0 20px rgba(120, 180, 255, 0.5)",
               }}
               animate={{
                 scale: cursorHovered ? [1, 1.2, 1.1] : [1, 1.1, 1],
-                opacity: cursorHovered ? 0.8 : 0.6,
+                opacity: cursorHovered ? 0.9 : 0.7,
               }}
               transition={{
                 duration: 2,
@@ -257,10 +458,50 @@ const WelcomeSection: React.FC = () => {
                 repeatType: "reverse",
               }}
             />
-
-            {/* Cute Tooltip */}
+            
+            {/* White glow on hover /}
             <motion.div
-              className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-yellow-50/80 text-black rounded-2xl px-5 py-4 font-bold text-base shadow-xl z-30 whitespace-nowrap border-2 border-yellow-300 backdrop-blur-md"
+              className="absolute inset-0 rounded-full blur-md z-5"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: cursorHovered ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                boxShadow: "0 0 20px 10px rgba(255, 255, 255, 0.7), 0 0 40px 20px rgba(255, 255, 255, 0.4)",
+                transform: "scale(1.1)",
+              }}
+            />
+            
+            {/* Orbiting stars */}
+            {[...Array(4)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full bg-white"
+                style={{
+                  width: 4,
+                  height: 4,
+                  boxShadow: "0 0 5px rgba(255, 255, 255, 0.8)",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: -2,
+                  marginLeft: -2,
+                }}
+                animate={{
+                  x: [0, Math.cos(i * (Math.PI / 2)) * 60, 0],
+                  y: [0, Math.sin(i * (Math.PI / 2)) * 60, 0],
+                  opacity: [0.5, 1, 0.5],
+                  scale: [1, 1.5, 1],
+                }}
+                transition={{
+                  duration: cursorHovered ? 2 : 3,
+                  repeat: Infinity,
+                  delay: i * 0.25,
+                }}
+              />
+            ))}
+
+            {/* Space-themed Tooltip */}
+            <motion.div
+              className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-indigo-900/80 text-white rounded-2xl px-5 py-4 font-bold text-base shadow-xl z-30 whitespace-nowrap border-2 border-indigo-500/50 backdrop-blur-md"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{
                 opacity: cursorHovered ? 1 : 0,
@@ -269,7 +510,29 @@ const WelcomeSection: React.FC = () => {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               What's your class like?
-              <div className="absolute top-1/2 left-full -translate-y-1/2 w-3 h-3 bg-yellow-200 transform rotate-45 ml-[-2px] shadow-sm"></div>
+              <div className="absolute top-1/2 left-full -translate-y-1/2 w-3 h-3 bg-indigo-500 transform rotate-45 ml-[-2px] shadow-sm"></div>
+              
+              {/* Stars in tooltip */}
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full bg-white"
+                  style={{
+                    width: 2,
+                    height: 2,
+                    left: `${10 + Math.random() * 80}%`,
+                    top: `${10 + Math.random() * 80}%`,
+                  }}
+                  animate={{
+                    opacity: [0.2, 1, 0.2],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: Math.random() * 1,
+                  }}
+                />
+              ))}
             </motion.div>
 
             <motion.img
@@ -277,7 +540,10 @@ const WelcomeSection: React.FC = () => {
               alt="Quiz Start"
               className="w-36 sm:w-44 md:w-52 relative z-10"
               onClick={goToQuiz}
-              whileHover={{ scale: 1.1, rotate: [0, -5, 5, -5, 0] }}
+              whileHover={{ 
+                scale: 1.1, 
+                rotate: [0, -5, 5, -5, 0],
+              }}
               whileTap={{ scale: 0.95 }}
               transition={{
                 rotate: { duration: 0.5 },
@@ -288,18 +554,24 @@ const WelcomeSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom right CTA */}
-      <div className="flex justify-end items-center px-10 md:px-20">
+      {/* Bottom right CTA - Space Theme */}
+      <div className="flex justify-end items-center px-10 md:px-20 z-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.8 }}
           whileHover={{
             rotate: [0, 5, -5, 5, -5, 0], // tilt shake effect
+            filter: "drop-shadow(0 0 10px rgba(120, 180, 255, 0.8))",
             transition: { duration: 0.6 }
           }}
+<<<<<<< Updated upstream
           onMouseEnter={() => setCursorHovered(false)}  // Disable cursor effect when hovering over the button
           onMouseLeave={() => setCursorHovered(true)}   // Re-enable cursor effect when leaving the button
+=======
+          onMouseEnter={() => setCursorHovered(false)} 
+          onMouseLeave={() => setCursorHovered(true)}
+>>>>>>> Stashed changes
         >
           <PrimaryButton variant="cta" onClick={goToQuiz}>
             Let's Go!
