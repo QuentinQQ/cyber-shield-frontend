@@ -152,14 +152,14 @@ const StoryPage: React.FC = () => {
                     <div 
                         className="absolute cursor-pointer"
                         style={{ 
-                            left: '18%', 
-                            top: '35%', 
-                            width: '25%', 
-                            height: '33%',
+                            left: '19%', 
+                            top: '45%', 
+                            width: '24%', 
+                            height: '25%',
                             transform: 'translateY(-50%)',
                             overflow: 'hidden',
                             borderRadius: '0px',
-                            zIndex: 15
+                            zIndex: 5
                         }}
                         onMouseEnter={() => setIsLeftScreenHovered(true)}
                         onMouseLeave={() => setIsLeftScreenHovered(false)}
