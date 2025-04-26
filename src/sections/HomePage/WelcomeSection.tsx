@@ -392,50 +392,24 @@ const WelcomeSection: React.FC = () => {
           "Remember, Words Can Wound"
         </motion.p>
         
-    {/* "Did you know?" facts component - Simple Enhancement */}
-<motion.div 
-  className="mt-26 bg-white/20 backdrop-blur-md p-4 rounded-xl max-w-xl border border-blue-300/50 z-20"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.8, duration: 0.8 }}
-  whileHover={{ boxShadow: "0 0 15px rgb(16, 80, 158)" }}
->
-  <div className="flex items-center gap-2 mb-1">
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      className="text-blue-800"
-    >
-      ✦
-    </motion.div>
-    <h4 className="text-blue-800 font-bold">Did you know?</h4>
-  </div>
-  
-  <motion.p 
-    key={currentFactIndex}
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    className="text-white text-lg"
-  >
-    {cyberbullyingFacts[currentFactIndex]}
-  </motion.p>
-  
-  {/* Subtle star in the corner */}
-  <motion.div 
-    className="absolute bottom-2 right-2 text-blue-300/30 text-xs"
-    animate={{ 
-      rotate: 360,
-      scale: [0.8, 1.2, 0.8]
-    }}
-    transition={{ 
-      rotate: { duration: 10, repeat: Infinity, ease: "linear" },
-      scale: { duration: 3, repeat: Infinity, ease: "easeInOut" }
-    }}
-  >
-    ★
-  </motion.div>
-</motion.div>
+        {/* "Did you know?" facts component */}
+        <motion.div 
+          className="mt-26 bg-white/20 backdrop-blur-md p-4 rounded-xl max-w-xl border border-white/30 z-20"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+        >
+          <h4 className="text-black font-bold mb-1">Did you know?</h4>
+          <motion.p 
+            key={currentFactIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-white text-lg"
+          >
+            {cyberbullyingFacts[currentFactIndex]}
+          </motion.p>
+        </motion.div>
 
         {/* Puzzle - Space Theme with White Glow Effect */}
         <div className="cursor-pointer absolute top-30 right-10 md:right-40 z-20">
@@ -466,7 +440,7 @@ const WelcomeSection: React.FC = () => {
               }}
             />
             
-            {/* White glow on hover /}
+            {/* White glow on hover - NEW */}
             <motion.div
               className="absolute inset-0 rounded-full blur-md z-5"
               initial={{ opacity: 0 }}
