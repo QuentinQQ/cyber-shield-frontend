@@ -95,7 +95,7 @@ const StoryPage: React.FC = () => {
     }, []);
 
     // Text with noise effect
-    const NoisyText = ({ text, className = "" }) => {
+    const NoisyText: React.FC<{ text: string; className?: string }> = ({ text, className = "" }) => {
         const chars = text.split('');
         
         return (
@@ -244,7 +244,7 @@ const StoryPage: React.FC = () => {
                         transition={{ duration: 0.8 }}
                         onMouseEnter={() => setIsCharacterHovered(true)}
                         onMouseLeave={() => setIsCharacterHovered(false)}
-                        onClick={() => navigate("/video")}
+
                     >
                         {/* Speech bubble for character */}
                         <AnimatePresence>
