@@ -71,13 +71,8 @@ const CustomCharacter = () => {
 
 
 const CharacterIntroPage: React.FC = () => {
-  // Use try-catch to avoid potential errors with useNavigate
-  let navigate = () => {};
-  try {
-    navigate = useNavigate();
-  } catch (e) {
-    console.error("useNavigate hook failed:", e);
-  }
+  // Correctly use the hook at the top level of your component
+  const navigate = useNavigate();
   
   const [stage, setStage] = useState(0);
   const [imageError] = useState(false);
@@ -116,10 +111,15 @@ const CharacterIntroPage: React.FC = () => {
     }
   }, [stage]);
   
-  // Navigate fallback function if Link doesn't work
+  // Navigate using the hook directly
   const handleDirectNavigation = () => {
-    console.log("Direct navigation fallback to /scenario");
-    window.location.href = "/scenario";
+    try {
+      navigate("/scenario");
+    } catch (e) {
+      console.error("Navigation failed:", e);
+      // Fallback if navigation fails
+      window.location.href = "/scenario";
+    }
   };
   
   return (
@@ -232,7 +232,7 @@ const CharacterIntroPage: React.FC = () => {
                 <Link to="/scenario" style={{ textDecoration: 'none' }}>
                   <PrimaryButton 
                     variant="cta" 
-                    onClick={handleDirectNavigation} // Fallback if Link doesn't work
+                    onClick={handleDirectNavigation} // Use as fallback if Link doesn't work
                     className="text-xl px-8 py-4"
                   >
                     How about a game?
