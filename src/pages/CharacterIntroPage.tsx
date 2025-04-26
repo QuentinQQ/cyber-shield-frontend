@@ -79,7 +79,7 @@ const CharacterIntroPage: React.FC = () => {
   
   // Dialog content
   const dialogContent = [
-    "Hi, my name is...!",
+    "Hi, my name is Gleepo!",
     "Guess what?! My mom finally got me a phone! Super excited! You wanna play some games together?",
   ];
   
