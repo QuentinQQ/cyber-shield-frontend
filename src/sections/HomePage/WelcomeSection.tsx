@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"; 
 import { useState, useEffect, useRef } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import SectionWrapper from "@/components/SectionWrapper";
 import happyImg from "@/assets/welcomePage/hero-happy.svg";
 import { useHomePage } from "@/hooks/useHomePage";
-import RunningCharacter from "@/components/RunningCharacter"; // Import the new component
+import RunningCharacter from "@/components/RunningCharacter";
 
 // Space Hole component
 interface SpaceHoleProps {
@@ -146,11 +147,17 @@ const CosmicStar: React.FC<CosmicStarProps> = ({ id, x, y, size, color, onComple
 
 const WelcomeSection: React.FC = () => {
   const { goToQuiz } = useHomePage();
+  const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorHovered, setCursorHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; color: string }[]>([]);
   const nextId = useRef(0);
+
+  // Define goToCharacterIntro at the component level
+  const goToCharacterIntroPage = () => {
+    navigate("/character-intro");
+  };
 
   // Added cyberbullying facts for the rotating facts component
   const cyberbullyingFacts = [
@@ -565,15 +572,10 @@ const WelcomeSection: React.FC = () => {
             filter: "drop-shadow(0 0 10px rgba(120, 180, 255, 0.8))",
             transition: { duration: 0.6 }
           }}
-<<<<<<< Updated upstream
-          onMouseEnter={() => setCursorHovered(false)}  // Disable cursor effect when hovering over the button
-          onMouseLeave={() => setCursorHovered(true)}   // Re-enable cursor effect when leaving the button
-=======
           onMouseEnter={() => setCursorHovered(false)} 
           onMouseLeave={() => setCursorHovered(true)}
->>>>>>> Stashed changes
         >
-          <PrimaryButton variant="cta" onClick={goToQuiz}>
+          <PrimaryButton variant="cta" onClick={goToCharacterIntroPage}>
             Let's Go!
           </PrimaryButton>
         </motion.div>

@@ -8,6 +8,9 @@ import ScenarioGame from './pages/ScenarioGame';
 import GetHelp from './pages/GetHelp'; 
 import Story from './pages/Story'; 
 import Video from './pages/Video'; 
+import CharacterIntroPage from './pages/CharacterIntroPage'; // Ensure the correct path
+
+
 
 function App() {
   return (
@@ -24,6 +27,7 @@ function App() {
           <Route path="/get-help" element={<GetHelp />} />
           <Route path="/story" element={<Story />} />
           <Route path="/video" element={<Video />} />
+          <Route path="/character-intro" element={<CharacterIntroPage />} />
         </Routes>
       </div>
     </BrowserRouter>
