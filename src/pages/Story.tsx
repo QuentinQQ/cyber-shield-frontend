@@ -7,6 +7,7 @@ const StoryPage: React.FC = () => {
     const [isLeftScreenHovered, setIsLeftScreenHovered] = useState(false);
     const [isCharacterHovered, setIsCharacterHovered] = useState(false);
     const [textNoiseLevel, setTextNoiseLevel] = useState(100);
+    const [isFlowerPotHovered, setIsFlowerPotHovered] = useState(false);
 
     // Text noise animation effect
     useEffect(() => {
@@ -32,7 +33,6 @@ const StoryPage: React.FC = () => {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
             
-            // Set canvas size to match parent
             const resizeCanvas = () => {
                 const parent = canvas.parentElement;
                 if (parent) {
@@ -44,40 +44,31 @@ const StoryPage: React.FC = () => {
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
             
-            // Draw TV static
             const drawStatic = () => {
-                // Original TV static was black and white with some color bleeding
                 const imgData = ctx.createImageData(canvas.width, canvas.height);
                 const data = imgData.data;
                 
                 for (let i = 0; i < data.length; i += 4) {
-                    // Create grayscale noise as base
                     const grayValue = Math.floor(Math.random() * 255);
-                    
-                    // Randomly add slight color tint (red, green, blue "bleeding")
                     const colorTint = Math.random();
                     if (colorTint < 0.1) {
-                        // Add reddish tint 
-                        data[i] = Math.min(255, grayValue + Math.random() * 50); // Red +
-                        data[i + 1] = grayValue * 0.7; // Green reduced
-                        data[i + 2] = grayValue * 0.7; // Blue reduced
+                        data[i] = Math.min(255, grayValue + Math.random() * 50);
+                        data[i + 1] = grayValue * 0.7;
+                        data[i + 2] = grayValue * 0.7;
                     } else if (colorTint < 0.2) {
-                        // Add greenish tint
-                        data[i] = grayValue * 0.7; // Red reduced
-                        data[i + 1] = Math.min(255, grayValue + Math.random() * 50); // Green +
-                        data[i + 2] = grayValue * 0.7; // Blue reduced
+                        data[i] = grayValue * 0.7;
+                        data[i + 1] = Math.min(255, grayValue + Math.random() * 50);
+                        data[i + 2] = grayValue * 0.7;
                     } else if (colorTint < 0.3) {
-                        // Add bluish tint
-                        data[i] = grayValue * 0.7; // Red reduced
-                        data[i + 1] = grayValue * 0.7; // Green reduced
-                        data[i + 2] = Math.min(255, grayValue + Math.random() * 50); // Blue +
+                        data[i] = grayValue * 0.7;
+                        data[i + 1] = grayValue * 0.7;
+                        data[i + 2] = Math.min(255, grayValue + Math.random() * 50);
                     } else {
-                        // Regular grayscale static
-                        data[i] = grayValue;     // red
-                        data[i + 1] = grayValue; // green
-                        data[i + 2] = grayValue; // blue
+                        data[i] = grayValue;
+                        data[i + 1] = grayValue;
+                        data[i + 2] = grayValue;
                     }
-                    data[i + 3] = 255; // alpha
+                    data[i + 3] = 255;
                 }
                 
                 ctx.putImageData(imgData, 0, 0);
@@ -94,13 +85,11 @@ const StoryPage: React.FC = () => {
         createTVNoise('leftScreenStatic');
     }, []);
 
-    // Text with noise effect
     const NoisyText: React.FC<{ text: string; className?: string }> = ({ text, className = "" }) => {
         const chars = text.split('');
         
         return (
             <div className={`relative ${className}`}>
-                {/* Text that will emerge */}
                 <span 
                     style={{ 
                         opacity: 1 - textNoiseLevel/100,
@@ -111,7 +100,6 @@ const StoryPage: React.FC = () => {
                     {text}
                 </span>
                 
-                {/* Noisy text overlay */}
                 {textNoiseLevel > 0 && (
                     <span 
                         className="absolute top-0 left-0 z-20"
@@ -121,7 +109,6 @@ const StoryPage: React.FC = () => {
                         }}
                     >
                         {chars.map((char, index) => {
-                            // Replace with random character based on noise level
                             const shouldReplace = Math.random() < textNoiseLevel/100;
                             const randomChar = shouldReplace ? 
                                 String.fromCharCode(33 + Math.floor(Math.random() * 94)) : 
@@ -165,8 +152,8 @@ const StoryPage: React.FC = () => {
                     </h1>
                 </div>
 
-                <div className="flex-1 flex items-center justify-center" style={{ position: 'relative' }}>
-                    {/* Left TV Screen - Interactive - Positioned to match the left blue box */}
+                <div className="flex-1 flex items-center justify-center relative">
+                    {/* Left TV Screen */}
                     <div 
                         className="absolute cursor-pointer"
                         style={{ 
@@ -177,18 +164,16 @@ const StoryPage: React.FC = () => {
                             transform: 'translateY(-50%)',
                             overflow: 'hidden',
                             borderRadius: '0px',
-                            zIndex: 15 // Higher z-index to stay above character
+                            zIndex: 15
                         }}
                         onMouseEnter={() => setIsLeftScreenHovered(true)}
                         onMouseLeave={() => setIsLeftScreenHovered(false)}
                         onClick={() => navigate("/video")}
                     >
-                        {/* TV Static Canvas */}
                         <div className={`absolute inset-0 transition-opacity duration-500 ${isLeftScreenHovered ? 'opacity-0' : 'opacity-100'}`}>
                             <canvas id="leftScreenStatic" className="w-full h-full"></canvas>
                         </div>
 
-                        {/* TV Content when hovered - With noisy text effect */}
                         <motion.div 
                             className={`absolute inset-0 flex flex-col items-center justify-center p-6 text-white bg-blue-600 bg-opacity-80 transition-opacity duration-500 ${isLeftScreenHovered ? 'opacity-100' : 'opacity-0'}`}
                             initial={false}
@@ -212,7 +197,6 @@ const StoryPage: React.FC = () => {
                             </motion.div>
                         </motion.div>
 
-                        {/* TV Scan Lines */}
                         <div 
                             className="absolute inset-0 pointer-events-none z-10"
                             style={{ 
@@ -222,7 +206,6 @@ const StoryPage: React.FC = () => {
                             }}
                         />
                         
-                        {/* TV Glare Effect */}
                         <div 
                             className="absolute inset-0 pointer-events-none z-20"
                             style={{ 
@@ -232,21 +215,19 @@ const StoryPage: React.FC = () => {
                         />
                     </div>
 
-                    {/* Character in the center with speech bubble */}
+                    {/* Character in the center */}
                     <motion.div 
                         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-20 cursor-pointer"
                         style={{ 
                             height: '35%',
-                            zIndex: 10 // Lower z-index to go behind screen
+                            zIndex: 10
                         }}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                         onMouseEnter={() => setIsCharacterHovered(true)}
                         onMouseLeave={() => setIsCharacterHovered(false)}
-
                     >
-                        {/* Speech bubble for character */}
                         <AnimatePresence>
                             {isCharacterHovered && (
                                 <motion.div
@@ -259,7 +240,6 @@ const StoryPage: React.FC = () => {
                                     <div className="font-medium text-center">
                                         Pick a screen to watch a story together!
                                     </div>
-                                    {/* Speech bubble pointer */}
                                     <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[12px] border-l-transparent border-r-transparent border-t-white"></div>
                                 </motion.div>
                             )}
@@ -273,6 +253,46 @@ const StoryPage: React.FC = () => {
                                 filter: 'drop-shadow(0 0 15px rgba(0,150,255,0.5))',
                             }}
                         />
+                    </motion.div>
+
+                    {/* Flower Pot on the sofa */}
+                    <motion.div
+                        className="absolute cursor-pointer z-20"
+                        style={{
+                            right: '5%',
+                            bottom: '15%',
+                            width: '100px',
+                            height: '100px'
+                        }}
+                        initial={{ opacity: 0.7, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        onMouseEnter={() => setIsFlowerPotHovered(true)}
+                        onMouseLeave={() => setIsFlowerPotHovered(false)}
+                        onClick={() => navigate('/clean-feed')}
+                    >
+                        <img
+                            src="/flower-pot.png"
+                            alt="Secret Flower Pot"
+                            className="w-full h-full object-contain"
+                        />
+                        
+                        <AnimatePresence>
+                            {isFlowerPotHovered && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-white text-purple-800 p-3 rounded-2xl max-w-xs shadow-lg z-30"
+                                >
+                                    <div className="font-medium text-center">
+                                        Um... wanna jump to next activity?
+                                    </div>
+                                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[12px] border-l-transparent border-r-transparent border-t-white"></div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 </div>
             </div>
