@@ -146,11 +146,6 @@ const StoryPage: React.FC = () => {
             </div>
 
             <div className="relative z-10 w-full h-full flex flex-col">
-                <div className="container mx-auto py-10">
-                    <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-white">
-                        Stories
-                    </h1>
-                </div>
 
                 <div className="flex-1 flex items-center justify-center relative">
                     {/* Left TV Screen */}
