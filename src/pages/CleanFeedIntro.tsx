@@ -1,44 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // File: src/pages/CleanFeedIntro.tsx
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import PageWrapper from "@/components/PageWrapper";
-import PrimaryButton from "@/components/PrimaryButton";
-
-// Add proper TypeScript interfaces
-interface CharacterDialogProps {
-  content: string;
-  isVisible: boolean;
-  className?: string;
-}
-
-// Character Dialog Component with proper type annotation
-const CharacterDialog: React.FC<CharacterDialogProps> = ({ content, isVisible, className = "" }) => {
-  return isVisible ? (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.9 }}
-      transition={{ duration: 0.5 }}
-      className={`bg-white/90 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto shadow-lg border-4 border-blue-300 relative ${className}`}
-    >
-      {/* Speech bubble pointer */}
-      <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[15px] border-l-transparent border-r-transparent border-t-white"></div>
-      
-      {/* Text with typing animation */}
-      <motion.p 
-        className="text-xl font-medium text-gray-800"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.8 }}
-      >
-        {content}
-      </motion.p>
-    </motion.div>
-  ) : null;
-};
 
 // Glitch text effect for cat hover - enhanced TV static effect
 const GlitchText: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -158,7 +122,6 @@ const CleanFeedIntro: React.FC = () => {
   
   const [characterPopupStage, setCharacterPopupStage] = useState(1);
   const [isCatHovered, setIsCatHovered] = useState(false);
-  const [showActionButton, setShowActionButton] = useState(false);
   
   // Advance to next dialog after a delay
   useEffect(() => {
