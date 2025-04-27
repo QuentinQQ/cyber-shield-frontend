@@ -8,8 +8,8 @@ import ScenarioGame from './pages/ScenarioGame';
 import GetHelp from './pages/GetHelp'; 
 import Story from './pages/Story'; 
 import Video from './pages/Video'; 
-import CharacterIntroPage from './pages/CharacterIntroPage'; // Ensure the correct path
-
+import CharacterIntroPage from './pages/CharacterIntroPage'; 
+import CleanFeedIntro from './pages/CleanFeedIntro'; 
 
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
           <Route path="/story" element={<Story />} />
           <Route path="/video" element={<Video />} />
           <Route path="/character-intro" element={<CharacterIntroPage />} />
+          <Route path="/clean-feed-intro" element={<CleanFeedIntro />} />
         </Routes>
       </div>
     </BrowserRouter>

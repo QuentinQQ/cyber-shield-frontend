@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/PageWrapper";
 import PrimaryButton from "@/components/PrimaryButton";
 import NetworkBackground from "@/components/NetworkBackground";
@@ -74,12 +74,12 @@ const CharacterIntroPage: React.FC = () => {
   // Correctly use the hook at the top level of your component
   const navigate = useNavigate();
   
-  const [stage, setStage] = useState(0);
+  const [stage, setStage] = useState(1);
   const [imageError] = useState(false);
   
   // Dialog content
   const dialogContent = [
-    "Hi, my name is...!",
+    "Hi, my name is Gleepo!",
     "Guess what?! My mom finally got me a phone! Super excited! You wanna play some games together?",
   ];
   
@@ -112,14 +112,8 @@ const CharacterIntroPage: React.FC = () => {
   }, [stage]);
   
   // Navigate using the hook directly
-  const handleDirectNavigation = () => {
-    try {
-      navigate("/scenario");
-    } catch (e) {
-      console.error("Navigation failed:", e);
-      // Fallback if navigation fails
-      window.location.href = "/scenario";
-    }
+  const handleNavigation = () => {
+    navigate("/scenario");
   };
   
   return (
@@ -229,15 +223,14 @@ const CharacterIntroPage: React.FC = () => {
                   ease: "easeInOut",
                 }}
               >
-                <Link to="/scenario" style={{ textDecoration: 'none' }}>
-                  <PrimaryButton 
-                    variant="cta" 
-                    onClick={handleDirectNavigation} // Use as fallback if Link doesn't work
-                    className="text-xl px-8 py-4"
-                  >
-                    How about a game?
-                  </PrimaryButton>
-                </Link>
+                {/* FIXED: Using only handleNavigation for direct programmatic navigation */}
+                <PrimaryButton 
+                  variant="cta" 
+                  onClick={handleNavigation} 
+                  className="text-xl px-8 py-4"
+                >
+                  How about a game?
+                </PrimaryButton>
               </motion.div>
             </motion.div>
           )}
