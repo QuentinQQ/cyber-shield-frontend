@@ -264,7 +264,7 @@ const StoryPage: React.FC = () => {
                         transition={{ duration: 0.5 }}
                         onMouseEnter={() => setIsFlowerPotHovered(true)}
                         onMouseLeave={() => setIsFlowerPotHovered(false)}
-                        onClick={() => navigate('/clean-feed')}
+                        onClick={() => navigate('/clean-feed-intro')}
                     >
                         <img
                             src="/flower-pot.png"
