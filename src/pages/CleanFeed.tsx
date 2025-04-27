@@ -1,4 +1,5 @@
-import React from "react";
+// CleanFeed.js or CleanFeed.tsx
+import React, { useEffect } from "react";
 import StartScreen from "../components/cleanFeed/StartScreen";
 import GameScreen from "../components/cleanFeed/GameScreen";
 import ResultScreen from "../components/cleanFeed/ResultScreen";
@@ -7,7 +8,11 @@ import PageWrapper from "../components/PageWrapper";
 import EmptyAnswerScreen from "../components/cleanFeed/EmptyAnswerScreen";
 import LoadingOverlay from "../components/LoadingOverlay";
 
-const CleanFeed: React.FC = () => {
+interface CleanFeedProps {
+  skipIntro?: boolean;
+}
+
+const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
   const {
     gameStarted,
     gameOver,
@@ -20,10 +25,17 @@ const CleanFeed: React.FC = () => {
     resetGame
   } = useCleanFeed();
 
+  // Auto-start game when skipIntro is true
+  useEffect(() => {
+    if (skipIntro && !gameStarted && !gameOver) {
+      startGame();
+    }
+  }, [skipIntro, gameStarted, gameOver, startGame]);
+
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
-      {/* Onboarding Screen */}
-      {!gameStarted && !gameOver && <StartScreen onStart={startGame} />}
+      {/* Onboarding Screen - only show if not skipping intro */}
+      {!skipIntro && !gameStarted && !gameOver && <StartScreen onStart={startGame} />}
 
       {/* Game Screen */}
       {gameStarted && !gameOver && (

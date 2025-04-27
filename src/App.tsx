@@ -1,3 +1,4 @@
+// App.js
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CleanFeed from './pages/CleanFeed';
@@ -11,7 +12,6 @@ import Video from './pages/Video';
 import CharacterIntroPage from './pages/CharacterIntroPage'; 
 import CleanFeedIntro from './pages/CleanFeedIntro'; 
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -20,7 +20,8 @@ function App() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/clean-feed" element={<CleanFeed />} />
+          <Route path="/clean-feed" element={<CleanFeedIntro />} />
+          <Route path="/clean-feed-game" element={<CleanFeed skipIntro={true} />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/safe-people" element={<SafePeople />} />
           <Route path="/scenario" element={<ScenarioGame />} />
@@ -28,7 +29,6 @@ function App() {
           <Route path="/story" element={<Story />} />
           <Route path="/video" element={<Video />} />
           <Route path="/character-intro" element={<CharacterIntroPage />} />
-          <Route path="/clean-feed-intro" element={<CleanFeedIntro />} />
         </Routes>
       </div>
     </BrowserRouter>
