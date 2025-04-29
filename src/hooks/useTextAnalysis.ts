@@ -15,6 +15,7 @@ export const useTextAnalysis = () => {
       setResult(response);
     } catch (err) {
       setError("Analysis failed.");
+      
     } finally {
       setLoading(false);
     }
