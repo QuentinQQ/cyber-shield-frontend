@@ -1,144 +1,155 @@
+// File: src/pages/CleanFeedIntro.tsx
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-export default function BedroomPage() {
-  const navigate = useNavigate();
-  const [characterPopupStage, setCharacterPopupStage] = useState(0);
-  const [isCatHovered, setIsCatHovered] = useState(false);
-  const [showActionButton, setShowActionButton] = useState(false);
-
-  // Automatically progress through character popups
-  useEffect(() => {
-    // Start immediately with first popup
-    setCharacterPopupStage(1);
-    
-    const timer = setTimeout(() => {
-      // Show second popup after delay
-      setCharacterPopupStage(2);
+// Glitch text effect for cat hover - enhanced TV static effect
+const GlitchText: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <span 
+      className="relative inline-block"
+      style={{
+        textShadow: '2px 2px rgba(0,255,0,0.4), -2px -2px rgba(255,0,0,0.4), 0 0 5px rgba(0,255,0,0.8)',
+        animation: 'glitch 0.2s infinite alternate',
+        position: 'relative',
+        display: 'inline-block'
+      }}
+    >
+      {children}
+      <>
+        <style>{`
+          @keyframes glitch {
+            0% { transform: translate(0); filter: hue-rotate(0deg); }
+            10% { transform: translate(-3px, 1px); filter: hue-rotate(15deg); }
+            20% { transform: translate(2px, -2px); filter: hue-rotate(30deg); }
+            30% { transform: translate(-2px, -1px); filter: hue-rotate(0deg); }
+            40% { transform: translate(1px, 2px); filter: hue-rotate(-15deg); }
+            50% { transform: translate(-2px, 1px); filter: hue-rotate(-30deg); }
+            60% { transform: translate(3px, 1px); filter: hue-rotate(0deg); }
+            70% { transform: translate(2px, 3px); filter: hue-rotate(15deg); }
+            80% { transform: translate(-1px, -2px); filter: hue-rotate(30deg); }
+            90% { transform: translate(1px, -1px); filter: hue-rotate(0deg); }
+            100% { transform: translate(0); filter: hue-rotate(-15deg); }
+          }
+          
+          @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+          }
+          
+          @keyframes glow {
+            0% { box-shadow: 0 0 5px 0px rgba(120, 255, 214, 0.7); }
+            50% { box-shadow: 0 0 20px 5px rgba(120, 255, 214, 0.9); }
+            100% { box-shadow: 0 0 5px 0px rgba(120, 255, 214, 0.7); }
+          }
+          
+          @keyframes alienPulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          
+          @keyframes borderPulse {
+            0% { border-color: #00f7ff; }
+            25% { border-color: #00ff9d; }
+            50% { border-color: #b300ff; }
+            75% { border-color: #ff00c3; }
+            100% { border-color: #00f7ff; }
+          }
+          
+          @keyframes bubble {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+          }
+          
+          @keyframes scanline {
+            0% { top: -50%; }
+            100% { top: 110%; }
+          }
+        `}</style>
+      </>
       
-      // Then show action button after the last popup
-      setTimeout(() => {
-        setShowActionButton(true);
-        console.log("Action button should be visible now!");
-      }, 3000);
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Glitch text effect for cat hover - enhanced TV static effect
-  const GlitchText: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    return (
-      <span 
-        className="relative inline-block"
+      {/* Additional glitch elements */}
+      <span
         style={{
-          textShadow: '2px 2px rgba(0,255,0,0.4), -2px -2px rgba(255,0,0,0.4), 0 0 5px rgba(0,255,0,0.8)',
-          animation: 'glitch 0.2s infinite alternate',
-          position: 'relative',
-          display: 'inline-block'
+          content: "''",
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0,255,0,0.08)',
+          animation: 'scanline 2.5s linear infinite'
+        }}
+      />
+      
+      {/* Text clone for glitch effect */}
+      <span
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '-2px',
+          width: '100%',
+          color: 'rgba(255,0,0,0.5)',
+          animation: 'glitch 0.3s infinite reverse'
         }}
       >
         {children}
-        <>
-          <style>{`
-            @keyframes glitch {
-              0% { transform: translate(0); filter: hue-rotate(0deg); }
-              10% { transform: translate(-3px, 1px); filter: hue-rotate(15deg); }
-              20% { transform: translate(2px, -2px); filter: hue-rotate(30deg); }
-              30% { transform: translate(-2px, -1px); filter: hue-rotate(0deg); }
-              40% { transform: translate(1px, 2px); filter: hue-rotate(-15deg); }
-              50% { transform: translate(-2px, 1px); filter: hue-rotate(-30deg); }
-              60% { transform: translate(3px, 1px); filter: hue-rotate(0deg); }
-              70% { transform: translate(2px, 3px); filter: hue-rotate(15deg); }
-              80% { transform: translate(-1px, -2px); filter: hue-rotate(30deg); }
-              90% { transform: translate(1px, -1px); filter: hue-rotate(0deg); }
-              100% { transform: translate(0); filter: hue-rotate(-15deg); }
-            }
-            
-            @keyframes float {
-              0% { transform: translateY(0px); }
-              50% { transform: translateY(-10px); }
-              100% { transform: translateY(0px); }
-            }
-            
-            @keyframes glow {
-              0% { box-shadow: 0 0 5px 0px rgba(120, 255, 214, 0.7); }
-              50% { box-shadow: 0 0 20px 5px rgba(120, 255, 214, 0.9); }
-              100% { box-shadow: 0 0 5px 0px rgba(120, 255, 214, 0.7); }
-            }
-            
-            @keyframes alienPulse {
-              0% { background-position: 0% 50%; }
-              50% { background-position: 100% 50%; }
-              100% { background-position: 0% 50%; }
-            }
-            
-            @keyframes borderPulse {
-              0% { border-color: #00f7ff; }
-              25% { border-color: #00ff9d; }
-              50% { border-color: #b300ff; }
-              75% { border-color: #ff00c3; }
-              100% { border-color: #00f7ff; }
-            }
-            
-            @keyframes bubble {
-              0% { transform: scale(1); }
-              50% { transform: scale(1.1); }
-              100% { transform: scale(1); }
-            }
-            
-            @keyframes scanline {
-              0% { top: -50%; }
-              100% { top: 110%; }
-            }
-          `}</style>
-        </>
-        
-        {/* Additional glitch elements */}
-        <span
-          style={{
-            content: "''",
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0,255,0,0.08)',
-            animation: 'scanline 2.5s linear infinite'
-          }}
-        />
-        
-        {/* Text clone for glitch effect */}
-        <span
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: '-2px',
-            width: '100%',
-            color: 'rgba(255,0,0,0.5)',
-            animation: 'glitch 0.3s infinite reverse'
-          }}
-        >
-          {children}
-        </span>
-        
-        <span
-          style={{
-            position: 'absolute',
-            top: '1px',
-            left: '1px',
-            width: '100%',
-            color: 'rgba(0,255,0,0.5)',
-            animation: 'glitch 0.35s infinite'
-          }}
-        >
-          {children}
-        </span>
       </span>
-    );
-  };
+      
+      <span
+        style={{
+          position: 'absolute',
+          top: '1px',
+          left: '1px',
+          width: '100%',
+          color: 'rgba(0,255,0,0.5)',
+          animation: 'glitch 0.35s infinite'
+        }}
+      >
+        {children}
+      </span>
+    </span>
+  );
+};
 
+const CleanFeedIntro: React.FC = () => {
+  // Correctly use the hook at the top level of your component
+  const navigate = useNavigate();
+  
+  const [characterPopupStage, setCharacterPopupStage] = useState(1);
+  const [isCatHovered, setIsCatHovered] = useState(false);
+  
+  // Advance to next dialog after a delay
+  useEffect(() => {
+    if (characterPopupStage === 1) {
+      const timer = setTimeout(() => {
+        console.log("Moving to stage 2");
+        setCharacterPopupStage(2); // Show second dialog
+      }, 4000);
+      
+      return () => clearTimeout(timer);
+    }
+    
+    if (characterPopupStage === 2) {
+      const timer = setTimeout(() => {
+        console.log("Moving to stage 3 - button should appear");
+        setCharacterPopupStage(3); // Show button
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [characterPopupStage]);
+  
+  // Navigate using the hook directly with enhanced debugging
+  const handleNavigation = () => {
+    console.log("Navigation function called! Navigating to /clean-feed-game");
+    navigate("/clean-feed-game");
+  };
+  
   return (
     <div
       className="relative w-full h-screen bg-cover bg-center"
@@ -244,7 +255,7 @@ export default function BedroomPage() {
                 First TikTok about to drop!
               </p>
               <p className="text-blue-200 font-medium">
-                It's my Zat<span className="text-green-300">~</span> get ready for cuteness <span className="animate-pulse text-pink-300">OVERLOAD</span>!
+                It's my Zat <span className="text-green-300">~</span> get ready for cuteness <span className="animate-pulse text-pink-300">OVERLOAD</span>!
               </p>
               
               {/* Alien Speech bubble elements */}
@@ -311,8 +322,7 @@ export default function BedroomPage() {
               </div>
               
               <p className="text-pink-200 font-medium">
-                <span className="text-yellow-300">Ugh</span>, so many comments! Help me clear this feed by likning and disliking the comments!
-                Time left: 
+                <span className="text-yellow-300">Ugh</span>, so many comments! Help me clear this feed by liking and disliking comments! Time left: 
                 <motion.span
                   className="inline-block ml-1 font-mono font-bold text-red-300"
                   animate={{ scale: [1, 1.2, 1] }}
@@ -337,7 +347,7 @@ export default function BedroomPage() {
       </div>
 
       {/* Full-screen overlay with button when active */}
-      {showActionButton && (
+      {characterPopupStage === 3 && (
         <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <motion.div
             initial={{ scale: 0 }}
@@ -356,7 +366,7 @@ export default function BedroomPage() {
             />
             
             <motion.button
-              onClick={() => navigate("/clean-feed")}
+              onClick={handleNavigation}
               className="relative px-8 py-6 rounded-full font-bold text-white"
               style={{
                 background: "radial-gradient(circle at center, #00f7ff, #0062ff)",
@@ -414,4 +424,6 @@ export default function BedroomPage() {
       )}
     </div>
   );
-}
+};
+
+export default CleanFeedIntro;

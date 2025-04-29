@@ -25,6 +25,7 @@ const ScenarioGame: React.FC = () => {
     caption,
     videoRef,
     startScenario,
+    resetScenario,
     handleMediaEnd,
     handleOptionSelect,
     handleContinue,
@@ -32,6 +33,12 @@ const ScenarioGame: React.FC = () => {
   const navigate = useNavigate();
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
   const [characterHovered, setCharacterHovered] = useState(false);
+
+  // Determine if the game has ended - when it's a TEXT node with no nextNodeId and no options
+  const isGameEnded = started && 
+    currentNode?.type === MediaType.TEXT && 
+    !currentNode.nextNodeId && 
+    !showOptions;
 
   // Error handling to prevent page crashes
   if (!currentNode) {
@@ -173,13 +180,51 @@ const ScenarioGame: React.FC = () => {
                               onSelect={handleOptionSelect}
                             />
                           )}
+                          
+                          {/* Play Again button - show when game has ended */}
+                          {isGameEnded && (
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 1, duration: 0.5 }}
+                              className="absolute bottom-8 left-0 right-0 flex justify-center"
+                            >
+                              <button 
+                                onClick={resetScenario}
+                                className="bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 rounded-full text-white font-bold cursor-pointer transform transition duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-300/50 flex items-center space-x-2"
+                              >
+                                <svg 
+                                  className="w-5 h-5 animate-pulse" 
+                                  viewBox="0 0 24 24"
+                                  fill="none" 
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path 
+                                    d="M1 4V10H7" 
+                                    stroke="currentColor" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round"
+                                  />
+                                  <path 
+                                    d="M3.51 15C4.15839 17.0732 5.38734 18.8954 7.0718 20.2066C8.75625 21.5178 10.8431 22.2583 12.9999 22.3116C15.1567 22.365 17.2783 21.7297 19.0272 20.5087C20.7761 19.2877 22.0789 17.5433 22.7973 15.5128C23.5157 13.4824 23.6138 11.264 23.0783 9.1701C22.5429 7.07615 21.3986 5.20785 19.7964 3.81318C18.1941 2.41851 16.2109 1.56634 14.1176 1.36788C12.0243 1.16943 9.92526 1.63427 8.12 2.7" 
+                                    stroke="currentColor" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                                <span>Give it another try?</span>
+                              </button>
+                            </motion.div>
+                          )}
                         </>
                       )}
                     </div>
                   </div>
 
                   {/* Caption area - outside the player but inside the frame */}
-                  {started && (
+                  {started && caption && (
                     <div className="absolute bottom-4 left-0 right-0 flex justify-center">
                       <div className="w-full px-4">
                         <CaptionDisplay text={caption} />

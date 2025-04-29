@@ -147,7 +147,7 @@ const VideoPage: React.FC = () => {
                         <PrimaryButton
                             variant="cta"
                             rotate
-                            onClick={() => navigate("/clean-feed-intro")}
+                            onClick={() => navigate("/clean-feed")}
                         >
                             Clean Your Feed
                         </PrimaryButton>
