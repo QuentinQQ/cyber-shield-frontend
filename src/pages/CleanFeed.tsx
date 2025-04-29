@@ -32,14 +32,14 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
     }
   }, [skipIntro, gameStarted, gameOver, startGame]);
 
-  // Route the next page after Game over
+  // Determine which screen to show when game is over
   const renderGameOverScreen = () => {
     if (isLoading) {
       return <LoadingOverlay message="Loading result..." />;
     }
-
-    // User have not answered any question
+    
     if (!result) {
+      // Handle case where result is null but game is over
       return <EmptyAnswerScreen onRestart={startGame} />;
     }
     
@@ -49,20 +49,8 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
   };
 
   return (
-    <PageWrapper className={`min-h-screen ${(!gameStarted || gameOver || isLoading || error || comments.length === 0) ? 'bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA]' : ''} text-white p-4`}>
-      {/* Phone background (only shown during active game) */}
-      {gameStarted && !gameOver && !isLoading && !error && comments.length > 0 && (
-        <div
-          className="fixed inset-0 z-0"
-          style={{
-            backgroundImage: "url('/phone.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        ></div>
-      )}
-      
-      {/* Content container with appropriate z-index */}
+    <PageWrapper className={`min-h-screen ${(!gameStarted || gameOver || isLoading || error || comments.length === 0) ? 'bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA]' : 'bg-[#ACE3FC]'} text-white p-4`}>
+      {/* Content container */}
       <div className="relative z-10">
         {/* Onboarding Screen - only show if not skipping intro */}
         {!skipIntro && !gameStarted && !gameOver && (
