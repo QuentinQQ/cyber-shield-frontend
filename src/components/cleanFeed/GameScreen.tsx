@@ -6,7 +6,6 @@ import useIsMobile from "@/hooks/useIsMobile";
 import { useGameController } from "@/hooks/useGameController";
 import { useMockupSize } from "@/hooks/useMockupSize";
 import { IPhoneMockup } from "react-device-mockup";
-import StandGuy from "@/assets/cleanFeed/stand-guy.svg";
 import { AnimatePresence, motion } from "framer-motion";
 
 /**
@@ -65,44 +64,36 @@ const GameScreen: React.FC<{
       ) : (
         // 💻 Desktop view
         <div className="w-full flex justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center w-full">
-            <div className="hidden md:flex justify-end pr-4">
-              <img src={StandGuy} alt="Decorative character" className="h-[600px] w-auto" />
+          <div className="flex items-center justify-center w-full">
+            <div style={{ width: mockupSize.width }}>
+              <IPhoneMockup
+                screenWidth={mockupSize.width}
+                isLandscape={false}
+                screenType="island"
+                frameColor="#E76F50"
+                hideStatusBar={true}
+                transparentNavBar={true}
+              >
+                <div className="h-full w-full flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-200 p-4 overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentComment.comment_id}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="w-full"
+                    >
+                      <CommentCard
+                        comment={currentComment}
+                        onLike={() => handleDelayedResponse("like")}
+                        onDislike={() => handleDelayedResponse("dislike")}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </IPhoneMockup>
             </div>
-
-            <div className="flex justify-center">
-              <div style={{ width: mockupSize.width }}>
-                <IPhoneMockup
-                  screenWidth={mockupSize.width}
-                  isLandscape={false}
-                  screenType="island"
-                  frameColor="#E76F50"
-                  hideStatusBar={true}
-                  transparentNavBar={true}
-                >
-                  <div className="h-full w-full flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-200 p-4 overflow-hidden">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={currentComment.comment_id}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="w-full"
-                      >
-                        <CommentCard
-                          comment={currentComment}
-                          onLike={() => handleDelayedResponse("like")}
-                          onDislike={() => handleDelayedResponse("dislike")}
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-                </IPhoneMockup>
-              </div>
-            </div>
-
-            <div className="hidden md:block" />
           </div>
         </div>
       )}

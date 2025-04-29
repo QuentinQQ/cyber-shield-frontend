@@ -39,6 +39,23 @@ export function useScenarioPlayer() {
   };
 
   /**
+   * @function resetScenario
+   * @description Resets the scenario to start over
+   */
+  const resetScenario = () => {
+    console.log("Resetting scenario");
+    setStarted(false);
+    setCurrentNodeId("start");
+    setShowOptions(false);
+    setCaption(null);
+    
+    // Small delay for visual reset effect
+    setTimeout(() => {
+      startScenario();
+    }, 300);
+  };
+
+  /**
    * @function handleMediaEnd
    * @description Handles media end event (videos/images)
    */
@@ -118,6 +135,7 @@ export function useScenarioPlayer() {
     caption,
     videoRef,
     startScenario,
+    resetScenario,  // Add this new function
     handleMediaEnd,
     handleContinue,
     handleOptionSelect,
