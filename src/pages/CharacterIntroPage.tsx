@@ -7,6 +7,7 @@ import PageWrapper from "@/components/PageWrapper";
 import PrimaryButton from "@/components/PrimaryButton";
 import NetworkBackground from "@/components/NetworkBackground";
 
+
 // Add proper TypeScript interfaces
 interface CharacterDialogProps {
   content: string;
@@ -208,7 +209,7 @@ const CharacterIntroPage: React.FC = () => {
         <AnimatePresence>
           {stage === 3 && (
             <motion.div
-              className="absolute bottom-32 right-10 md:right-1/4" 
+              className="absolute bottom-32 right-10 md:right-1/4 z-30" 
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, type: "spring" }}

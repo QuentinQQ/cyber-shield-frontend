@@ -40,7 +40,7 @@ const GameScreen: React.FC<{
 
   return (
     <div className="flex flex-col items-center space-y-6 max-w-full">
-      <Timer duration={60} />
+      <Timer duration={30} />
 
       {isMobile ? (
         // 📱 Mobile view
