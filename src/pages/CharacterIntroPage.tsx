@@ -7,6 +7,7 @@ import PageWrapper from "@/components/PageWrapper";
 import PrimaryButton from "@/components/PrimaryButton";
 import NetworkBackground from "@/components/NetworkBackground";
 
+
 // Add proper TypeScript interfaces
 interface CharacterDialogProps {
   content: string;
