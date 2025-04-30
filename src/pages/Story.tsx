@@ -2,6 +2,52 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Character Dialog Component with proper type annotation
+interface CharacterDialogProps {
+  content: React.ReactNode;
+  isVisible: boolean;
+  className?: string;
+  customStyle?: React.CSSProperties;
+}
+
+const CharacterDialog: React.FC<CharacterDialogProps> = ({ content, isVisible, className = "", customStyle = {} }) => {
+  return isVisible ? (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20, scale: 0.9 }}
+      transition={{ duration: 0.5 }}
+      className={`speech-bubble relative ${className}`}
+      style={{
+        position: "relative",
+        margin: "0.5em 0", 
+        padding: "1em",
+        width: "15em", 
+        minHeight: "4em",
+        borderRadius: "0.25em",
+        transform: "rotate(-4deg) rotateY(15deg)",
+        background: "#629bdd",
+        fontFamily: "Century Gothic, Verdana, sans-serif",
+        fontSize: "1.5rem",
+        textAlign: "center",
+        zIndex: 2,
+        ...customStyle,
+      }}
+    >
+      {/* Content */}
+      <motion.div 
+        className="text-lg font-medium text-gray-800 z-10 relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.8 }}
+        style={{ position: "relative", zIndex: 5 }}
+      >
+        {content}
+      </motion.div>
+    </motion.div>
+  ) : null;
+};
+
 // Teleport Bubble component - reusable across pages
 const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
@@ -71,8 +117,34 @@ const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
 const StoryPage: React.FC = () => {
     const navigate = useNavigate();
     const [isLeftScreenHovered, setIsLeftScreenHovered] = useState(false);
-    const [isCharacterHovered, setIsCharacterHovered] = useState(false);
+    const [showCharacterDialog, setShowCharacterDialog] = useState(true);
     const [textNoiseLevel, setTextNoiseLevel] = useState(100);
+
+    // Auto-hide the speech bubble after a few seconds
+    useEffect(() => {
+        // Show the bubble initially
+        setShowCharacterDialog(true);
+        
+        // Hide it after 5 seconds
+        const timer = setTimeout(() => {
+          setShowCharacterDialog(false);
+        }, 5000);
+        
+        // Clean up on unmount
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Handle character click to show the speech bubble again
+    const handleCharacterClick = () => {
+        setShowCharacterDialog(true);
+        
+        // Hide it again after 5 seconds
+        const timer = setTimeout(() => {
+          setShowCharacterDialog(false);
+        }, 5000);
+        
+        return () => clearTimeout(timer);
+    };
 
     // Handle teleport to clean feed page
     const handleTeleport = () => {
@@ -206,7 +278,7 @@ const StoryPage: React.FC = () => {
 
     return (
         <div className="relative w-full h-screen overflow-hidden">
-            {/* Keyframe animations for teleport bubble */}
+            {/* Keyframe animations for teleport bubble and speech bubble */}
             <style>{`
                 @keyframes rotateTeleport {
                     0% { transform: rotate(0deg); }
@@ -219,6 +291,34 @@ const StoryPage: React.FC = () => {
                 @keyframes rotateTeleportAfter {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(720deg); }
+                }
+                
+                /* Global styles for the speech bubble */
+                .speech-bubble:before, .speech-bubble:after {
+                    position: absolute;
+                    z-index: -1;
+                    content: '';
+                }
+                
+                .speech-bubble:after {
+                    top: 0; 
+                    right: 0; 
+                    bottom: 0; 
+                    left: 0;
+                    border-radius: inherit;
+                    transform: rotate(2deg) translate(.35em, -.15em) scale(1.02);
+                    background: #f4fbfe;
+                }
+                
+                .speech-bubble:before {
+                    border: solid 0 transparent;
+                    border-right: solid 3.5em #f4fbfe;
+                    border-bottom: solid .25em #629bdd;
+                    bottom: .25em; 
+                    left: 1.25em;
+                    width: 0; 
+                    height: 1em;
+                    transform: rotate(45deg) skewX(75deg);
                 }
             `}</style>
 
@@ -264,11 +364,11 @@ const StoryPage: React.FC = () => {
                             transition={{ duration: 0.3 }}
                         >
                             <NoisyText 
-                                text="This is Emma's story" 
+                                text="Mates can be online bullies too." 
                                 className="text-xl font-bold mb-3 text-center"
                             />
                             <NoisyText 
-                                text="Mates can be online bullies too. Emma's yarn: She got help to end the cyber aggro."
+                                text="Emma's yarn: She got help to end the cyber aggro."
                                 className="text-sm text-center leading-tight"
                             />
                             <motion.div 
@@ -298,7 +398,7 @@ const StoryPage: React.FC = () => {
                         />
                     </div>
 
-                    {/* Character in the center */}
+                    {/* Character in the center with custom speech bubble */}
                     <motion.div 
                         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-20 cursor-pointer"
                         style={{ 
@@ -308,33 +408,30 @@ const StoryPage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        onMouseEnter={() => setIsCharacterHovered(true)}
-                        onMouseLeave={() => setIsCharacterHovered(false)}
+                        onClick={handleCharacterClick}
                     >
+                        {/* Custom speech bubble */}
                         <AnimatePresence>
-                            {isCharacterHovered && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute -top-24 left-1/2 transform -translate-x-1/2 bg-white text-blue-800 p-3 rounded-2xl max-w-xs shadow-lg z-30"
-                                >
-                                    <div className="font-medium text-center">
-                                        Pick a screen to watch a story together!
-                                    </div>
-                                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[12px] border-l-transparent border-r-transparent border-t-white"></div>
-                                </motion.div>
+                            {showCharacterDialog && (
+                                <CharacterDialog
+                                    content="Pick a screen to watch a story together!"
+                                    isVisible={true}
+                                    customStyle={{
+                                        position: "absolute",
+                                        top: "-140px",
+                                        left: "-5%",
+                                        transform: "translateX(-50%)",
+                                        zIndex: 30
+                                    }}
+                                />
                             )}
                         </AnimatePresence>
 
+                        {/* Character image without glow */}
                         <img
                             src="/select-video.gif"
                             alt="Select Video"
                             className="h-full w-auto object-contain"
-                            style={{ 
-                                filter: 'drop-shadow(0 0 15px rgba(0,150,255,0.5))',
-                            }}
                         />
                     </motion.div>
                 </div>

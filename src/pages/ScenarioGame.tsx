@@ -5,12 +5,57 @@ import VideoPlayer from "../components/scenario/VideoPlayer";
 import ImageDisplay from "../components/scenario/ImageDisplay";
 import OptionsOverlay from "../components/scenario/OptionsOverlay";
 import CaptionDisplay from "../components/scenario/CaptionDisplay";
-import StartScreen from "../components/scenario/StartScreen";
 import PageWrapper from "../components/PageWrapper";
 import LoadingOverlay from "../components/LoadingOverlay";
 import TextDisplay from "../components/scenario/TextDisplay";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+
+// Character Dialog Component with proper type annotation - using the same style as CharacterIntroPage
+interface CharacterDialogProps {
+  content: React.ReactNode;
+  isVisible: boolean;
+  className?: string;
+  customStyle?: React.CSSProperties;
+}
+
+const CharacterDialog: React.FC<CharacterDialogProps> = ({ content, isVisible, className = "", customStyle = {} }) => {
+  return isVisible ? (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20, scale: 0.9 }}
+      transition={{ duration: 0.5 }}
+      className={`speech-bubble relative ${className}`}
+      style={{
+        position: "relative",
+        margin: "0.5em 0",
+        padding: "1em",
+        width: "15em", 
+        minHeight: "4em",
+        borderRadius: "0.25em",
+        transform: "rotate(-4deg) rotateY(15deg)",
+        background: "#629bdd",
+        fontFamily: "Century Gothic, Verdana, sans-serif",
+        fontSize: "1.5rem",
+        textAlign: "center",
+        zIndex: 2,
+        ...customStyle,
+      }}
+    >
+      {/* Content */}
+      <motion.div 
+        className="text-lg font-medium text-gray-800 z-10 relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.8 }}
+        style={{ position: "relative", zIndex: 5 }}
+      >
+        {content}
+      </motion.div>
+    </motion.div>
+  ) : null;
+};
 
 // Teleport Bubble component - reusable across pages
 const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
@@ -96,8 +141,34 @@ const ScenarioGame: React.FC = () => {
     handleOptionSelect,
     handleContinue,
   } = useScenarioPlayer();
-  const [showSpeechBubble, setShowSpeechBubble] = useState(false);
-  const [characterHovered, setCharacterHovered] = useState(false);
+  const [showCharacterDialog, setShowCharacterDialog] = useState(true);
+  const [dialogStage] = useState(1);
+
+  // Auto-hide the speech bubble after a few seconds
+  React.useEffect(() => {
+    // Show the bubble initially
+    setShowCharacterDialog(true);
+    
+    // Hide it after 5 seconds
+    const timer = setTimeout(() => {
+      setShowCharacterDialog(false);
+    }, 5000);
+    
+    // Clean up on unmount
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Handle character click to show the speech bubble again
+  const handleCharacterClick = () => {
+    setShowCharacterDialog(true);
+    
+    // Hide it again after 5 seconds
+    const timer = setTimeout(() => {
+      setShowCharacterDialog(false);
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  };
 
   // Determine if the game has ended - when it's a TEXT node with no nextNodeId and no options
   const isGameEnded = started && 
@@ -108,6 +179,26 @@ const ScenarioGame: React.FC = () => {
   // Handle teleport to story page
   const handleTeleport = () => {
     navigate("/story");
+  };
+
+  // Get dialog content based on stage
+  const getDialogContent = (stageNum: number) => {
+    if (stageNum === 1) {
+      return "See how your decisions play out & the impact of cyberbullying. Choose like it's happening to you!";
+    }
+    return "";
+  };
+
+  // Get position styles for each dialog
+  const getDialogPositionStyle = (stageNum: number) => {
+    if (stageNum === 1) {
+      return {
+        top: "-180px",
+        left: "30px",
+        position: "absolute" as const,
+      };
+    }
+    return {};
   };
 
   // Error handling to prevent page crashes
@@ -121,7 +212,7 @@ const ScenarioGame: React.FC = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* Keyframe animations for teleport bubble */}
+      {/* Keyframe animations for teleport bubble and speech bubble */}
       <style>{`
         @keyframes rotateTeleport {
           0% { transform: rotate(0deg); }
@@ -134,6 +225,34 @@ const ScenarioGame: React.FC = () => {
         @keyframes rotateTeleportAfter {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(720deg); }
+        }
+        
+        /* Global styles for the speech bubble */
+        .speech-bubble:before, .speech-bubble:after {
+          position: absolute;
+          z-index: -1;
+          content: '';
+        }
+        
+        .speech-bubble:after {
+          top: 0; 
+          right: 0; 
+          bottom: 0; 
+          left: 0;
+          border-radius: inherit;
+          transform: rotate(2deg) translate(.35em, -.15em) scale(1.02);
+          background: #f4fbfe;
+        }
+        
+        .speech-bubble:before {
+          border: solid 0 transparent;
+          border-right: solid 3.5em #f4fbfe;
+          border-bottom: solid .25em #629bdd;
+          bottom: .25em; 
+          left: 1.25em;
+          width: 0; 
+          height: 1em;
+          transform: rotate(45deg) skewX(75deg);
         }
       `}</style>
 
@@ -157,65 +276,34 @@ const ScenarioGame: React.FC = () => {
             initial={{ opacity: 0, x: -100 }}
             animate={{ 
               opacity: 1, 
-              x: 0,
-              scale: characterHovered ? [1, 1.02, 1] : 1,
-              rotate: characterHovered ? [-1, 1, -1] : 0 
+              x: 0
             }}
             transition={{ 
               duration: 1, 
-              delay: 0.5,
-              scale: {
-                duration: 0.5,
-                repeat: Infinity,
-                repeatType: "reverse"
-              },
-              rotate: {
-                duration: 0.5,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }
+              delay: 0.5
             }}
-            onMouseEnter={() => {
-              setShowSpeechBubble(true);
-              setCharacterHovered(true);
-            }}
-            onMouseLeave={() => {
-              setShowSpeechBubble(false);
-              setCharacterHovered(false);
-            }}
+            onClick={handleCharacterClick}
             style={{ width: '30%', maxWidth: '350px' }}
           >
-            {/* Speech bubble */}
+            {/* Character Dialog - using the new component */}
             <AnimatePresence>
-              {showSpeechBubble && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute -top-32 left-20 bg-white text-gray-800 p-4 rounded-2xl max-w-xs shadow-lg"
-                  style={{ zIndex: 30 }}
-                >
-                  <div className="font-medium text-base">
-                    See how your decisions play out & the impact of cyberbullying. Choose like it's happening to you!
-                  </div>
-                  {/* Speech bubble pointer */}
-                  <div className="absolute -bottom-4 left-10 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[15px] border-l-transparent border-r-transparent border-t-white"></div>
-                </motion.div>
+              {showCharacterDialog && (
+                <CharacterDialog
+                  key={`dialog-${dialogStage}`}
+                  content={getDialogContent(dialogStage)}
+                  isVisible={true}
+                  className="ml-4"
+                  customStyle={getDialogPositionStyle(dialogStage)}
+                />
               )}
             </AnimatePresence>
 
-            {/* Character image with glow effect */}
+            {/* Character image without glow effect */}
             <div className="relative">
-              {/* Glow effect for character */}
-              <div className={`absolute inset-0 rounded-full bg-cyan-300 blur-xl opacity-0 transition-opacity duration-300 ${characterHovered ? 'opacity-60' : ''}`}></div>
               <img
                 src="/character-sitting.gif"
                 alt="Character"
                 className="h-full w-full object-contain relative z-10"
-                style={{
-                  filter: characterHovered ? 'drop-shadow(0 0 15px rgba(64, 224, 208, 0.8))' : 'drop-shadow(0 0 10px rgba(0,0,0,0.3))'
-                }}
               />
             </div>
           </motion.div>
@@ -237,7 +325,20 @@ const ScenarioGame: React.FC = () => {
                     {/* Video/Image/Text container */}
                     <div className="relative w-full h-full bg-black">
                       {!started ? (
-                        <StartScreen onStart={startScenario} />
+                        // Modified StartScreen with only the button
+                        <div className="flex flex-col items-center justify-center h-full w-full bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6">
+                          <motion.button
+                            onClick={startScenario}
+                            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-4 px-8 rounded-full mt-6 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-glow active:scale-95"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                          >
+                            Begin the Experience
+                          </motion.button>
+                        </div>
                       ) : (
                         <>
                           {currentNode.type === MediaType.VIDEO && (
