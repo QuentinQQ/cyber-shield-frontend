@@ -26,7 +26,8 @@ export function validateTextInput(text: string): string | null {
   }
 
   // Check for control characters
-  const controlCharPattern = new RegExp("[\\\\x00-\\\\x1F\\\\x7F-\\\\x9F]");
+  // eslint-disable-next-line no-control-regex
+  const controlCharPattern = /[\x00-\x1F\x7F-\x9F]/;
   if (controlCharPattern.test(trimmed)) {
     return "Invalid input.";
   }
