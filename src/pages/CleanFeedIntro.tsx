@@ -487,7 +487,7 @@ const CleanFeedIntro: React.FC = () => {
         onClick={handleCharacterClick}
       >
         <img
-          src="/character-phone.png"
+          src="/character-phone.gif"
           alt="Character"
           className="relative z-10 w-full h-full cursor-pointer" 
         />

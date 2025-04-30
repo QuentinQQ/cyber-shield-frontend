@@ -509,6 +509,17 @@ const SafePeople = () => {
               border-radius: 42% 63% 51% 60% / 47% 62% 42% 52%;
               animation: rotateAfter 35s infinite linear;
             }
+            
+            /* Text glow animation */
+            @keyframes text-glow {
+              0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+              50% { text-shadow: 0 0 15px rgba(135, 206, 250, 0.8), 0 0 25px rgba(255, 255, 255, 0.6); }
+              100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+            }
+            
+            .glow-text {
+              animation: text-glow 4s ease-in-out infinite;
+            }
           `}</style>
 
           {/* Render the stars */}
@@ -534,6 +545,8 @@ const SafePeople = () => {
           ))}
         </div>
       </div>
+
+      {/* No custom rotating bubble - removed */}
 
       {/* Main content container with character and messages - moved down with more top margin */}
       <div className="relative z-10 flex flex-col-reverse md:flex-row mt-20">
@@ -629,6 +642,12 @@ const SafePeople = () => {
 
         {/* Messages section on the right side */}
         <div className="w-full md:w-2/3">
+          {/* Text instruction above the message templates */}
+          <div className="text-center mb-9 z-50 relative">
+            <h2 className="text-white text-xl md:text-2xl font-medium glow-text">
+              Tap to copy and paste it to whoever you want help from, whenever you're ready
+            </h2>
+          </div>
 
           {/* Message templates in chat bubbles */}
           <div className="flex flex-col items-center gap-8 max-w-md mx-auto mb-12">
@@ -660,17 +679,6 @@ const SafePeople = () => {
               </div>
             ))}
           </div>
-
-          {/* Custom rotating bubble for send visualization */}
-          <div className="fixed top-8 left-1/2 transform -translate-x-1/2 text-center z-50">
-  <div className="custom-bubble flex items-center justify-center">
-    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-      <div className="text-white font-medium text-center p-2 max-w-[300px]">
-        <p>Tap to copy and paste it to whoever you want help from, whenever you ready</p>
-      </div>
-    </div>
-  </div>
-</div>
         </div>
       </div>
     </div>
