@@ -210,7 +210,7 @@ const ScenarioGame: React.FC = () => {
               {/* Glow effect for character */}
               <div className={`absolute inset-0 rounded-full bg-cyan-300 blur-xl opacity-0 transition-opacity duration-300 ${characterHovered ? 'opacity-60' : ''}`}></div>
               <img
-                src="/character-sitting.png"
+                src="/character-sitting.gif"
                 alt="Character"
                 className="h-full w-full object-contain relative z-10"
                 style={{
