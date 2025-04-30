@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { CommentData, GameResult, GameSubmission } from "../types/types";
-import { fetchComments, postGameResult } from "../services/feedGameService";
+import { CommentData, GameResultV2, GameSubmission } from "../types/types";
+import { fetchComments, postGameResultV2 } from "../services/feedGameService";
 
 /**
  * @hook useCleanFeed
@@ -12,7 +12,7 @@ import { fetchComments, postGameResult } from "../services/feedGameService";
  *   gameStarted: boolean;
  *   gameOver: boolean;
  *   comments: CommentData[];
- *   result: GameResult | null;
+ *   result: GameResultV2 | null;
  *   isLoading: boolean;
  *   error: string | null;
  *   startGame: () => void;
@@ -26,7 +26,7 @@ export const useCleanFeed = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [comments, setComments] = useState<CommentData[]>([]);
-  const [result, setResult] = useState<GameResult | null>(null);
+  const [result, setResult] = useState<GameResultV2 | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,10 +80,10 @@ export const useCleanFeed = () => {
     }
 
     setIsLoading(true);
-    postGameResult(submissions)
+    postGameResultV2(submissions)
       .then((res) => {
-        setResult(res.data);
-        localStorage.setItem(CLEAN_FEED_RESULT_KEY, JSON.stringify(res.data));
+        setResult(res);
+        localStorage.setItem(CLEAN_FEED_RESULT_KEY, JSON.stringify(res));
       })
       .catch(() => {
         setError("Failed to submit your answers. Please try again.");
