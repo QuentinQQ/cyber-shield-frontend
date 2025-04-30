@@ -8,40 +8,56 @@ import PrimaryButton from "@/components/PrimaryButton";
 import NetworkBackground from "@/components/NetworkBackground";
 
 
-// Add proper TypeScript interfaces
+// Add proper TypeScript interfaces - removed as it was redefined in the component definition
+
+// Character Dialog Component with proper type annotation - updated with new speech bubble style
+// Modified to accept custom style for individual positioning
 interface CharacterDialogProps {
   content: React.ReactNode;
   isVisible: boolean;
   className?: string;
+  customStyle?: React.CSSProperties; // Added custom style prop
 }
 
-// Character Dialog Component with proper type annotation
-const CharacterDialog: React.FC<CharacterDialogProps> = ({ content, isVisible, className = "" }) => {
+const CharacterDialog: React.FC<CharacterDialogProps> = ({ content, isVisible, className = "", customStyle = {} }) => {
   return isVisible ? (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.9 }}
       transition={{ duration: 0.5 }}
-      className={`bg-white/90 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto shadow-lg border-4 border-blue-300 relative ${className}`}
+      className={`speech-bubble relative ${className}`}
+      style={{
+        position: "relative",
+        margin: "0.5em 0", // Changed from auto to 0 to align left
+        padding: "1em",
+        width: "15em", // Adjusted for better fitting of dialog content
+        minHeight: "4em",
+        borderRadius: "0.25em",
+        transform: "rotate(-4deg) rotateY(15deg)",
+        background: "#629bdd",
+        fontFamily: "Century Gothic, Verdana, sans-serif",
+        fontSize: "1.5rem",
+        textAlign: "center",
+        zIndex: 2,
+        ...customStyle, // Apply custom styles that can override defaults
+      }}
     >
-      {/* Speech bubble pointer */}
-      <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[15px] border-l-transparent border-r-transparent border-t-white"></div>
-      
-      {/* Text with typing animation - now supports React nodes */}
+      {/* Content */}
       <motion.div 
-        className="text-xl font-medium text-gray-800"
+        className="text-lg font-medium text-gray-800 z-10 relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.8 }}
+        style={{ position: "relative", zIndex: 5 }}
       >
         {content}
       </motion.div>
     </motion.div>
   ) : null;
 };
+      
 
-// Custom component to handle the character with transparent background
 const CustomCharacter = () => {
   return (
     <div 
@@ -70,7 +86,6 @@ const CustomCharacter = () => {
   );
 };
 
-// New Teleport Bubble component - now positioned lower on the screen
 const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
     <motion.div
@@ -138,7 +153,6 @@ const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
 
 
 const CharacterIntroPage: React.FC = () => {
-  // Correctly use the hook at the top level of your component
   const navigate = useNavigate();
   
   const [stage, setStage] = useState(1);
@@ -204,6 +218,31 @@ const CharacterIntroPage: React.FC = () => {
       );
     }
     return "";
+  };
+  
+  // Get position styles for each speech bubble based on stage
+  const getDialogPositionStyle = (stageNum: number) => {
+    // Return different positions for each stage/bubble
+    if (stageNum === 1) {
+      return {
+        top: "-480px",
+        left: "-230px",
+        position: "absolute" as const,
+      };
+    } else if (stageNum === 2) {
+      return {
+        top: "-490px",
+        left: "-230px",
+        position: "absolute" as const,
+      };
+    } else if (stageNum === 3) {
+      return {
+        top: "-700px",
+        left: "-230px",
+        position: "absolute" as const,
+      };
+    }
+    return {};
   };
   
   // Start the intro sequence after component mounts
@@ -285,6 +324,36 @@ const CharacterIntroPage: React.FC = () => {
         }
       `}</style>
       
+      {/* Global styles for the speech bubble */}
+      <style>{`
+        .speech-bubble:before, .speech-bubble:after {
+          position: absolute;
+          z-index: -1;
+          content: '';
+        }
+        
+        .speech-bubble:after {
+          top: 0; 
+          right: 0; 
+          bottom: 0; 
+          left: 0;
+          border-radius: inherit;
+          transform: rotate(2deg) translate(.35em, -.15em) scale(1.02);
+          background: #f4fbfe;
+        }
+        
+        .speech-bubble:before {
+          border: solid 0 transparent;
+          border-right: solid 3.5em #f4fbfe;
+          border-bottom: solid .25em #629bdd;
+          bottom: .25em; 
+          left: 1.25em;
+          width: 0; 
+          height: 1em;
+          transform: rotate(45deg) skewX(75deg);
+        }
+      `}</style>
+      
       {/* Background Image - Full Screen */}
       <div 
         className="absolute inset-0 w-full h-full bg-center bg-cover bg-no-repeat z-0"
@@ -315,7 +384,7 @@ const CharacterIntroPage: React.FC = () => {
       
       <div id="character-intro" className="w-full h-full flex flex-col items-center justify-center relative pt-10 pb-10 z-10">
         {/* Character container */}
-        <div className="relative w-full max-w-3xl mx-auto flex justify-center items-center z-10 mt-28">
+        <div className="relative w-full max-w-3xl mx-auto flex justify-center items-center z-10 mt-48">
           <AnimatePresence>
             {stage > 0 && (
               <motion.div
@@ -360,15 +429,16 @@ const CharacterIntroPage: React.FC = () => {
           </AnimatePresence>
         </div>
         
-        {/* Dialog section */}
-        <div className="absolute bottom-64 md:bottom-80 left-0 right-0 flex justify-center z-20">
+        {/* Dialog section - each bubble has its own position */}
+        <div className="relative z-20">
           <AnimatePresence mode="wait">
             {stage >= 1 && stage <= 3 && (
               <CharacterDialog
                 key={`dialog-${stage}`}
                 content={getDialogContent(stage)}
                 isVisible={true}
-                className="mx-4"
+                className="ml-4"
+                customStyle={getDialogPositionStyle(stage)}
               />
             )}
           </AnimatePresence>
