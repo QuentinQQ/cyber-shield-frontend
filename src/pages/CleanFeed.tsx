@@ -32,21 +32,25 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
     }
   }, [skipIntro, gameStarted, gameOver, startGame]);
 
+  // Determine which screen to show when game is over
+  const renderGameOverScreen = () => {
+    if (isLoading) {
+      return <LoadingOverlay message="Loading result..." />;
+    }
+    
+    if (!result) {
+      // Handle case where result is null but game is over
+      return <EmptyAnswerScreen onRestart={startGame} />;
+    }
+    
+    return result.answered > 0 
+      ? <ResultScreen result={result} onRestart={resetGame} /> 
+      : <EmptyAnswerScreen onRestart={startGame} />;
+  };
+
   return (
-    <PageWrapper className={`min-h-screen ${(!gameStarted || gameOver || isLoading || error || comments.length === 0) ? 'bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA]' : ''} text-white p-4`}>
-      {/* Phone background (only shown during active game) */}
-      {gameStarted && !gameOver && !isLoading && !error && comments.length > 0 && (
-        <div
-          className="fixed inset-0 z-0"
-          style={{
-            backgroundImage: "url('/phone.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        ></div>
-      )}
-      
-      {/* Content container with appropriate z-index */}
+    <PageWrapper className={`min-h-screen ${(!gameStarted || gameOver || isLoading || error || comments.length === 0) ? 'bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA]' : 'bg-[#ACE3FC]'} text-white p-4`}>
+      {/* Content container */}
       <div className="relative z-10">
         {/* Onboarding Screen - only show if not skipping intro */}
         {!skipIntro && !gameStarted && !gameOver && (
@@ -76,20 +80,8 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
           </>
         )}
 
-        {/* Result Screen */}
-        {gameOver && result && result.answered > 0 && (
-          <ResultScreen result={result} onRestart={resetGame} />
-        )}
-
-        {/* Loading result screen */}
-        {gameOver && !result && isLoading && (
-          <LoadingOverlay message="Loading result..." />
-        )}
-
-        {/* If user didn't answer any question */}
-        {gameOver && result && result.answered === 0 && (
-          <EmptyAnswerScreen onRestart={startGame} />
-        )}
+        {/* Game Over Screens */}
+        {gameOver && renderGameOverScreen()}
       </div>
     </PageWrapper>
   );
