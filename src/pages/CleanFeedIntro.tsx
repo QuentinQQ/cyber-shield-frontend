@@ -1,8 +1,72 @@
-// File: src/pages/CleanFeedIntro.tsx
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+
+// Teleport Bubble component - reusable across pages
+const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.3 }}
+      className="absolute bottom-10 right-20 cursor-pointer z-50"
+      onClick={onClick}
+      style={{
+        width: '150px',
+        height: '150px',
+      }}
+    >
+      {/* Teleport bubble animation */}
+      <div 
+        className="teleport-bubble"
+        style={{
+          width: '150px',  
+          height: '150px',
+          background: 'hsl(212, 100%, 71%)',
+          border: '13px solid hsl(212, 100%, 81%)',
+          position: 'relative',
+          overflow: 'visible',
+          borderRadius: '48% 40% 62% 47% / 61% 49% 64% 43%',
+          animation: 'rotateTeleport 35s infinite linear',
+          zIndex: 10
+        }}
+      >
+        {/* Inner layers of the teleport bubble */}
+        <div 
+          style={{
+            content: '',
+            position: 'absolute',
+            top: '15px',
+            left: '15px',
+            width: 'calc(100% - 45px)',
+            height: 'calc(100% - 45px)',
+            background: 'hsl(212, 100%, 51%)',
+            border: '10px solid hsl(212, 100%, 61%)',
+            borderRadius: '41% 40% 50% 55% / 49% 52% 51% 43%',
+            zIndex: -2,
+            animation: 'rotateTeleportBefore 35s infinite linear'
+          }}
+        />
+        <div 
+          style={{
+            content: '',
+            position: 'absolute',
+            top: '30px',
+            left: '30px',
+            width: 'calc(100% - 75px)',
+            height: 'calc(100% - 75px)',
+            background: 'hsl(212, 100%, 31%)',
+            border: '7px solid hsl(212, 100%, 41%)',
+            borderRadius: '42% 63% 51% 60% / 47% 62% 42% 52%',
+            animation: 'rotateTeleportAfter 35s infinite linear'
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+};
 
 // Glitch text effect for cat hover - enhanced TV static effect
 const GlitchText: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -68,6 +132,21 @@ const GlitchText: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           @keyframes scanline {
             0% { top: -50%; }
             100% { top: 110%; }
+          }
+          
+          @keyframes rotateTeleport {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          
+          @keyframes rotateTeleportBefore {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-720deg); }
+          }
+          
+          @keyframes rotateTeleportAfter {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(720deg); }
           }
         `}</style>
       </>
@@ -150,11 +229,20 @@ const CleanFeedIntro: React.FC = () => {
     navigate("/clean-feed-game");
   };
   
+  // Handle teleport to clean feed game page with skipIntro=true
+  const handleTeleport = () => {
+    console.log("Teleport clicked! Navigating to /clean-feed-game");
+    navigate("/clean-feed-game");
+  };
+  
   return (
     <div
       className="relative w-full h-screen bg-cover bg-center"
       style={{ backgroundImage: `url('/bed-room.png')` }}
     >
+      {/* Teleport Bubble - always visible */}
+      <TeleportBubble onClick={handleTeleport} />
+
       {/* Black Cat on the right side of the bed  */}
       <div 
         className="absolute bottom-39 right-119 w-50 h-auto group"
@@ -348,7 +436,7 @@ const CleanFeedIntro: React.FC = () => {
 
       {/* Full-screen overlay with button when active */}
       {characterPopupStage === 3 && (
-        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+        <div className="fixed inset-0 flex items-center justify-center z-40" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: [0.8, 1.2, 1], rotate: [0, -5, 5, 0] }}

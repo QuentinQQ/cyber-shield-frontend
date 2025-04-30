@@ -2,12 +2,82 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Teleport Bubble component - reusable across pages
+const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.3 }}
+      className="absolute bottom-10 right-20 cursor-pointer z-50"
+      onClick={onClick}
+      style={{
+        width: '150px',
+        height: '150px',
+      }}
+    >
+      {/* Teleport bubble animation */}
+      <div 
+        className="teleport-bubble"
+        style={{
+          width: '150px',  
+          height: '150px',
+          background: 'hsl(212, 100%, 71%)',
+          border: '13px solid hsl(212, 100%, 81%)',
+          position: 'relative',
+          overflow: 'visible',
+          borderRadius: '48% 40% 62% 47% / 61% 49% 64% 43%',
+          animation: 'rotateTeleport 35s infinite linear',
+          zIndex: 10
+        }}
+      >
+        {/* Inner layers of the teleport bubble */}
+        <div 
+          style={{
+            content: '',
+            position: 'absolute',
+            top: '15px',
+            left: '15px',
+            width: 'calc(100% - 45px)',
+            height: 'calc(100% - 45px)',
+            background: 'hsl(212, 100%, 51%)',
+            border: '10px solid hsl(212, 100%, 61%)',
+            borderRadius: '41% 40% 50% 55% / 49% 52% 51% 43%',
+            zIndex: -2,
+            animation: 'rotateTeleportBefore 35s infinite linear'
+          }}
+        />
+        <div 
+          style={{
+            content: '',
+            position: 'absolute',
+            top: '30px',
+            left: '30px',
+            width: 'calc(100% - 75px)',
+            height: 'calc(100% - 75px)',
+            background: 'hsl(212, 100%, 31%)',
+            border: '7px solid hsl(212, 100%, 41%)',
+            borderRadius: '42% 63% 51% 60% / 47% 62% 42% 52%',
+            animation: 'rotateTeleportAfter 35s infinite linear'
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+};
+
 const StoryPage: React.FC = () => {
     const navigate = useNavigate();
     const [isLeftScreenHovered, setIsLeftScreenHovered] = useState(false);
     const [isCharacterHovered, setIsCharacterHovered] = useState(false);
     const [textNoiseLevel, setTextNoiseLevel] = useState(100);
-    const [isFlowerPotHovered, setIsFlowerPotHovered] = useState(false);
+
+    // Handle teleport to clean feed page
+    const handleTeleport = () => {
+        navigate("/clean-feed");
+    };
 
     // Text noise animation effect
     useEffect(() => {
@@ -136,6 +206,22 @@ const StoryPage: React.FC = () => {
 
     return (
         <div className="relative w-full h-screen overflow-hidden">
+            {/* Keyframe animations for teleport bubble */}
+            <style>{`
+                @keyframes rotateTeleport {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                @keyframes rotateTeleportBefore {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(-720deg); }
+                }
+                @keyframes rotateTeleportAfter {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(720deg); }
+                }
+            `}</style>
+
             {/* Full-screen background image */}
             <div className="absolute inset-0 w-full h-full z-0">
                 <img
@@ -145,8 +231,10 @@ const StoryPage: React.FC = () => {
                 />
             </div>
 
-            <div className="relative z-10 w-full h-full flex flex-col">
+            {/* Teleport Bubble - always visible */}
+            <TeleportBubble onClick={handleTeleport} />
 
+            <div className="relative z-10 w-full h-full flex flex-col">
                 <div className="flex-1 flex items-center justify-center relative">
                     {/* Left TV Screen */}
                     <div 
@@ -248,46 +336,6 @@ const StoryPage: React.FC = () => {
                                 filter: 'drop-shadow(0 0 15px rgba(0,150,255,0.5))',
                             }}
                         />
-                    </motion.div>
-
-                    {/* Flower Pot on the sofa */}
-                    <motion.div
-                        className="absolute cursor-pointer z-20"
-                        style={{
-                            right: '5%',
-                            bottom: '15%',
-                            width: '100px',
-                            height: '100px'
-                        }}
-                        initial={{ opacity: 0.7, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        onMouseEnter={() => setIsFlowerPotHovered(true)}
-                        onMouseLeave={() => setIsFlowerPotHovered(false)}
-                        onClick={() => navigate('/clean-feed')}
-                    >
-                        <img
-                            src="/flower-pot.png"
-                            alt="Secret Flower Pot"
-                            className="w-full h-full object-contain"
-                        />
-                        
-                        <AnimatePresence>
-                            {isFlowerPotHovered && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-white text-purple-800 p-3 rounded-2xl max-w-xs shadow-lg z-30"
-                                >
-                                    <div className="font-medium text-center">
-                                        Um... wanna jump to next activity?
-                                    </div>
-                                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[12px] border-l-transparent border-r-transparent border-t-white"></div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
                     </motion.div>
                 </div>
             </div>

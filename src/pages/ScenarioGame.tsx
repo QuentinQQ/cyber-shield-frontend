@@ -9,15 +9,81 @@ import StartScreen from "../components/scenario/StartScreen";
 import PageWrapper from "../components/PageWrapper";
 import LoadingOverlay from "../components/LoadingOverlay";
 import TextDisplay from "../components/scenario/TextDisplay";
-import PrimaryButton from "../components/PrimaryButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+
+// Teleport Bubble component - reusable across pages
+const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.3 }}
+      className="absolute bottom-10 right-20 cursor-pointer z-50"
+      onClick={onClick}
+      style={{
+        width: '150px',
+        height: '150px',
+      }}
+    >
+      {/* Teleport bubble animation */}
+      <div 
+        className="teleport-bubble"
+        style={{
+          width: '150px',  
+          height: '150px',
+          background: 'hsl(212, 100%, 71%)',
+          border: '13px solid hsl(212, 100%, 81%)',
+          position: 'relative',
+          overflow: 'visible',
+          borderRadius: '48% 40% 62% 47% / 61% 49% 64% 43%',
+          animation: 'rotateTeleport 35s infinite linear',
+          zIndex: 10
+        }}
+      >
+        {/* Inner layers of the teleport bubble */}
+        <div 
+          style={{
+            content: '',
+            position: 'absolute',
+            top: '15px',
+            left: '15px',
+            width: 'calc(100% - 45px)',
+            height: 'calc(100% - 45px)',
+            background: 'hsl(212, 100%, 51%)',
+            border: '10px solid hsl(212, 100%, 61%)',
+            borderRadius: '41% 40% 50% 55% / 49% 52% 51% 43%',
+            zIndex: -2,
+            animation: 'rotateTeleportBefore 35s infinite linear'
+          }}
+        />
+        <div 
+          style={{
+            content: '',
+            position: 'absolute',
+            top: '30px',
+            left: '30px',
+            width: 'calc(100% - 75px)',
+            height: 'calc(100% - 75px)',
+            background: 'hsl(212, 100%, 31%)',
+            border: '7px solid hsl(212, 100%, 41%)',
+            borderRadius: '42% 63% 51% 60% / 47% 62% 42% 52%',
+            animation: 'rotateTeleportAfter 35s infinite linear'
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+};
 
 /**
  * @component ScenarioGame
  * @description Interactive scenario game component with character
  */
 const ScenarioGame: React.FC = () => {
+  const navigate = useNavigate();
   const {
     started,
     currentNode,
@@ -30,7 +96,6 @@ const ScenarioGame: React.FC = () => {
     handleOptionSelect,
     handleContinue,
   } = useScenarioPlayer();
-  const navigate = useNavigate();
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
   const [characterHovered, setCharacterHovered] = useState(false);
 
@@ -39,6 +104,11 @@ const ScenarioGame: React.FC = () => {
     currentNode?.type === MediaType.TEXT && 
     !currentNode.nextNodeId && 
     !showOptions;
+
+  // Handle teleport to story page
+  const handleTeleport = () => {
+    navigate("/story");
+  };
 
   // Error handling to prevent page crashes
   if (!currentNode) {
@@ -51,6 +121,22 @@ const ScenarioGame: React.FC = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
+      {/* Keyframe animations for teleport bubble */}
+      <style>{`
+        @keyframes rotateTeleport {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes rotateTeleportBefore {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(-720deg); }
+        }
+        @keyframes rotateTeleportAfter {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(720deg); }
+        }
+      `}</style>
+
       {/* Full-screen game background */}
       <div className="absolute inset-0 w-full h-full z-0">
         <img
@@ -59,6 +145,9 @@ const ScenarioGame: React.FC = () => {
           className="w-full h-full object-cover"
         />
       </div>
+
+      {/* Teleport Bubble - always visible */}
+      <TeleportBubble onClick={handleTeleport} />
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="container mx-auto relative h-full flex flex-col">
@@ -235,30 +324,7 @@ const ScenarioGame: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Button area at the bottom */}
-          <div className="flex justify-center mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 2.2,
-                delay: 0.3,
-                type: "spring",
-                stiffness: 100,
-                damping: 10,
-              }}
-              className="md:ml-40"
-            >
-              <PrimaryButton
-                variant="cta"
-                rotate
-                onClick={() => navigate("/story")}
-              >
-                See Their Story
-              </PrimaryButton>
-            </motion.div>
-          </div>
+      
         </div>
       </div>
     </div>
