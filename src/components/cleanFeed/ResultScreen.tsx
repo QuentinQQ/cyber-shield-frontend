@@ -1,5 +1,5 @@
 import React from "react";
-import { GameResult } from "../../types/types";
+import { GameResultV2 } from "../../types/types";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import PrimaryButton from "@/components/PrimaryButton";
@@ -14,7 +14,7 @@ import PrimaryButton from "@/components/PrimaryButton";
  * @returns {JSX.Element}
  */
 const ResultScreen: React.FC<{
-  result: GameResult;
+  result: GameResultV2;
   onRestart: () => void;
 }> = ({ result, onRestart }) => {
   const navigate = useNavigate();
@@ -60,10 +60,11 @@ const ResultScreen: React.FC<{
         className="space-y-2 text-white text-lg"
       >
         {[
-          `You answered ${result.percent}% correctly.`,
+          `Summary: ${result.summary}`,
+          `You answered ${result.percent} correctly.`,
           `Your score is ${result.score}.`,
           `You performed better than ${result.comparison}% of players.`,
-          `Total Answered: ${result.answered}, Correct: ${result.answered_correct}.`,
+          `Total Answered: ${result.answered}, Correct: ${result.answered_cor}.`,
         ].map((text, i) => (
           <motion.p
             key={i}
