@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CommentData, GameResultV2, GameSubmission } from "../types/types";
-import { fetchComments, postGameResult, postGameResultV2 } from "../services/feedGameService";
+import { fetchComments, postGameResultV2 } from "../services/feedGameService";
 
 /**
  * @hook useCleanFeed
