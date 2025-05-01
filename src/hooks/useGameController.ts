@@ -15,8 +15,9 @@ import { CommentData, GameSubmission } from '@/types/types';
  *
  * @returns {{
  *   currentComment: CommentData,
+ *   nextComment: CommentData | undefined,
  *   handleResponse: (response_status: 'like' | 'dislike') => void
- * }} Returns the current comment and a function to record user responses.
+ * }} Returns the current comment, next comment, and a function to record user responses.
  *
  * @sideEffect Sets up a 60-second timer to auto-finish the game.
  */
@@ -62,6 +63,7 @@ export function useGameController(comments: CommentData[], onFinish: (submission
 
   return {
     currentComment: comments[current],
+    nextComment: current < comments.length - 1 ? comments[current + 1] : undefined,
     handleResponse,
   };
 }
