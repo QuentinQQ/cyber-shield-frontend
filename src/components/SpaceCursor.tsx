@@ -53,6 +53,14 @@ const SpaceCursor: React.FC = () => {
       textarea {
         cursor: none !important;
       }
+
+      /* Ensure teleport buttons and other interactive elements don't hide the cursor */
+      .teleport-bubble,
+      button,
+      [role="button"],
+      .cursor-pointer {
+        z-index: 999 !important;
+      }
     `;
     document.head.appendChild(style);
 
@@ -108,12 +116,13 @@ const SpaceCursor: React.FC = () => {
     <>
       {/* Space-themed cursor */}
       <motion.div
-        className="fixed pointer-events-none z-50"
+        className="fixed pointer-events-none"
         style={{
           left: mousePosition.x - 20,
           top: mousePosition.y - 20,
           width: isClicking ? 80 : 40,
           height: isClicking ? 80 : 40,
+          zIndex: 9999, // Extremely high z-index to ensure it's always on top
         }}
       >
         {/* Core glow */}
@@ -166,12 +175,13 @@ const SpaceCursor: React.FC = () => {
       {stars.map((star) => (
         <motion.div
           key={star.id}
-          className="fixed pointer-events-none z-40"
+          className="fixed pointer-events-none"
           style={{
             left: star.x - star.size/2,
             top: star.y - star.size/2,
             width: star.size,
             height: star.size,
+            zIndex: 9998, // Very high z-index just below the cursor
           }}
           initial={{ opacity: 0.8, scale: 0.2 }}
           animate={{ 
