@@ -111,14 +111,8 @@ const scenarioData: Record<string, ScenarioNode> = {
 
   A009: {
     id: "A009",
-    type: MediaType.IMAGE,
-    src: "/scenarioGame/A009.png",
-    nextNodeId: "A010",
-  },
-  A010: {
-    id: "A010",
     type: MediaType.VIDEO,
-    src: "/scenarioGame/A010.mp4",
+    src: "/scenarioGame/A009.mp4"
   },
 
   A011: {
