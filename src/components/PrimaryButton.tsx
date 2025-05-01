@@ -1,18 +1,34 @@
 // PrimaryButton.tsx
 import React from 'react'
-import { cn } from '@/lib/utils'  // Optional: className helper if using clsx or shadcn setup
+import { cn } from '@/lib/utils'
+import { motion } from "framer-motion";
 
 interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'cta' | 'ghost'
   rotate?: boolean
 }
 
-const variantClasses: Record<NonNullable<PrimaryButtonProps['variant']>, string> = {
-  default: 'bg-[#C2E764] text-black hover:[#b1d64a]',
-  cta: 'bg-[#C2E764] text-black text-xl px-8 py-4 hover:[#b1d64a]',
-  ghost: 'bg-transparent text-white border border-white hover:bg-white hover:text-black',
-}
+// Define animation variants
+const buttonVariants = {
+  initial: { 
+    scale: 1,
+  },
+  hover: { 
+    scale: 1.05,
+    transition: { duration: 0.3 }
+  },
+  tap: { 
+    scale: 0.95,
+    transition: { duration: 0.1 } 
+  }
+};
 
+// Map the variant names to classes
+const variantClasses: Record<NonNullable<PrimaryButtonProps['variant']>, string> = {
+  default: 'bg-[#C2E764] text-black',
+  cta: 'bg-[#C2E764] text-black text-xl px-8 py-4',
+  ghost: 'bg-indigo-900/50 text-white border-2 border-indigo-400 backdrop-blur-sm',
+}
 
 const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   children,
@@ -22,17 +38,69 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   ...props
 }) => {
   return (
-    <button
-      className={cn(
-        'font-semibold rounded-full px-5 py-2 transition-transform duration-300 shadow',
-        variantClasses[variant],
-        rotate && '-rotate-6 hover:rotate-0',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </button>
+    <div className="relative">
+      {/* Shadow beneath the button */}
+      <motion.div 
+        className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
+        animate={{
+          width: ['90%', '60%', '90%'],
+          x: ['5%', '20%', '5%']
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+      />
+      
+      <motion.button
+        className={cn(
+          // Base styles
+          'relative font-bold rounded-full px-8 py-4 shadow-lg z-10',
+          // Variant styles
+          variantClasses[variant],
+          // Rotation if enabled
+          rotate && '-rotate-6 hover:rotate-0',
+          // Add any custom classes
+          className
+        )}
+        // Basic button animations
+        variants={buttonVariants}
+        initial="initial"
+        whileHover="hover"
+        whileTap="tap"
+        // Add a bouncing animation for all buttons
+        animate={{
+          y: [0, -8, 0],
+        }}
+        transition={{
+          y: {
+            duration: 1.2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
+        }}
+        {...(props as React.ComponentProps<typeof motion.button>)}
+      >
+        {children}
+        
+        {/* Ring orbits (only for non-ghost buttons) */}
+        {variant !== 'ghost' && (
+          <>
+            <motion.div
+              className="absolute inset-0 border-2 border-black/10 rounded-full"
+              animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute inset-0 border-2 border-black/5 rounded-full"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
+              transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
+            />
+          </>
+        )}
+      </motion.button>
+    </div>
   )
 }
 

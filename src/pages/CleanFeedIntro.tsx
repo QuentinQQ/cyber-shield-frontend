@@ -523,73 +523,58 @@ const CleanFeedIntro: React.FC = () => {
         >
           <motion.div
             initial={{ scale: 0 }}
-            animate={{ scale: [0.8, 1.2, 1], rotate: [0, -5, 5, 0] }}
+            animate={{ scale: [0.8, 1.2, 1] }}
             transition={{ duration: 1 }}
             className="relative"
           >
-            <motion.div
-              className="absolute inset-0 rounded-full"
-              style={{ 
-                background: "radial-gradient(circle at center, rgba(0, 247, 255, 0.8), rgba(0, 98, 255, 0.4))",
-                filter: "blur(15px)"
+            {/* Shadow beneath the button */}
+            <motion.div 
+              className="absolute w-full h-6 bg-black/20 rounded-full blur-md bottom-0 left-0"
+              animate={{
+                width: ['90%', '60%', '90%'],
+                x: ['5%', '20%', '5%']
               }}
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
             />
             
             <motion.button
               onClick={handleNavigation}
-              className="relative px-8 py-6 rounded-full font-bold text-white"
-              style={{
-                background: "radial-gradient(circle at center, #00f7ff, #0062ff)",
-                boxShadow: "0 0 30px rgba(0, 247, 255, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.6)"
-              }}
-              animate={{ scale: [1, 1.08, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="relative bg-[#C2E764] text-black px-8 py-6 rounded-full font-bold text-2xl shadow-lg z-10"
               whileHover={{ 
-                scale: 1.15,
-                boxShadow: "0 0 40px rgba(0, 247, 255, 1)" 
+                scale: 1.05,
               }}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ 
+                scale: 0.95,
+              }}
+              // Add a bouncing animation for the button
+              animate={{
+                y: [0, -8, 0],
+              }}
+              transition={{
+                y: {
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }
+              }}
             >
-              <div className="relative flex items-center justify-center">
-                {/* Orbiting bubbles */}
-                <motion.div 
-                  className="absolute w-6 h-6 rounded-full bg-white/80"
-                  style={{ top: '-15px', right: '-15px' }}
-                  animate={{ 
-                    opacity: [0.8, 0.2, 0.8],
-                    scale: [1, 1.3, 1]
-                  }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-                <motion.div 
-                  className="absolute w-5 h-5 rounded-full bg-blue-200/80"
-                  style={{ bottom: '-10px', left: '-20px' }}
-                  animate={{ 
-                    opacity: [0.7, 0.3, 0.7],
-                    scale: [1, 1.2, 1]
-                  }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-                />
-                <motion.div 
-                  className="absolute w-4 h-4 rounded-full bg-green-200/80"
-                  style={{ top: '5px', left: '-25px' }}
-                  animate={{ 
-                    opacity: [0.6, 0.2, 0.6],
-                    scale: [1, 1.3, 1]
-                  }}
-                  transition={{ duration: 1.8, repeat: Infinity, delay: 0.7 }}
-                />
-                
-                {/* Button text */}
-                <span 
-                  className="drop-shadow-lg text-2xl font-bold tracking-wide"
-                  style={{ textShadow: "0 0 10px rgba(255,255,255,0.8)" }}
-                >
-                  LET'S CLEAN MY FEED!
-                </span>
-              </div>
+              LET'S CLEAN MY FEED!
+              
+              {/* Ring orbits */}
+              <motion.div
+                className="absolute inset-0 border-2 border-black/10 rounded-full"
+                animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <motion.div
+                className="absolute inset-0 border-2 border-black/5 rounded-full"
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
+                transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
+              />
             </motion.button>
           </motion.div>
         </div>
