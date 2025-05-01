@@ -7,6 +7,10 @@ export const fetchComments = () => {
   return axios.get(`${BASE_URL}/api/feed-game/get-all-comments`);
 };
 
+export const fetchCommentsV2 = () => {
+  return axios.get(`${BASE_URL}/api/feed-game/get-all-comments-v2`);
+};
+
 export const postGameResult = (submission: GameSubmission[]) => {
   return axios.post(`${BASE_URL}/api/feed-game/submit-answer`, { submission });
 };
