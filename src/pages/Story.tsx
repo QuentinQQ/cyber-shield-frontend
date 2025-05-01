@@ -371,13 +371,58 @@ const StoryPage: React.FC = () => {
                                 text="Emma's yarn: She got help to end the cyber aggro."
                                 className="text-sm text-center leading-tight"
                             />
-                            <motion.div 
-                                className="mt-4 text-xs text-white bg-red-500 px-3 py-1 rounded-full"
-                                animate={{ scale: [1, 1.05, 1] }}
-                                transition={{ repeat: Infinity, duration: 1.5 }}
-                            >
-                                Click to Watch
-                            </motion.div>
+                            
+                            {/* Updated Planet Bounce Button - "Click to Watch" */}
+                            <div className="mt-4 relative">
+                                {/* Shadow beneath the button */}
+                                <motion.div 
+                                    className="absolute w-full h-2 bg-black/20 rounded-full blur-md bottom-0 left-0"
+                                    animate={{
+                                        width: ['90%', '60%', '90%'],
+                                        x: ['5%', '20%', '5%']
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        repeatType: "reverse"
+                                    }}
+                                />
+                                
+                                <motion.div 
+                                    className="relative bg-[#C2E764] text-black px-3 py-1 rounded-full font-bold text-xs shadow-lg z-10"
+                                    whileHover={{ 
+                                        scale: 1.05,
+                                    }}
+                                    whileTap={{ 
+                                        scale: 0.95,
+                                    }}
+                                    // Add a bouncing animation
+                                    animate={{
+                                        y: [0, -4, 0],
+                                    }}
+                                    transition={{
+                                        y: {
+                                            duration: 1.2,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }
+                                    }}
+                                >
+                                    Click to Watch
+                                    
+                                    {/* Ring orbits */}
+                                    <motion.div
+                                        className="absolute inset-0 border border-black/10 rounded-full"
+                                        animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
+                                        transition={{ duration: 3, repeat: Infinity }}
+                                    />
+                                    <motion.div
+                                        className="absolute inset-0 border border-black/5 rounded-full"
+                                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
+                                        transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
+                                    />
+                                </motion.div>
+                            </div>
                         </motion.div>
 
                         <div 

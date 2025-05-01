@@ -21,23 +21,50 @@ const QuizPage: React.FC = () => {
       <div className="container mx-auto py-10">
         <Infographic />
 
-        {/* Animated button with spring animation */}
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 2.2,
-            delay: 0.3,
-            type: "spring",
-            stiffness: 100,
-            damping: 10,
-          }}
-          className="mt-10 flex justify-center"
-        >
-          <PrimaryButton variant="cta" rotate onClick={goToScenario}>
-            Let's play a Scenario Game
-          </PrimaryButton>
-        </motion.div>
+        {/* Updated button wrapper for fully consistent animation */}
+        <div className="mt-10 flex justify-center">
+          <div className="relative">
+            {/* Shadow beneath the button */}
+            <motion.div 
+              className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                width: ['90%', '60%', '90%'],
+                x: ['5%', '20%', '5%']
+              }}
+              transition={{
+                opacity: { duration: 0.5, delay: 0.5 },
+                width: {
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  delay: 0.5
+                },
+                x: {
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  delay: 0.5
+                }
+              }}
+            />
+            
+            {/* The PrimaryButton with our standard fade-in rather than spring */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5
+              }}
+            >
+              <PrimaryButton variant="cta" rotate onClick={goToScenario}>
+                Let's play a Scenario Game
+              </PrimaryButton>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </PageWrapper>
   );

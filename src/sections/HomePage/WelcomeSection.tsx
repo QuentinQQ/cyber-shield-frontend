@@ -536,7 +536,7 @@ const WelcomeSection: React.FC = () => {
       </div>
 
       {/* Bottom right CTA - Space Theme */}
-      <div className="flex justify-end items-center px-10 md:px-20 z-20">
+      <div className="flex justify-end items-center px-70 md:px-10 z-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
