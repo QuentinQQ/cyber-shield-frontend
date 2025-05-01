@@ -12,25 +12,23 @@ const GameScreen: React.FC<{
   onFinish: (submissions: GameSubmission[]) => void;
 }> = ({ comments, onFinish }) => {
   const isMobile = useIsMobile();
-  const { currentComment, handleResponse } = useGameController(
-    comments,
-    onFinish
-  );
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  // Optional: you can tweak this width percentage or maxWidth value
-  const containerWidthVW = 60;
-  const maxWidthPx = 700;
-  const phoneWidthPercent = 55; // phone is narrower than hand image
+  const {
+    currentComment,
+    nextComment,
+    handleResponse,
+  } = useGameController(comments, onFinish);
 
   const [containerWidth, setContainerWidth] = useState(400);
+  const containerWidthVW = 60;
+  const maxWidthPx = 700;
+  const phoneWidthPercent = 55;
+
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [direction, setDirection] = useState<"left" | "right" | null>(null);
 
   useEffect(() => {
     const updateWidth = () => {
-      const vw = Math.min(
-        window.innerWidth * (containerWidthVW / 100),
-        maxWidthPx
-      );
+      const vw = Math.min(window.innerWidth * (containerWidthVW / 100), maxWidthPx);
       setContainerWidth(vw);
     };
     updateWidth();
@@ -38,13 +36,15 @@ const GameScreen: React.FC<{
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  const handleDelayedResponse = (action: "like" | "dislike") => {
+  const handleSlide = (dir: "left" | "right") => {
     if (isAnimating) return;
+    setDirection(dir);
     setIsAnimating(true);
     setTimeout(() => {
-      handleResponse(action);
+      handleResponse(dir === "right" ? "like" : "dislike");
+      setDirection(null);
       setIsAnimating(false);
-    }, 300);
+    }, 400);
   };
 
   return (
@@ -53,21 +53,11 @@ const GameScreen: React.FC<{
 
       {isMobile ? (
         <div className="w-full px-4 max-w-md mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentComment.comment_id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <CommentCard
-                comment={currentComment}
-                onLike={() => handleDelayedResponse("like")}
-                onDislike={() => handleDelayedResponse("dislike")}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <CommentCard
+            comment={currentComment}
+            onLike={() => handleSlide("right")}
+            onDislike={() => handleSlide("left")}
+          />
         </div>
       ) : (
         <div
@@ -77,7 +67,7 @@ const GameScreen: React.FC<{
             height: containerWidth * 1.35,
           }}
         >
-          // Hand image
+          {/* ✅ 背景手图保持底部固定 */}
           <img
             src="/cleanFeed/hand-2.png"
             alt="Hand"
@@ -90,7 +80,6 @@ const GameScreen: React.FC<{
             }}
           />
 
-          // Phone mockup
           <div
             className="absolute z-20"
             style={{
@@ -107,23 +96,43 @@ const GameScreen: React.FC<{
               hideStatusBar={true}
               transparentNavBar={true}
             >
-              <div className="h-full w-full flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-200 p-4 overflow-hidden">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentComment.comment_id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="w-full"
-                  >
-                    <CommentCard
-                      comment={currentComment}
-                      onLike={() => handleDelayedResponse("like")}
-                      onDislike={() => handleDelayedResponse("dislike")}
-                    />
-                  </motion.div>
-                </AnimatePresence>
+              <div className="h-full w-full relative bg-gradient-to-b from-blue-100 to-blue-200 overflow-hidden rounded-xl">
+                <div className="absolute inset-0 flex items-center justify-center">
+
+                  {/* Next card */}
+                  {nextComment && (
+                    <motion.div
+                      key={nextComment.comment_id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 0.4 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute w-full"
+                    >
+                      <CommentCard comment={nextComment} onLike={() => {}} onDislike={() => {}} />
+                    </motion.div>
+                  )}
+
+                  {/* Current card */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentComment.comment_id}
+                      initial={{ x: 0, opacity: 1 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{
+                        x: direction === "right" ? 400 : -400,
+                        opacity: 0,
+                        transition: { duration: 0.4 },
+                      }}
+                      className="absolute w-full px-3"
+                    >
+                      <CommentCard
+                        comment={currentComment}
+                        onLike={() => handleSlide("right")}
+                        onDislike={() => handleSlide("left")}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
               </div>
             </IPhoneMockup>
           </div>
@@ -132,8 +141,7 @@ const GameScreen: React.FC<{
 
       <div className="text-center max-w-md mx-auto px-4">
         <p className="text-white text-sm opacity-80 mt-4">
-          Swipe through comments and indicate whether they are appropriate
-          (Like) or inappropriate (Dislike).
+          Swipe through comments and indicate whether they are appropriate (Like) or inappropriate (Dislike).
         </p>
       </div>
     </div>
