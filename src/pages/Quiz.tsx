@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Infographic from "@/components/infographic/Infographic";
 import PageWrapper from "@/components/PageWrapper";
-import PrimaryButton from "@/components/PrimaryButton";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuizPage } from "@/hooks/useQuizPage";
 
 /**
  * Quiz page containing the interactive cyberbullying infographic visualization
@@ -14,7 +12,6 @@ import { useQuizPage } from "@/hooks/useQuizPage";
  * <QuizPage />
  */
 const QuizPage: React.FC = () => {
-  const { goToScenario } = useQuizPage();
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; opacity: number; blinkDuration: number; }[]>([]);
   const [showDialog, setShowDialog] = useState(true);
 
@@ -153,14 +150,12 @@ const QuizPage: React.FC = () => {
                   top: "-70px",
                   left: "30px", /* Moved left from centered to directly above the character head */
                   transform: "translateX(0) rotate(0deg)", /* Removed rotation and center transform */
-                  background: "#FFFFFF", /* Changed to white to match your image */
                   borderRadius: "10px", /* More rounded corners like in the image */
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)", /* Light shadow */
                   margin: "0.5em 0", 
                   padding: "1em",
                   width: "15em", 
                   minHeight: "4em",
-                  borderRadius: "0.25em",
                   background: "#629bdd",
                   fontFamily: "Century Gothic, Verdana, sans-serif",
                   fontSize: "1.5rem",
@@ -236,6 +231,7 @@ const QuizPage: React.FC = () => {
                   repeatType: "reverse"
                 }}
               />
+
             </motion.div>
           </div>
         </div>
