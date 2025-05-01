@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CommentData, GameResultV2, GameSubmission } from "../types/types";
-import { fetchComments, postGameResultV2 } from "../services/feedGameService";
+import { fetchCommentsV2, postGameResultV2 } from "../services/feedGameService";
 
 /**
  * @hook useCleanFeed
@@ -99,7 +99,7 @@ export const useCleanFeed = () => {
   useEffect(() => {
     if (gameStarted && comments.length === 0) {
       setIsLoading(true);
-      fetchComments()
+      fetchCommentsV2()
         .then((res) => {
           setComments(res.data.data || []);
         })
