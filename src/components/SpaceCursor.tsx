@@ -86,6 +86,7 @@ const SpaceCursor: React.FC = () => {
       window.removeEventListener("mouseup", handleMouseUp);
       document.head.removeChild(style);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mousePosition, isMobile]);
 
   useEffect(() => {
