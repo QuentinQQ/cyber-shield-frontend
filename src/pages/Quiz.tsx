@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import Infographic from "@/components/infographic/Infographic";
 import PageWrapper from "@/components/PageWrapper";
 import { motion, AnimatePresence } from "framer-motion";
-import PrimaryButton from "@/components/PrimaryButton";
-import { motion } from "framer-motion";
-import { useQuizPage } from "@/hooks/useQuizPage";
 import { useNavigate } from "react-router-dom";
 import { TeleportBubble } from "@/components/TeleportBubble";
 
@@ -83,7 +80,7 @@ const QuizPage: React.FC = () => {
     }, 8000);
   };
   
-  const { goToScenario } = useQuizPage();
+  // const { goToScenario } = useQuizPage();
   const navigate = useNavigate();
 
 
