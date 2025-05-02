@@ -1,73 +1,247 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Infographic from "@/components/infographic/Infographic";
 import PageWrapper from "@/components/PageWrapper";
-import PrimaryButton from "@/components/PrimaryButton";
-import { motion } from "framer-motion";
-import { useQuizPage } from "@/hooks/useQuizPage";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { TeleportBubble } from "@/components/TeleportBubble";
 
+
 /**
  * Quiz page containing the interactive cyberbullying infographic visualization
- * and a button to navigate to the scenario game.
+ * and a button to navigate to the scenario game, with animated star background.
  * 
  * @page
  * @example
  * <QuizPage />
  */
 const QuizPage: React.FC = () => {
-  const { goToScenario } = useQuizPage();
+  const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; opacity: number; blinkDuration: number; }[]>([]);
+  const [showDialog, setShowDialog] = useState(true);
+
+  // Speech bubble timeout ref to clear on new clicks
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Generate random stars for the background
+  useEffect(() => {
+    const generateStars = () => {
+      const newStars = [];
+      const starCount = Math.floor(window.innerWidth * window.innerHeight / 10000) + 20;
+      
+      for (let i = 0; i < starCount; i++) {
+        newStars.push({
+          id: i,
+          x: Math.random() * 100, // % position
+          y: Math.random() * 100, // % position
+          size: Math.random() * 2 + 1, // size between 1-3px
+          opacity: Math.random() * 0.7 + 0.3, // opacity between 0.3-1
+          blinkDuration: Math.random() * 3 + 2, // blink animation duration
+        });
+      }
+      
+      setStars(newStars);
+    };
+
+    generateStars();
+    
+    // Regenerate stars when window is resized
+    window.addEventListener('resize', generateStars);
+    return () => window.removeEventListener('resize', generateStars);
+  }, []);
+  
+  // Auto-hide the speech bubble after a few seconds
+  useEffect(() => {
+    setShowDialog(true);
+    
+    timeoutRef.current = setTimeout(() => {
+      setShowDialog(false);
+    }, 8000);
+    
+    // Clean up on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Handle character click
+  const handleCharacterClick = () => {
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    
+    // Show the dialog
+    setShowDialog(true);
+    
+    // Set a new timeout
+    timeoutRef.current = setTimeout(() => {
+      setShowDialog(false);
+    }, 8000);
+  };
+  
+  // const { goToScenario } = useQuizPage();
   const navigate = useNavigate();
+
 
   const handleTeleport = () => {
     navigate("/scenario");
   };
   return (
-    <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white">
-      <div className="container mx-auto py-10">
-        <Infographic />
+    <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white overflow-hidden relative">
+      {/* Speech bubble styles */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .speech-bubble:before, .speech-bubble:after {
+          position: absolute;
+          z-index: -1;
+          content: '';
+        }
+        
+        .speech-bubble:after {
+          top: 0; 
+          right: 0; 
+          bottom: 0; 
+          left: 0;
+          border-radius: inherit;
+          transform: rotate(2deg) translate(.35em, -.15em) scale(1.02);
+          background: #f4fbfe;
+        }
+        
+        .speech-bubble:before {
+          border: solid 0 transparent;
+          border-right: solid 3.5em #f4fbfe;
+          border-bottom: solid .25em #629bdd;
+          bottom: .25em; 
+          left: 1.25em;
+          width: 0; 
+          height: 1em;
+          transform: rotate(45deg) skewX(75deg);
+        }
+      `}} />
+      
+      {/* Star background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {stars.map((star) => (
+          <motion.div
+            key={star.id}
+            className="absolute rounded-full bg-white z-0"
+            style={{
+              left: `${star.x}%`,
+              top: `${star.y}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+            }}
+            animate={{
+              opacity: [star.opacity, star.opacity * 0.3, star.opacity],
+            }}
+            transition={{
+              duration: star.blinkDuration,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Character with speech bubble */}
+      <div className="absolute left-10 bottom-0 h-full z-20">
+        <div className="relative h-3/4 flex items-end">
+          {/* Speech bubble */}
+          <AnimatePresence>
+            {showDialog && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.9 }}
+                transition={{ duration: 0.5 }}
+                className="speech-bubble absolute"
+                style={{
+                  position: "absolute",
+                  top: "-70px",
+                  left: "30px", /* Moved left from centered to directly above the character head */
+                  transform: "translateX(0) rotate(0deg)", /* Removed rotation and center transform */
+                  borderRadius: "10px", /* More rounded corners like in the image */
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)", /* Light shadow */
+                  margin: "0.5em 0", 
+                  padding: "1em",
+                  width: "15em", 
+                  minHeight: "4em",
+                  background: "#629bdd",
+                  fontFamily: "Century Gothic, Verdana, sans-serif",
+                  fontSize: "1.5rem",
+                  textAlign: "center",
+                  zIndex: 40,
+                }}
+              >
+                <motion.div 
+                  className="text-lg font-medium text-gray-800 z-10 relative"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
+                  style={{ position: "relative", zIndex: 5 }}
+                >
+                  How many students are in your class?
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        {/* Updated button wrapper for fully consistent animation */}
-        <div className="mt-10 flex justify-center">
-          <div className="relative">
-            {/* Shadow beneath the button */}
-            <motion.div 
-              className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: 1,
-                width: ['90%', '60%', '90%'],
-                x: ['5%', '20%', '5%']
-              }}
-              transition={{
-                opacity: { duration: 0.5, delay: 0.5 },
-                width: {
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  delay: 0.5
-                },
-                x: {
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  delay: 0.5
-                }
-              }}
+          {/* Character */}
+          <motion.div
+            initial={{ x: -200, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{
+              duration: 1.5,
+              type: "spring",
+              stiffness: 70,
+              damping: 15
+            }}
+            className="relative"
+          >
+            <img 
+              src="/public/character-book.gif" 
+              alt="Character Guide" 
+              className="h-full object-contain max-w-xs cursor-pointer"
+              onClick={handleCharacterClick}
+              style={{ zIndex: 30 }}
             />
-            
-            {/* The PrimaryButton with our standard fade-in rather than spring */}
+          </motion.div>
+        </div>
+      </div>
+      
+      {/* Main content */}
+      <div className="container mx-auto py-10 relative z-10">
+        <div className="ml-32 md:ml-40 lg:ml-48">
+          <Infographic />
+
+          {/* Button wrapper */}
+          <div className="mt-10 flex justify-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.5,
-                delay: 0.5
+                duration: 2.2,
+                delay: 0.3,
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
               }}
+              className="relative"
             >
-              <PrimaryButton variant="cta" rotate onClick={goToScenario}>
-                Let's play a Scenario Game
-              </PrimaryButton>
+              {/* Shadow beneath the button */}
+              <motion.div 
+                className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
+                animate={{
+                  width: ['90%', '60%', '90%'],
+                  x: ['5%', '20%', '5%']
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              />
+
             </motion.div>
           </div>
         </div>

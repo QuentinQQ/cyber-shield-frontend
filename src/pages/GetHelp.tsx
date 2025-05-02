@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Phone,
   Heart,
@@ -176,19 +176,10 @@ const HELP_STEPS: HelpStep[] = [
 const MOBILE_BREAKPOINT = 768;
 
 const GetHelp: React.FC = () => {
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [characterPosition, setCharacterPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [activeStep, setActiveStep] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  // Initialize the stepRefs array
-  useEffect(() => {
-    stepRefs.current = stepRefs.current.slice(0, HELP_STEPS.length);
-    while (stepRefs.current.length < HELP_STEPS.length) {
-      stepRefs.current.push(null);
-    }
-  }, []);
+  const [stars, setStars] = useState<Array<{id: number, x: number, y: number, size: number, opacity: number, animationDuration: number}>>([]);
 
   const checkMobile = useCallback(() => {
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -199,36 +190,40 @@ const GetHelp: React.FC = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, [checkMobile]);
-
-  const updateNinjaPosition = useCallback(
-    (index: number) => {
-      if (stepRefs.current[index] && !isMobile) {
-        const currentStep = stepRefs.current[index]!.getBoundingClientRect();
-        setCharacterPosition({
-          x: currentStep.left + currentStep.width / 2 - 20,
-          y: currentStep.top - 40,
+  
+  // Generate stars for the background
+  useEffect(() => {
+    const generateStars = () => {
+      const numberOfStars = 100;
+      const newStars = [];
+      
+      for (let i = 0; i < numberOfStars; i++) {
+        newStars.push({
+          id: i,
+          x: Math.random() * 100, // % position
+          y: Math.random() * 100, // % position
+          size: Math.random() * 0.3 + 0.1, // rem size (0.1-0.4rem)
+          opacity: Math.random() * 0.7 + 0.3, // opacity between 0.3-1
+          animationDuration: Math.random() * 3 + 2 // 2-5 seconds
         });
       }
-    },
-    [isMobile]
-  );
+      
+      setStars(newStars);
+    };
+    
+    generateStars();
+  }, []);
 
-  useEffect(() => {
-    if (stepRefs.current[0] && !isMobile) {
-      updateNinjaPosition(0);
+  const handleCardClick = (index: number) => {
+    if (activeStep === index) {
+      // If clicking the already active card, close it
+      setActiveStep(null);
+      setShowDetails(false);
+    } else {
+      // If clicking a different card, open it
+      setActiveStep(index);
+      setShowDetails(true); // Automatically show details when opening a card
     }
-  }, [isMobile, updateNinjaPosition]);
-
-  useEffect(() => {
-    const handleResize = () => updateNinjaPosition(activeStep);
-    window.addEventListener("resize", handleResize);
-    updateNinjaPosition(activeStep);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [activeStep, updateNinjaPosition]);
-
-  const moveCharacterTo = (index: number) => {
-    setActiveStep(index);
-    setShowDetails(true); 
   };
 
   const toggleDetails = () => {
@@ -253,9 +248,48 @@ const GetHelp: React.FC = () => {
     return <p key={index} className="mb-2">{item.label}</p>;
   };
 
+  // CSS for star animation
+  const starStyles = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    overflow: "hidden",
+    zIndex: 0,
+    pointerEvents: "none"
+  } as React.CSSProperties;
+  
+  // Render the stars
+  const StarryBackground: React.FC = () => (
+    <div style={starStyles}>
+      {stars.map(star => (
+        <div 
+          key={star.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            top: `${star.y}%`,
+            left: `${star.x}%`,
+            width: `${star.size}rem`,
+            height: `${star.size}rem`,
+            opacity: star.opacity,
+            animation: `twinkle ${star.animationDuration}s infinite alternate`
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes twinkle {
+          0% { opacity: ${Math.random() * 0.3 + 0.1}; }
+          100% { opacity: ${Math.random() * 0.7 + 0.3}; }
+        }
+      `}</style>
+    </div>
+  );
+
   const MobileView: React.FC = () => (
-    <div className="p-4 bg-gradient-to-b from-[#0064C5] to-[#1E90FF] min-h-screen">
-      <div className="text-center text-white mb-6">
+    <div className="p-4 bg-gradient-to-b from-[#0064C5] to-[#1E90FF] min-h-screen relative overflow-hidden">
+      <StarryBackground />
+      <div className="text-center text-white mb-6 relative z-10">
         <h1 className="text-3xl font-bold">Get Help</h1>
         <p className="text-lg">We're here for you whenever you need support</p>
       </div>
@@ -267,7 +301,7 @@ const GetHelp: React.FC = () => {
         >
           <div
             className="p-4 flex items-center justify-between cursor-pointer"
-            onClick={() => moveCharacterTo(index)}
+            onClick={() => handleCardClick(index)}
           >
             <div className="flex items-center">
               <div className="bg-white rounded-full p-2 mr-3">{step.icon}</div>
@@ -294,22 +328,15 @@ const GetHelp: React.FC = () => {
     const bottomRowSteps = HELP_STEPS.slice(3);
 
     return (
-      <div className="bg-gradient-to-b from-[#0064C5] to-[#1E90FF] min-h-screen p-8 text-black">
-        <div className="text-center text-white mb-10">
+      <div className="bg-gradient-to-b from-[#0064C5] to-[#1E90FF] min-h-screen p-8 text-black relative overflow-hidden">
+        <StarryBackground />
+        <div className="text-center text-white mb-10 relative z-10">
           <h1 className="text-4xl font-bold">Get Help</h1>
           <p className="text-lg">We're here for you whenever you need support</p>
         </div>
 
-        {/* Character */}
-        <div
-          className="absolute transition-all duration-500 z-30"
-          style={{ left: characterPosition.x, top: characterPosition.y }}
-        >
-          <div className="text-4xl animate-bounce">🥷</div>
-        </div>
-
         {/* Cards in two rows */}
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-8 relative z-10">
           {/* Top row */}
           <div className="flex justify-center gap-6">
             {topRowSteps.map((step, index) => (
@@ -318,10 +345,7 @@ const GetHelp: React.FC = () => {
                 step={step}
                 index={index}
                 isActive={activeStep === index}
-                onClick={() => moveCharacterTo(index)}
-                ref={(el: HTMLDivElement | null) => {
-                  stepRefs.current[index] = el;
-                }}
+                onClick={() => handleCardClick(index)}
               />
             ))}
           </div>
@@ -336,72 +360,70 @@ const GetHelp: React.FC = () => {
                   step={step}
                   index={actualIndex}
                   isActive={activeStep === actualIndex}
-                  onClick={() => moveCharacterTo(actualIndex)}
-                  ref={(el: HTMLDivElement | null) => {
-                    stepRefs.current[actualIndex] = el;
-                  }}
+                  onClick={() => handleCardClick(actualIndex)}
                 />
               );
             })}
           </div>
         </div>
 
-        {/* Details Panel */}
-        <div className="mt-12 max-w-3xl mx-auto">
-          <button
-            onClick={toggleDetails}
-            className={`w-full ${HELP_STEPS[activeStep].buttonColor} text-white p-3 rounded-t-lg font-medium flex justify-between items-center transition-colors`}
-          >
-            <span>More About {HELP_STEPS[activeStep].title}</span>
-            {showDetails ? <ChevronUp /> : <ChevronDown />}
-          </button>
+        {/* Details Panel - only show if a card is active */}
+        {activeStep !== null && (
+          <div className="mt-12 max-w-3xl mx-auto">
+            <button
+              onClick={toggleDetails}
+              className={`w-full ${HELP_STEPS[activeStep].buttonColor} text-white p-3 rounded-t-lg font-medium flex justify-between items-center transition-colors`}
+            >
+              <span>More About {HELP_STEPS[activeStep].title}</span>
+              {showDetails ? <ChevronUp /> : <ChevronDown />}
+            </button>
 
-          {showDetails && (
-            <div className="bg-white rounded-b-lg p-6 shadow-lg animate-fadeIn">
-              <div className="flex items-center mb-4">
-                <div
-                  className={`p-3 rounded-full ${HELP_STEPS[activeStep].color} mr-4`}
+            {showDetails && (
+              <div className="bg-white rounded-b-lg p-6 shadow-lg animate-fadeIn">
+                <div className="flex items-center mb-4">
+                  <div
+                    className={`p-3 rounded-full ${HELP_STEPS[activeStep].color} mr-4`}
+                  >
+                    {HELP_STEPS[activeStep].icon}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">
+                      {HELP_STEPS[activeStep].title}
+                    </h2>
+                    <p className="text-gray-600">
+                      {HELP_STEPS[activeStep].subtitle}
+                    </p>
+                  </div>
+                </div>
+
+                <p className={`${HELP_STEPS[activeStep].textColor} mb-4`}>
+                  Getting help for {HELP_STEPS[activeStep].title.toLowerCase()} is
+                  important. Here are resources that can support you:
+                </p>
+
+                <ul
+                  className={`${HELP_STEPS[activeStep].color} p-4 rounded-lg space-y-2`}
                 >
-                  {HELP_STEPS[activeStep].icon}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    {HELP_STEPS[activeStep].title}
-                  </h2>
-                  <p className="text-gray-600">
-                    {HELP_STEPS[activeStep].subtitle}
-                  </p>
-                </div>
-              </div>
-
-              <p className={`${HELP_STEPS[activeStep].textColor} mb-4`}>
-                Getting help for {HELP_STEPS[activeStep].title.toLowerCase()} is
-                important. Here are resources that can support you:
-              </p>
-
-              <ul
-                className={`${HELP_STEPS[activeStep].color} p-4 rounded-lg space-y-2`}
-              >
-                {HELP_STEPS[activeStep].content.map((item, i) => (
-                  <li key={i} className="ml-4 pl-2">
-                    {renderContentItem(item, i)}
+                  {HELP_STEPS[activeStep].content.map((item, i) => (
+                    <li key={i} className="ml-4 pl-2">
+                      {renderContentItem(item, i)}
+                    </li>
+                  ))}
+                  <li className="ml-4 pl-2 font-medium">
+                    Remember you're not alone - there are people who care and want to
+                    help.
                   </li>
-                ))}
-                <li className="ml-4 pl-2 font-medium">
-                  Remember you're not alone - there are people who care and want to
-                  help.
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   };
 
-  const HelpCard = React.forwardRef<HTMLDivElement, HelpCardProps>(({ step, isActive, onClick }, ref) => (
+  const HelpCard: React.FC<HelpCardProps> = ({ step, isActive, onClick }) => (
     <div
-      ref={ref}
       onClick={onClick}
       className={`cursor-pointer w-64 flex-shrink-0 rounded-lg p-4 border-2 ${step.borderColor} ${step.color} shadow-md transition-all duration-300 hover:scale-105 ${
         isActive ? "border-4 border-blue-500 scale-105" : ""
@@ -413,7 +435,7 @@ const GetHelp: React.FC = () => {
       <h3 className="font-bold text-center">{step.title}</h3>
       <p className="text-sm text-center text-gray-600">{step.subtitle}</p>
     </div>
-  ));
+  );
 
   return isMobile ? <MobileView /> : <DesktopView />;
 };
