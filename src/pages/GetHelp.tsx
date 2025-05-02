@@ -277,7 +277,7 @@ const GetHelp: React.FC = () => {
           }}
         />
       ))}
-      <style jsx>{`
+      <style>{`
         @keyframes twinkle {
           0% { opacity: ${Math.random() * 0.3 + 0.1}; }
           100% { opacity: ${Math.random() * 0.7 + 0.3}; }
