@@ -4,7 +4,7 @@ import { MediaType } from "../types/scenario.types";
 import VideoPlayer from "../components/scenario/VideoPlayer";
 import ImageDisplay from "../components/scenario/ImageDisplay";
 import OptionsOverlay from "../components/scenario/OptionsOverlay";
-import CaptionDisplay from "../components/scenario/CaptionDisplay";
+// import CaptionDisplay from "../components/scenario/CaptionDisplay";
 import PageWrapper from "../components/PageWrapper";
 import LoadingOverlay from "../components/LoadingOverlay";
 import TextDisplay from "../components/scenario/TextDisplay";
@@ -133,7 +133,7 @@ const ScenarioGame: React.FC = () => {
     started,
     currentNode,
     showOptions,
-    caption,
+    // caption,
     videoRef,
     startScenario,
     resetScenario,
@@ -386,33 +386,21 @@ const ScenarioGame: React.FC = () => {
                       ) : (
                         <>
                           {currentNode.type === MediaType.VIDEO && (
-                            <VideoPlayer
-                              src={currentNode.src}
-                              onEnded={handleMediaEnd}
-                              videoRef={videoRef}
-                            />
+                            <VideoPlayer src={currentNode.src} onEnded={handleMediaEnd} videoRef={videoRef} />
                           )}
-
                           {currentNode.type === MediaType.IMAGE && (
                             <ImageDisplay src={currentNode.src} onLoad={handleMediaEnd} />
                           )}
-
                           {currentNode.type === MediaType.TEXT && (
                             <TextDisplay
-                              text={currentNode.caption || ""}
-                              title={currentNode.title}
-                              onContinue={
-                                currentNode.nextNodeId ? handleContinue : undefined
-                              }
+                              text={currentNode.title ?? ""}   // 🔄 UPDATED — 直接用 title
+                              onContinue={currentNode.nextNodeId ? handleContinue : undefined}
                             />
                           )}
 
                           {/* Options overlay - stays in the player area */}
                           {showOptions && currentNode.options && (
-                            <OptionsOverlay
-                              options={currentNode.options}
-                              onSelect={handleOptionSelect}
-                            />
+                            <OptionsOverlay options={currentNode.options} onSelect={handleOptionSelect} />
                           )}
                           
                           {/* Updated Play Again button with Planet Bounce style */}
@@ -501,20 +489,10 @@ const ScenarioGame: React.FC = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Caption area - outside the player but inside the frame */}
-                  {started && caption && (
-                    <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                      <div className="w-full px-4">
-                        <CaptionDisplay text={caption} />
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
           </div>
-      
         </div>
       </div>
     </div>

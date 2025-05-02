@@ -1,147 +1,138 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import scenarioData from "../data/scenarioGraphData";
 import { MediaType, ScenarioNode } from "../types/scenario.types";
 
 /**
- * @hook useScenarioPlayer
- * @description Manages the state and logic for the scenario player
+ * Custom hook to manage the scenario-based interactive video game flow.
+ * Provides control over starting, resetting, progressing through media nodes,
+ * and selecting options.
+ *
+ * @returns {{
+ *  started: boolean,
+ *  currentNode: ScenarioNode,
+ *  showOptions: boolean,
+ *  videoRef: React.RefObject<HTMLVideoElement>,
+ *  startScenario: () => void,
+ *  resetScenario: () => void,
+ *  handleMediaEnd: () => void,
+ *  handleOptionSelect: (optId: string) => void,
+ *  handleContinue: () => void
+ * }}
  */
 export function useScenarioPlayer() {
-  // Game state
+  // Whether the user has started the scenario
   const [started, setStarted] = useState(false);
-  const [currentNodeId, setCurrentNodeId] = useState("start");
-  const [showOptions, setShowOptions] = useState(false);
-  const [caption, setCaption] = useState<string | null>(null);
 
-  // References
+  // Current scenario node ID (used to fetch node data)
+  const [currentId, setCurrentId] = useState("start");
+
+  // Whether to show option buttons on screen
+  const [showOpts, setShowOpts] = useState(false);
+
+  // Ref to control the HTML video element (used in VideoPlayer component)
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Current node
-  const currentNode = scenarioData[currentNodeId];
-
-  // Effect to show caption when node changes
-  useEffect(() => {
-    if (currentNode?.caption) {
-      setCaption(currentNode.caption);
-    } else {
-      setCaption(null);
+  /**
+   * Internal helper to move to a specific node in the scenario.
+   *
+   * @param id - The ID of the target scenario node.
+   */
+  const goTo = (id: string) => {
+    if (!scenarioData[id]) {
+      console.error("Node not found:", id);
+      return;
     }
-  }, [currentNodeId, currentNode]);
+    setShowOpts(false);
+    setCurrentId(id);
+  };
 
   /**
-   * @function startScenario
-   * @description Starts the scenario game
+   * Starts the scenario from the first video node.
+   * This should be called once the user clicks the "Start" button.
    */
   const startScenario = () => {
-    console.log("Starting scenario");
     setStarted(true);
-    goToNode("A001");
+    goTo("A002"); // First playable node (skip intro image)
   };
 
   /**
-   * @function resetScenario
-   * @description Resets the scenario to start over
+   * Resets the entire scenario to the starting state.
+   * Useful for "Try Again" or restart functionality.
    */
   const resetScenario = () => {
-    console.log("Resetting scenario");
     setStarted(false);
-    setCurrentNodeId("start");
-    setShowOptions(false);
-    setCaption(null);
-    
-    // Small delay for visual reset effect
-    setTimeout(() => {
-      startScenario();
-    }, 300);
+    setCurrentId("start");
+    setShowOpts(false);
+
+    // Optional small delay before re-starting for smoother UX
+    setTimeout(startScenario, 300);
   };
 
   /**
-   * @function handleMediaEnd
-   * @description Handles media end event (videos/images)
+   * Called when the current media (video or image) ends.
+   * Determines whether to show options or move automatically to next node.
    */
   const handleMediaEnd = () => {
-    console.log(`Media ended: ${currentNodeId}`);
+    const node = scenarioData[currentId];
 
-    // Show options if available
-    if (currentNode.options && currentNode.options.length > 0) {
-      setShowOptions(true);
+    // If this node has options, show them
+    if (node.options?.length) {
+      setShowOpts(true);
       return;
     }
 
-    // Auto-advance to next node if available
-    if (currentNode.nextNodeId) {
-      // Allow time for caption to be read
-      setTimeout(() => {
-        goToNode(currentNode.nextNodeId!);
-      }, 2000);
+    // Otherwise, move to the next node if it exists
+    if (node.nextNodeId) {
+      setTimeout(() => goTo(node.nextNodeId!), 500);
     }
   };
 
   /**
-   * @function handleOptionSelect
-   * @description Handles option selection
+   * Called when the user selects an option.
+   * Navigates to the next node linked to that option.
+   *
+   * @param optId - The ID of the selected option (e.g., "A", "B_2").
    */
-  const handleOptionSelect = (optionId: string) => {
-    console.log(`Option selected: ${optionId}`);
-
-    // Hide options
-    setShowOptions(false);
-
-    // Find selected option
-    const option = currentNode.options?.find(
-      (opt: { id: string }) => opt.id === optionId
-    );
-    if (option && option.nextNodeId) {
-      goToNode(option.nextNodeId);
+  const handleOptionSelect = (optId: string) => {
+    const option = scenarioData[currentId].options?.find((o) => o.id === optId);
+    if (option?.nextNodeId) {
+      goTo(option.nextNodeId);
     }
   };
 
   /**
-   * @function handleContinue
-   * @description Handles continue button clicks on text screens
+   * Called when the user clicks a "Continue" button from a text-only or image node.
+   * Moves directly to the nextNodeId if it exists.
    */
   const handleContinue = () => {
-    console.log(`Continue from node: ${currentNodeId}`);
-
-    if (currentNode.nextNodeId) {
-      goToNode(currentNode.nextNodeId);
+    const node = scenarioData[currentId];
+    if (node.nextNodeId) {
+      goTo(node.nextNodeId);
     }
   };
 
-  /**
-   * @function goToNode
-   * @description Navigates to a specific node
-   */
-  const goToNode = (nodeId: string) => {
-    console.log(`Going to node: ${nodeId}`);
-
-    // Reset state
-    setShowOptions(false);
-
-    // Check if node exists
-    if (!scenarioData[nodeId]) {
-      console.error(`Node not found: ${nodeId}`);
-      return;
-    }
-
-    // Set current node
-    setCurrentNodeId(nodeId);
-  };
-
+  // Return all necessary data and methods for the player component
   return {
     started,
-    currentNode,
-    showOptions,
-    caption,
+    currentNode: scenarioData[currentId],
+    showOptions: showOpts,
     videoRef,
+
+    // Public methods
     startScenario,
-    resetScenario,  // Add this new function
+    resetScenario,
     handleMediaEnd,
-    handleContinue,
     handleOptionSelect,
+    handleContinue,
   };
 }
 
-// Re-export types for convenience
+/**
+ * Re-export media type enum for convenience.
+ */
 export { MediaType };
+
+/**
+ * Re-export scenario node type for external components.
+ */
 export type { ScenarioNode };

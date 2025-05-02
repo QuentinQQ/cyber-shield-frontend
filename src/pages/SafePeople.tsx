@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Copy, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { TeleportBubble } from '@/components/TeleportBubble';
 
 interface MessageTemplate {
   id: number;
@@ -34,6 +36,11 @@ const SafePeople = () => {
   const [allStarsBrightened, setAllStarsBrightened] = useState(false);
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [showBubbles] = useState(true);
+  const navigate = useNavigate();
+
+  const handleTeleport = () => {
+    navigate("/text-checker");
+  };
 
   // Generate mini space bubbles
   useEffect(() => {
@@ -681,6 +688,8 @@ const SafePeople = () => {
           </div>
         </div>
       </div>
+      {/* Teleport Bubble Button */}
+      <TeleportBubble onClick={handleTeleport} />
     </div>
   );
 };

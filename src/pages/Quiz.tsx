@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import Infographic from "@/components/infographic/Infographic";
 import PageWrapper from "@/components/PageWrapper";
 import { motion, AnimatePresence } from "framer-motion";
+import PrimaryButton from "@/components/PrimaryButton";
+import { motion } from "framer-motion";
+import { useQuizPage } from "@/hooks/useQuizPage";
+import { useNavigate } from "react-router-dom";
+import { TeleportBubble } from "@/components/TeleportBubble";
+
 
 /**
  * Quiz page containing the interactive cyberbullying infographic visualization
@@ -76,7 +82,14 @@ const QuizPage: React.FC = () => {
       setShowDialog(false);
     }, 8000);
   };
+  
+  const { goToScenario } = useQuizPage();
+  const navigate = useNavigate();
 
+
+  const handleTeleport = () => {
+    navigate("/scenario");
+  };
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white overflow-hidden relative">
       {/* Speech bubble styles */}
@@ -236,6 +249,8 @@ const QuizPage: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Teleport Bubble */}
+      <TeleportBubble onClick={handleTeleport} />
     </PageWrapper>
   );
 };
