@@ -1,6 +1,4 @@
-// App.js
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import React from 'react';
 import HomePage from './pages/HomePage';
 import CleanFeed from './pages/CleanFeed';
 import Header from './components/Header';
