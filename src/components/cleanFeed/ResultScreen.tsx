@@ -312,7 +312,7 @@ const ResultScreen: React.FC<{
       >
         {/* Character image */}
         <img
-          src="/public/clapping.gif"
+          src="/clapping.gif"
           alt="Clapping Character"
           className="h-full w-auto object-contain"
         />
