@@ -85,7 +85,7 @@ const QuizPage: React.FC = () => {
 
 
   const handleTeleport = () => {
-    navigate("/scenario");
+    navigate("/character-intro");
   };
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white overflow-hidden relative">
