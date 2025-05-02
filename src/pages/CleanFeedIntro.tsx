@@ -316,7 +316,7 @@ const CleanFeedIntro: React.FC = () => {
     // Hide it after 5 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
-    }, 5000);
+    }, 10000);
     
     // Clean up on unmount
     return () => clearTimeout(timer);
@@ -498,7 +498,7 @@ const CleanFeedIntro: React.FC = () => {
             <CharacterDialog
               content={characterPopupStage === 1 ? 
                 "First TikTok about to drop! It's my Zat ~ get ready for cuteness OVERLOAD!" : 
-                "URGENT TRANSMISSION! Ugh, so many comments! Help me clear this feed by liking and disliking comments! Only 30 sec left!"
+                "Ugh, so many comments! Help me clear this feed by liking and disliking comments! Only 30 sec left!"
               }
               isVisible={true}
               customStyle={{
