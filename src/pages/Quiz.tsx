@@ -199,7 +199,7 @@ const QuizPage: React.FC = () => {
             className="relative"
           >
             <img 
-              src="/public/character-book.gif" 
+              src="/character-book.gif" 
               alt="Character Guide" 
               className="h-full object-contain max-w-xs cursor-pointer"
               onClick={handleCharacterClick}
