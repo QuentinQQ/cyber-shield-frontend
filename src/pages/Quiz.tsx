@@ -157,7 +157,7 @@ const QuizPage: React.FC = () => {
                 className="speech-bubble absolute"
                 style={{
                   position: "absolute",
-                  top: "-70px",
+                  top: "70px",
                   left: "30px", /* Moved left from centered to directly above the character head */
                   transform: "translateX(0) rotate(0deg)", /* Removed rotation and center transform */
                   borderRadius: "10px", /* More rounded corners like in the image */
