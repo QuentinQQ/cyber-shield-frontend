@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const RelaxPage = () => {
   // Show both rabbit and character immediately
-  const [showRabbit, setShowRabbit] = useState(true);
+  const [showRabbit] = useState(true);
   const [showCharacter, setShowCharacter] = useState(true);
   const [showSpeechBubble, setShowSpeechBubble] = useState(true);
 
