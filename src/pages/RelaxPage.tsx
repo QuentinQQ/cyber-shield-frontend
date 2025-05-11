@@ -1,37 +1,36 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
 
 const RelaxPage = () => {
-  const [showRabbit, setShowRabbit] = useState(false);
+  // Show both rabbit and character immediately
+  const [showRabbit, setShowRabbit] = useState(true);
   const [showCharacter, setShowCharacter] = useState(true);
   const [showSpeechBubble, setShowSpeechBubble] = useState(true);
 
-  // Show rabbit after 4 seconds
+  // Hide speech bubble after 4 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShowRabbit(true);
       setShowSpeechBubble(false);
     }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Hide character after rabbit appears
+  // Hide character after 7 seconds
   useEffect(() => {
-    if (showRabbit) {
-      const timer = setTimeout(() => {
-        setShowCharacter(false);
-      }, 3000); // Character stays for 3 seconds after rabbit appears
+    const timer = setTimeout(() => {
+      setShowCharacter(false);
+    }, 7000); // Character disappears after 7 seconds
 
-      return () => clearTimeout(timer);
-    }
-  }, [showRabbit]);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-pink-200 relative overflow-hidden">
       {/* Character */}
       {showCharacter && (
-        <div className="absolute left-8 top-1/2 transform -translate-y-1/2 z-10">
-          <div className="w-80 h-80 flex items-center justify-center">
+        <div className="absolute left-8 top-[60%] transform -translate-y-1/2 z-10">
+          <div className="w-128 h-auto">
             <img 
               src="/relax-char.gif"
               alt="Relax Character" 
@@ -41,18 +40,76 @@ const RelaxPage = () => {
         </div>
       )}
 
-      {/* Speech bubble */}
-      {showSpeechBubble && (
-        <div className="absolute left-96 top-1/2 transform -translate-y-1/2 bg-white rounded-3xl p-6 shadow-lg max-w-sm z-20">
-          <p className="text-gray-800 text-center">
-            Sometimes things can get hard, so let's relax a little bit, follow our friend Rabbitz!
-          </p>
-          {/* Speech bubble arrow pointing left */}
-          <div className="absolute left-0 top-1/2 transform -translate-x-full -translate-y-1/2">
-            <div className="w-0 h-0 border-t-[15px] border-t-transparent border-b-[15px] border-b-transparent border-r-[20px] border-r-white"></div>
-          </div>
-        </div>
-      )}
+      {/* Speech bubble matching CleanFeedIntro style */}
+      <AnimatePresence>
+        {showSpeechBubble && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ duration: 0.5 }}
+            className="speech-bubble relative"
+            style={{
+              position: "absolute",
+              top: "calc(50% - 320px)",   
+              left: "150px",  
+              margin: "0.5em 0", 
+              padding: "1em",
+              width: "15em", 
+              minHeight: "4em",
+              borderRadius: "0.25em",
+              transform: "rotate(-4deg) rotateY(15deg)",
+              background: "#629bdd",
+              fontFamily: "Century Gothic, Verdana, sans-serif",
+              fontSize: "1.5rem",
+              textAlign: "center",
+              zIndex: 20,
+            }}
+          >
+            {/* Speech bubble pointer and shadow - inline styles */}
+            <div 
+              style={{
+                position: "absolute",
+                zIndex: -1,
+                content: "''",
+                top: 0, 
+                right: 0, 
+                bottom: 0, 
+                left: 0,
+                borderRadius: "0.25em",
+                transform: "rotate(2deg) translate(.35em, -.15em) scale(1.02)",
+                background: "#f4fbfe",
+              }}
+            />
+            <div 
+              style={{
+                position: "absolute",
+                zIndex: -1,
+                content: "''",
+                border: "solid 0 transparent",
+                borderRight: "solid 3.5em #f4fbfe",
+                borderBottom: "solid .25em #629bdd",
+                bottom: ".25em", 
+                left: "1.25em",
+                width: 0, 
+                height: "1em",
+                transform: "rotate(45deg) skewX(75deg)",
+              }}
+            />
+            
+            {/* Content */}
+            <motion.div 
+              className="text-lg font-medium text-black z-10 relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              style={{ position: "relative", zIndex: 5 }}
+            >
+              <p>Sometimes things can get hard, so let's relax a little bit, follow our friend Rabbitz!</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Rabbit container */}
       {showRabbit && (
