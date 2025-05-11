@@ -1,0 +1,481 @@
+import { useState, useEffect } from 'react';
+
+const RelaxPage = () => {
+  const [showRabbit, setShowRabbit] = useState(false);
+  const [showCharacter, setShowCharacter] = useState(true);
+  const [showSpeechBubble, setShowSpeechBubble] = useState(true);
+
+  // Show rabbit after 4 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowRabbit(true);
+      setShowSpeechBubble(false);
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Hide character after rabbit appears
+  useEffect(() => {
+    if (showRabbit) {
+      const timer = setTimeout(() => {
+        setShowCharacter(false);
+      }, 3000); // Character stays for 3 seconds after rabbit appears
+
+      return () => clearTimeout(timer);
+    }
+  }, [showRabbit]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-pink-200 relative overflow-hidden">
+      {/* Character */}
+      {showCharacter && (
+        <div className="absolute left-8 top-1/2 transform -translate-y-1/2 z-10">
+          <div className="w-80 h-80 flex items-center justify-center">
+            <img 
+              src="/relax-char.gif"
+              alt="Relax Character" 
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Speech bubble */}
+      {showSpeechBubble && (
+        <div className="absolute left-96 top-1/2 transform -translate-y-1/2 bg-white rounded-3xl p-6 shadow-lg max-w-sm z-20">
+          <p className="text-gray-800 text-center">
+            Sometimes things can get hard, so let's relax a little bit, follow our friend Rabbitz!
+          </p>
+          {/* Speech bubble arrow pointing left */}
+          <div className="absolute left-0 top-1/2 transform -translate-x-full -translate-y-1/2">
+            <div className="w-0 h-0 border-t-[15px] border-t-transparent border-b-[15px] border-b-transparent border-r-[20px] border-r-white"></div>
+          </div>
+        </div>
+      )}
+
+      {/* Rabbit container */}
+      {showRabbit && (
+        <div className="flex flex-col items-center justify-center min-h-screen px-8 py-16 bg-gradient-to-b from-pink-50 to-pink-100">
+          
+          
+          <div className="bunny-container mx-auto">
+            <div className="text"></div>
+            <div className="bunny">
+              <div className="bunny__ears">
+                <div className="bunny__ear bunny__ear--left"></div>
+                <div className="bunny__ear bunny__ear--right"></div>
+              </div>
+              <div className="bunny__feet">
+                <div className="bunny__foot bunny__foot--left"></div>
+                <div className="bunny__foot bunny__foot--right"></div>
+              </div>
+              <div className="bunny__tail"></div>
+              <div className="bunny__arm">
+                <div className="bunny__paw"></div>
+              </div>
+              <div className="bunny__body">
+                <div className="bunny__eyes"></div>
+                <div className="bunny__nose"></div>
+                <div className="bunny__cheeks"></div>
+                <div className="bunny__mouth"></div>
+              </div>
+            </div>
+            <div className="bubbles">
+              {Array.from({ length: 18 }, (_, i) => (
+                <div key={i} className="bubble"></div>
+              ))}
+            </div>
+            <div className="grass"></div>
+          </div>
+        </div>
+      )}
+      
+      <style>{`
+        /* Import Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
+        
+        /* CSS Variables */
+        :root {
+          --bunny-size: 300px;
+          --bunny-color: pink;
+          --bunny-color-2: #f0a4cb;
+          --bunny-eye-color: #473929;
+          --bunny-cheek-color: red;
+          --bunny-tongue-color: red;
+          --bunny-mouth-color: #473929;
+          --bunny-nose-color: #473929;
+          
+          --stick-color: #ff8819;
+          --stick-bubble-color-1: #9e9eff;
+          --stick-bubble-color-2: white;
+          
+          --text-color: #473929;
+          --grass-color: #84cc84;
+          --grass-color-2: lightgreen;
+
+          --breathe-duration: 10s;
+
+          --bubble-color-1: #4fd5e7;
+          --bubble-color-2: #829fff;
+          --bubble-color-3: #76e0cf;
+          --bubble-color-4: #86befd;
+          --bubble-color-5: #91f1d9;
+        }
+
+        /* Bunny CSS */
+        .bunny-container {
+          width: var(--bunny-size);
+          height: var(--bunny-size);
+          position: relative;
+          font-family: 'Balsamiq Sans', cursive;
+        }
+
+        .bunny {
+          width: 230px;
+          height: 300px;
+          transform: translateX(70px);
+          position: relative;
+        }
+
+        .bunny * {
+          position: absolute;
+        }
+
+        .bunny__body {
+          width: 200px;
+          height: 200px;
+          background: var(--bunny-color);
+          border-radius: 100px 100px 30px 0px;
+          transform: translateY(80px);
+        }
+
+        @keyframes eyesAnim {
+          0%, 15%, 17%, 79%, 81% { transform: translate(40px, 40px) rotateZ(6deg) }
+          16%, 80% { transform: translate(40px, 40px) rotateZ(6deg) scaleY(0.3) }
+          60% { transform: translate(40px, 30px) rotateZ(6deg) }
+          10%, 70%, 100% { transform: translate(40px, 40px) rotateZ(6deg) }
+        }
+
+        .bunny__eyes {
+          padding: 6px;
+          background: var(--bunny-eye-color);
+          border-radius: 50%;
+          box-shadow: 80px 0 var(--bunny-eye-color);
+          transform: translate(40px, 40px) rotateZ(6deg);
+          animation: eyesAnim var(--breathe-duration) linear infinite;
+        }
+
+        @keyframes noseAnim {
+          60% { transform: translate(70px, 40px) }
+          10%, 70%, 100% { transform: translate(70px, 50px) }
+        }
+
+        .bunny__nose {
+          padding: 5px 8px;
+          background: var(--bunny-nose-color);
+          border-radius: 50%;
+          transform: translate(70px, 50px);
+          animation: noseAnim var(--breathe-duration) linear infinite;
+        }
+
+        .bunny__nose::after {
+          content: '|';
+          text-shadow: 1px 0px, -1px 0;
+          color: var(--bunny-nose-color);
+          position: absolute;
+          font-size: 20px;
+          font-weight: bolder;
+          transform: translateX(-2px);
+        }
+
+        @keyframes cheeksAnim {
+          60% { transform: translate(10px, 50px) rotateZ(5deg); opacity: 0.5 }
+          10%, 70%, 100%, 0% { transform: translate(10px, 55px) rotateZ(5deg); opacity: 0.2 }
+        }
+
+        .bunny__cheeks {
+          padding: 18px;
+          background: var(--bunny-cheek-color);
+          border-radius: 50%;
+          transform: translate(10px, 55px) rotateZ(5deg);
+          box-shadow: 110px 0 var(--bunny-cheek-color);
+          animation: cheeksAnim var(--breathe-duration) linear infinite;
+        }
+
+        @keyframes breatheMouthAnim {
+          0%, 10%, 75%,
+          78%, 82%, 86%, 90%, 94%, 98%, 100%, 4%, 8%
+          { transform: translate(68px, 70px) }
+          60% { transform: translate(70px, 70px) scale(3, 2.5) }
+          76%, 80%, 84%, 88%, 92%, 96%, 2%, 6% { transform: translate(66px, 70px) }
+        }
+
+        .bunny__mouth {
+          padding: 8px 10px;
+          background: var(--bunny-tongue-color);
+          border-radius: 50%;
+          transform: translate(66px, 70px);
+          box-shadow: inset 5px 8px var(--bunny-mouth-color);
+          animation: breatheMouthAnim var(--breathe-duration) linear infinite;
+        }
+
+        .bunny__ears {
+          width: 200px;
+          height: 100px;
+        }
+
+        @keyframes earLeftAnim {
+          0%, 10%, 75% { transform: var(--transform-3) }
+          15%, 17%, 65% { transform: var(--transform-1) }
+          16% { transform: var(--transform-2) }
+
+          25%, 29%, 42%, 46%, 56%, 60% { transform: var(--transform-4) }
+          23%, 27%, 31%, 40%, 44%, 48%, 54%, 58%, 62% { transform: var(--transform-1) }
+        }
+
+        @keyframes earRightAnim {
+          0%, 10%, 75% { transform: var(--transform-3) }
+          13%, 15%, 65% { transform: var(--transform-1) }
+          14% { transform: var(--transform-2) }
+
+          28%, 32%, 44%, 48%, 55%, 59% { transform: var(--transform-4) }
+          26%, 30%, 34%, 42%, 46%, 50%, 53%, 57%, 61% { transform: var(--transform-1) }
+        }
+
+        .bunny__ear {
+          width: 50px;
+          height: 100px;
+          border-radius: 50% 50% 0%;
+          background: var(--bunny-color);
+          transform-origin: bottom left;
+          box-shadow: inset 0px 15px var(--bunny-color-2);
+          transform: var(--transform-3);
+        }
+
+        .bunny__ear--left {
+          --transform-1: translateX(50px) rotate(10deg);
+          --transform-2: translateX(50px) rotate(5deg);
+          --transform-3: translateX(50px) rotate(30deg);
+          --transform-4: translateX(50px) rotate(8deg);
+          animation: earLeftAnim var(--breathe-duration) linear infinite;
+        }
+
+        .bunny__ear--right {
+          --transform-1: translateX(125px) rotate(25deg);
+          --transform-2: translateX(125px) rotate(20deg);
+          --transform-3: translateX(125px) rotate(45deg);
+          --transform-4: translateX(125px) rotate(23deg);
+          animation: earRightAnim var(--breathe-duration) linear infinite;
+        }
+
+        .bunny__feet {
+          height: 35px;
+          width: 200px;
+          transform: translateY(265px);
+        }
+
+        .bunny__foot {
+          height: 35px;
+          width: 65px;
+          background: var(--bunny-color-2);
+          border-radius: 0 0 25px 50%;
+        }
+
+        .bunny__foot--left {
+          transform: rotate(10deg) skewY(-20deg);
+        }
+
+        .bunny__foot--right {
+          transform: translateX(110px) rotate(10deg) skewY(-20deg);
+        }
+
+        @keyframes tailAnim {
+          0%, 15%, 25%, 75%, 85%, 95% { transform: translate(190px, 200px) rotate(8deg) }
+          20%, 80%, 90% { transform: translate(190px, 198px) rotate(-8deg) }
+        }
+
+        .bunny__tail {
+          height: 50px;
+          width: 40px;
+          background: var(--bunny-color-2);
+          border-radius: 50% 50% 50%;
+          transform: translate(190px, 200px) rotate(8deg);
+          animation: tailAnim 3s linear infinite;
+        }
+
+        .bunny__arm {
+          width: 80px;
+          height: 100px;
+          transform: translate(-70px, 140px);
+        }
+
+        @keyframes pawAnim {
+          0%, 75%, 100% { transform: translate(20px, 70px) rotate(-2deg) }
+          65% { transform: translate(20px, 60px) rotate(10deg) }
+        }
+
+        .bunny__paw {
+          width: 50px;
+          height: 50px;
+          background: var(--bunny-color);
+          border-radius: 50px 0 0 50px;
+          transform-origin: bottom right;
+          transform: translate(20px, 70px) rotate(-2deg);
+          animation: pawAnim var(--breathe-duration) linear infinite;
+        }
+
+        .bunny__paw::before {
+          content: '';
+          position: absolute;
+          width: 10px;
+          height: 45px;
+          border-radius: 0 0 20px 20px;
+          background: var(--stick-color);
+          transform: translate(8px, -5px);
+        }
+
+        .bunny__paw::after {
+          content: '';
+          position: absolute;
+          width: 19px;
+          height: 35px;
+          background: linear-gradient(-45deg,
+            var(--stick-bubble-color-1) 0% 30%,
+            var(--stick-bubble-color-2) 30% 40%,
+            var(--stick-bubble-color-1) 40% 55%,
+            var(--stick-bubble-color-2) 55% 60%,
+            var(--stick-bubble-color-1) 60% 100%);
+          border-radius: 50%;
+          box-shadow: 0 0 0 8px var(--stick-color);
+          transform: translate(2px, -45px);
+        }
+
+        .grass {
+          width: 300px;
+          height: 70px;
+          background: var(--grass-color);
+          position: absolute;
+          border-radius: 50%;
+          transform: translateY(8px);
+          box-shadow: 0 6px 0 16px var(--grass-color-2);
+        }
+
+        .text {
+          text-align: center;
+          position: absolute;
+          width: 300px;
+          transform: translateY(-45px);
+        }
+
+        @keyframes breatheTextAnim {
+          60%, 100% { content: "breathe out" }
+          0%, 59% { content: "breathe in" }
+          100%, 0%, 12%, 50%, 62% { opacity: 0 }
+          15%, 40%, 65%, 90% { opacity: 1 }
+        }
+
+        .text::before {
+          content: "breathe in";
+          text-transform: uppercase;
+          font-weight: 900;
+          font-size: 1.2rem;
+          letter-spacing: 8px;
+          color: var(--text-color);
+          animation: breatheTextAnim var(--breathe-duration) linear infinite;
+        }
+
+        .bubbles {
+          position: absolute;
+          transform: translate(10px, -100px);
+        }
+
+        @keyframes bubbleAnim {
+          40% { offset-distance: 0% }
+          60% { offset-distance: 100%; }
+          42%, 58% { opacity: 1 }
+          0%, 40%, 60%, 100% { opacity: 0 }
+        }
+
+        .bubble {
+          position: absolute;
+          border-radius: 50%;
+          opacity: 0;
+          animation: bubbleAnim var(--breathe-duration) linear infinite;
+          --bubble-base-delay: 3s;
+          --bubble-delay: 0.2s;
+        }
+        
+        .bubble:nth-child(n) {
+          background: var(--bubble-color-1);
+          padding: 12px;
+          transform: rotate(10deg);
+          offset-path: path('m0,0 l -500, -35');
+        }
+        
+        .bubble:nth-child(2n) {
+          background: var(--bubble-color-2);
+          padding: 8px;
+          offset-path: path('m0,0 l -500, -25');
+        }
+        
+        .bubble:nth-child(3n) {
+          background: var(--bubble-color-3);
+          padding: 15px;
+          offset-path: path('m0,0 l -500, 10');
+        }
+        
+        .bubble:nth-child(4n) {
+          background: var(--bubble-color-4);
+          padding: 10px;
+          offset-path: path('m0,0 l -500, 30');
+        }
+        
+        .bubble:nth-child(5n) {
+          background: var(--bubble-color-5);
+          padding: 17px;
+          offset-path: path('m0,0 l -500, 20');
+        }
+
+        .bubble:nth-child(1) { animation-delay: var(--bubble-base-delay) }
+        .bubble:nth-child(2) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay)) }
+        .bubble:nth-child(3) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 2) }
+        .bubble:nth-child(4) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 3) }
+        .bubble:nth-child(5) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 4) }
+        .bubble:nth-child(6) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 5) }
+        .bubble:nth-child(7) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 6) }
+        .bubble:nth-child(8) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 7) }
+        .bubble:nth-child(9) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 8) }
+        .bubble:nth-child(10) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 9) }
+        .bubble:nth-child(11) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 10) }
+        .bubble:nth-child(12) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 11) }
+        .bubble:nth-child(13) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 12) }
+        .bubble:nth-child(14) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 13) }
+        .bubble:nth-child(15) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 14) }
+        .bubble:nth-child(16) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 15) }
+        .bubble:nth-child(17) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 16) }
+        .bubble:nth-child(18) { animation-delay: calc(var(--bubble-base-delay) + var(--bubble-delay) * 17) }
+
+        .bubble::before, .bubble::after {
+          content: '';
+          position: absolute;
+          border-radius: 50%;
+          background: white;
+        }
+
+        .bubble::after {
+          padding: 15%;
+          opacity: 0.6;
+        }
+
+        .bubble::before {
+          padding: 10%;
+          opacity: 0.7;
+          transform: translate(-6px, -1px);
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default RelaxPage;
