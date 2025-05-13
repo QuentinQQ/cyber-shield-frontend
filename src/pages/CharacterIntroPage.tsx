@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/PageWrapper";
-import PrimaryButton from "@/components/PrimaryButton";
 import NetworkBackground from "@/components/NetworkBackground";
 
 
@@ -281,10 +280,7 @@ const CharacterIntroPage: React.FC = () => {
     }
   }, [stage]);
   
-  // Navigate using the hook directly
-  const handleNavigation = () => {
-    navigate("/scenario");
-  };
+
 
   // Navigate to next page (skip)
   const handleTeleport = () => {
@@ -464,16 +460,7 @@ const CharacterIntroPage: React.FC = () => {
                 }}
               >
                 {/* Updated button with shake effect on hover */}
-                <PrimaryButton 
-                  variant="cta" 
-                  onClick={handleNavigation} 
-                  className="text-xl px-8 py-4 hover:animate-shake"
-                  style={{ 
-                    transformOrigin: 'center',
-                  }}
-                >
-                  How about a game?
-                </PrimaryButton>
+
               </motion.div>
             </motion.div>
           )}
