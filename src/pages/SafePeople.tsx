@@ -39,7 +39,7 @@ const SafePeople = () => {
   const navigate = useNavigate();
 
   const handleTeleport = () => {
-    navigate("/text-checker");
+    navigate("/relax");
   };
 
   // Generate mini space bubbles

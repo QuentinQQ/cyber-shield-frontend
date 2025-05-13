@@ -12,6 +12,7 @@ import CharacterIntroPage from './pages/CharacterIntroPage';
 import CleanFeedIntro from './pages/CleanFeedIntro'; 
 import TextAnalysisPage from './pages/TextAnalysisPage';
 import SpaceCursor from './components/SpaceCursor'; 
+import RelaxPage from './pages/RelaxPage';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/video" element={<Video />} />
             <Route path="/character-intro" element={<CharacterIntroPage />} />
             <Route path="/text-checker" element={<TextAnalysisPage />} />
+            <Route path="/relax" element={<RelaxPage />} />
           </Routes>
         </div>
       </BrowserRouter>
