@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { TeleportBubble } from "@/components/TeleportBubble";
 
-
 /**
  * Quiz page containing the interactive cyberbullying infographic visualization
  * and a button to navigate to the scenario game, with animated star background.
@@ -80,13 +79,13 @@ const QuizPage: React.FC = () => {
     }, 8000);
   };
   
-  // const { goToScenario } = useQuizPage();
   const navigate = useNavigate();
 
-
+  // Navigation handler for teleport button
   const handleTeleport = () => {
     navigate("/story");
   };
+  
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white overflow-hidden relative">
       {/* Speech bubble styles */}
@@ -119,6 +118,15 @@ const QuizPage: React.FC = () => {
         }
       `}} />
       
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/quiz-class.png" 
+          alt="Classroom background"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
       {/* Star background */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {stars.map((star) => (
@@ -144,8 +152,8 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Character with speech bubble */}
-      <div className="absolute left-10 bottom-0 h-full z-20">
-        <div className="relative h-3/4 flex items-end">
+      <div className="absolute left-10 bottom-0 h-full z-20 flex items-center">
+        <div className="relative h-3/4 flex items-end mt-32">
           {/* Speech bubble */}
           <AnimatePresence>
             {showDialog && (
@@ -157,7 +165,7 @@ const QuizPage: React.FC = () => {
                 className="speech-bubble absolute"
                 style={{
                   position: "absolute",
-                  top: "70px",
+                  top: "130px",
                   left: "30px", /* Moved left from centered to directly above the character head */
                   transform: "translateX(0) rotate(0deg)", /* Removed rotation and center transform */
                   borderRadius: "10px", /* More rounded corners like in the image */
@@ -180,7 +188,7 @@ const QuizPage: React.FC = () => {
                   transition={{ delay: 0.2, duration: 0.8 }}
                   style={{ position: "relative", zIndex: 5 }}
                 >
-                  How many students are in your class?
+                  Count your squad!
                 </motion.div>
               </motion.div>
             )}
@@ -246,8 +254,9 @@ const QuizPage: React.FC = () => {
           </div>
         </div>
       </div>
+      
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleport} />
+      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
     </PageWrapper>
   );
 };
