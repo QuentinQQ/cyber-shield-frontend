@@ -1,14 +1,21 @@
-
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import RelaxBackground from '@/components/RelaxBackground';
 import BunnyAnimation from '@/components/BunnyAnimation';
+import { TeleportBubble } from '@/components/TeleportBubble';
 
 const RelaxPage = () => {
+  const navigate = useNavigate();
   // Show both rabbit and character immediately
   const [showRabbit] = useState(true);
   const [showCharacter, setShowCharacter] = useState(true);
   const [showSpeechBubble, setShowSpeechBubble] = useState(true);
+
+  // Navigation handler for both teleport bubbles
+  const handleTeleport = () => {
+    navigate("/text-checker");
+  };
 
   // Hide speech bubble after 4 seconds
   useEffect(() => {
@@ -116,6 +123,10 @@ const RelaxPage = () => {
 
       {/* Bunny container */}
       {showRabbit && <BunnyAnimation />}
+      
+      {/* Both Teleport Bubbles */}
+      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
+      <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
     </RelaxBackground>
   );
 };
