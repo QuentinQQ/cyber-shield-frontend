@@ -1,5 +1,5 @@
 // File: src/pages/MusicPage.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import RelaxBackground from '../components/RelaxBackground';
 
@@ -129,7 +129,7 @@ const MusicPage = () => {
         ))}
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes float {
           0% {
             transform: translate(0, 0) rotate(0deg);
