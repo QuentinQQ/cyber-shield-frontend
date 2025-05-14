@@ -148,7 +148,7 @@ const StoryPage: React.FC = () => {
 
     // Handle teleport to clean feed page
     const handleTeleport = () => {
-        navigate("/clean-feed");
+        navigate("/scenario");
     };
 
     // Text noise animation effect

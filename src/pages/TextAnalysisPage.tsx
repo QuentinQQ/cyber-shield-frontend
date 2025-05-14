@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTextAnalysis } from "@/hooks/useTextAnalysis";
 import AnalysisResult from "@/components/textAnalysis/AnalysisResult";
 import PageWrapper from "@/components/PageWrapper";
+import { TeleportBubble } from "@/components/TeleportBubble";
 import { validateTextInput } from "@/utils/inputValidation";
 
 /**
@@ -14,6 +16,7 @@ import { validateTextInput } from "@/utils/inputValidation";
  * @returns A styled input page with real-time bullying feedback.
  */
 const TextCheckerPage = () => {
+  const navigate = useNavigate();
   // State to hold the user input
   const [text, setText] = useState<string>("");
   const [inputValidationError, setInputValidationError] = useState<
@@ -41,13 +44,18 @@ const TextCheckerPage = () => {
     submitText(text);
   };
 
+  // Navigation handler for both teleport bubbles
+  const handleTeleport = () => {
+    navigate("/get-help");
+  };
+
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
       <div className="flex items-center justify-center min-h-[calc(100vh-2rem)]">
         <div className="w-full max-w-xl bg-white text-black rounded-2xl shadow-xl p-8">
           {/* Page title */}
           <h1 className="text-2xl font-bold mb-6 text-center">
-            Is your message kind? Let’s check together!
+            Is your message kind? Let's check together!
           </h1>
 
           {/* Message input box */}
@@ -83,6 +91,10 @@ const TextCheckerPage = () => {
           {result && <AnalysisResult result={result} />}
         </div>
       </div>
+      
+      {/* Both Teleport Bubbles */}
+      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
+      <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
     </PageWrapper>
   );
 };
