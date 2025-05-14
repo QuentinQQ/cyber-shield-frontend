@@ -498,7 +498,7 @@ const CleanFeedIntro: React.FC = () => {
             <CharacterDialog
               content={characterPopupStage === 1 ? 
                 "First TikTok about to drop! It's my Zat ~ get ready for cuteness OVERLOAD!" : 
-                "Ugh, so many comments! Help me clear this feed by liking and disliking comments! Only 30 sec left!"
+                "Ugh, so many comments! Help me clear this feed by liking and disliking comments! Only 15 sec left!"
               }
               isVisible={true}
               customStyle={{
