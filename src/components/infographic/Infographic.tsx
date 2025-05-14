@@ -48,7 +48,7 @@ const Infographic: React.FC = () => {
     if (gridRef.current && studentCount > 0) {
       gridRef.current.style.gridTemplateColumns = `repeat(auto-fill, minmax(${iconSize}px, 1fr))`;
     }
-  }, [iconSize, studentCount]);
+  }, [gridRef, iconSize, studentCount]);
   
   /**
    * Updates state when input value changes

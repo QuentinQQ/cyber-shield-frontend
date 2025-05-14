@@ -1,10 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom"; 
 import { useState, useEffect, useRef } from "react";
 import PrimaryButton from "@/components/PrimaryButton";
 import SectionWrapper from "@/components/SectionWrapper";
-import happyImg from "@/assets/welcomePage/hero-happy.svg";
 import { useHomePage } from "@/hooks/useHomePage";
 import RunningCharacter from "@/components/RunningCharacter";
 
@@ -146,10 +144,10 @@ const CosmicStar: React.FC<CosmicStarProps> = ({ id, x, y, size, color, onComple
 };
 
 const WelcomeSection: React.FC = () => {
-  const { goToQuiz } = useHomePage();
+  useHomePage();
   const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [cursorHovered, setCursorHovered] = useState(false);
+  const [ setCursorHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; color: string }[]>([]);
   const nextId = useRef(0);
@@ -177,7 +175,7 @@ const WelcomeSection: React.FC = () => {
       setCurrentFactIndex((prev) => (prev + 1) % cyberbullyingFacts.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [cyberbullyingFacts.length]);
 
   // Space-themed colors
   const spaceColors = [
@@ -210,6 +208,7 @@ const WelcomeSection: React.FC = () => {
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mousePosition]);
 
   useEffect(() => {
@@ -411,128 +410,7 @@ const WelcomeSection: React.FC = () => {
           </motion.p>
         </motion.div>
 
-        {/* Puzzle - Space Theme with White Glow Effect */}
-        <div className="cursor-pointer absolute top-30 right-10 md:right-40 z-20">
-          <motion.div
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 1.5 }}
-            className="relative"
-            onMouseEnter={() => setCursorHovered(true)}
-            onMouseLeave={() => setCursorHovered(false)}
-            onClick={() => addStar(mousePosition.x, mousePosition.y, true)}
-          >
-            {/* Space portal glow effect */}
-            <motion.div
-              className="absolute inset-0 rounded-full blur-lg z-0"
-              style={{
-                background: "radial-gradient(circle, rgba(120, 180, 255, 0.7) 0%, rgba(100, 100, 255, 0.4) 70%, transparent 100%)",
-                boxShadow: "0 0 20px rgba(120, 180, 255, 0.5)",
-              }}
-              animate={{
-                scale: cursorHovered ? [1, 1.2, 1.1] : [1, 1.1, 1],
-                opacity: cursorHovered ? 0.9 : 0.7,
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-            />
-            
-            {/* White glow on hover - NEW */}
-            <motion.div
-              className="absolute inset-0 rounded-full blur-md z-5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: cursorHovered ? 1 : 0 }}
-              transition={{ duration: 0.3 }}
-              style={{
-                boxShadow: "0 0 20px 10px rgba(255, 255, 255, 0.7), 0 0 40px 20px rgba(255, 255, 255, 0.4)",
-                transform: "scale(1.1)",
-              }}
-            />
-            
-            {/* Orbiting stars */}
-            {[...Array(4)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full bg-white"
-                style={{
-                  width: 4,
-                  height: 4,
-                  boxShadow: "0 0 5px rgba(255, 255, 255, 0.8)",
-                  top: "50%",
-                  left: "50%",
-                  marginTop: -2,
-                  marginLeft: -2,
-                }}
-                animate={{
-                  x: [0, Math.cos(i * (Math.PI / 2)) * 60, 0],
-                  y: [0, Math.sin(i * (Math.PI / 2)) * 60, 0],
-                  opacity: [0.5, 1, 0.5],
-                  scale: [1, 1.5, 1],
-                }}
-                transition={{
-                  duration: cursorHovered ? 2 : 3,
-                  repeat: Infinity,
-                  delay: i * 0.25,
-                }}
-              />
-            ))}
-
-            {/* Space-themed Tooltip */}
-            <motion.div
-              className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-indigo-900/80 text-white rounded-2xl px-5 py-4 font-bold text-base shadow-xl z-30 whitespace-nowrap border-2 border-indigo-500/50 backdrop-blur-md"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{
-                opacity: cursorHovered ? 1 : 0,
-                scale: cursorHovered ? 1 : 0.8,
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            >
-              What's your class like?
-              <div className="absolute top-1/2 left-full -translate-y-1/2 w-3 h-3 bg-indigo-500 transform rotate-45 ml-[-2px] shadow-sm"></div>
-              
-              {/* Stars in tooltip */}
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute rounded-full bg-white"
-                  style={{
-                    width: 2,
-                    height: 2,
-                    left: `${10 + Math.random() * 80}%`,
-                    top: `${10 + Math.random() * 80}%`,
-                  }}
-                  animate={{
-                    opacity: [0.2, 1, 0.2],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: Math.random() * 1,
-                  }}
-                />
-              ))}
-            </motion.div>
-
-            <motion.img
-              src={happyImg}
-              alt="Quiz Start"
-              className="w-36 sm:w-44 md:w-52 relative z-10"
-              onClick={goToQuiz}
-              whileHover={{ 
-                scale: 1.1, 
-                rotate: [0, -5, 5, -5, 0],
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{
-                rotate: { duration: 0.5 },
-                scale: { duration: 0.2 },
-              }}
-            />
-          </motion.div>
-        </div>
+        {/* Puzzle icon and popup removed */}
       </div>
 
       {/* Bottom right CTA - Space Theme */}
