@@ -178,7 +178,7 @@ const ScenarioGame: React.FC = () => {
 
   // Handle teleport to story page
   const handleTeleport = () => {
-    navigate("/clean-feed-game");
+    navigate("/clean-feed");
   };
 
   // Get dialog content based on stage

@@ -147,7 +147,7 @@ const WelcomeSection: React.FC = () => {
   useHomePage();
   const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [ setCursorHovered] = useState(false);
+  const [, setCursorHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; color: string }[]>([]);
   const nextId = useRef(0);
