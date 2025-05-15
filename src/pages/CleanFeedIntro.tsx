@@ -489,7 +489,7 @@ const CleanFeedIntro: React.FC = () => {
         <img
           src="/character-phone.gif"
           alt="Character"
-          className="relative z-10 w-full h-full cursor-pointer" 
+          className="relative -z-10 w-full h-full cursor-pointer" 
         />
 
         {/* Character Dialog with the consistent speech bubble style */}
@@ -498,7 +498,7 @@ const CleanFeedIntro: React.FC = () => {
             <CharacterDialog
               content={characterPopupStage === 1 ? 
                 "First TikTok about to drop! It's my Zat ~ get ready for cuteness OVERLOAD!" : 
-                "Ugh, so many comments! Help me clear this feed by liking and disliking comments! Only 30 sec left!"
+                "Ugh, so many comments! Help me clear this feed by liking and disliking comments! Only 15 sec left!"
               }
               isVisible={true}
               customStyle={{
@@ -517,7 +517,7 @@ const CleanFeedIntro: React.FC = () => {
       {/* Full-screen overlay with button when active - click anywhere to dismiss */}
       {characterPopupStage === 3 && (
         <div 
-          className="fixed inset-0 flex items-center justify-center z-40" 
+          className="fixed inset-0 flex items-center justify-center z-30" 
           style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
           onClick={handleOverlayClick}
         >

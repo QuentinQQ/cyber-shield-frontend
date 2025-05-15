@@ -21,7 +21,7 @@ const StartScreen: React.FC<{ onStart: () => void }> = ({
   <div className="flex flex-col items-center justify-center h-[80vh] text-center space-y-6">
     <h1 className="text-4xl font-bold">Ready to Clean the Feed?</h1>
     <p className="text-lg">
-      You have 30 SECONDS to like or dislike as many comments as you can!
+      You have 15 SECONDS to like or dislike as many comments as you can!
     </p>
     <PrimaryButton variant="cta" onClick={onStart} rotate>
       Let's Start 🚀

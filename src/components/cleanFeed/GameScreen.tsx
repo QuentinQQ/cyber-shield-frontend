@@ -49,7 +49,7 @@ const GameScreen: React.FC<{
 
   return (
     <div className="flex flex-col items-center max-w-full">
-      <Timer duration={30} />
+      <Timer duration={15} />
 
       {isMobile ? (
         <div className="w-full px-4 max-w-md mx-auto">
@@ -67,7 +67,6 @@ const GameScreen: React.FC<{
             height: containerWidth * 1.35,
           }}
         >
-          {/* ✅ 背景手图保持底部固定 */}
           <img
             src="/cleanFeed/hand-2.png"
             alt="Hand"
