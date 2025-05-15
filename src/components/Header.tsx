@@ -142,7 +142,7 @@ const Header = () => {
       )}
 
       <div 
-        className={`fixed left-0 top-0 z-40 w-[85%] md:w-[320px] h-full transform transition-all duration-500 ease-in-out ${
+        className={`fixed left-0 top-0 z-60 w-[85%] md:w-[320px] h-full transform transition-all duration-500 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
