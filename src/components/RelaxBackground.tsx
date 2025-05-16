@@ -70,103 +70,27 @@ const RelaxBackground = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden" 
+    // Container with fixed size ratio for the grass image
+    <div className="min-h-screen w-full relative overflow-hidden" 
          style={{ 
-           background: 'linear-gradient(to bottom, #0a1a27 0%, #121942 40%, #541b54 80%, #191638 100%)',
+           // Use a light pink fallback while the grass image loads
+           backgroundColor: '#fce7f3',
            cursor: clouds.some(c => c.isDragging) ? 'grabbing' : 'default' 
          }}>
       
-      {/* Stars in the background */}
-      <div className="absolute inset-0">
-        {[...Array(150)].map((_, i) => (
-          <div 
-            key={i}
-            className="absolute bg-white rounded-full"
-            style={{
-              width: `${Math.random() * 3 + 1}px`,
-              height: `${Math.random() * 3 + 1}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.7 + 0.3,
-              animation: `twinkle ${Math.random() * 5 + 2}s ease-in-out infinite alternate`
-            }}
-          />
-        ))}
-      </div>
+      {/* Full-screen grass background image */}
+      <div 
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: 'url(/relax-grass.png)',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center bottom',
+          backgroundSize: 'cover', // This will make it fill the screen
+          pointerEvents: 'none' // Allow interaction with elements on top
+        }}
+      />
       
-      {/* Planets */}
-      <div className="absolute w-32 h-32 rounded-full bg-gradient-to-br from-purple-600 to-indigo-900"
-           style={{ 
-             top: '15%', 
-             right: '10%',
-             boxShadow: '0 0 40px rgba(139, 92, 246, 0.5)',
-             opacity: 0.8,
-             zIndex: 1
-           }}>
-        {/* Planet rings */}
-        <div className="absolute top-1/2 left-1/2 w-48 h-12 -translate-x-1/2 -translate-y-1/2"
-             style={{
-               background: 'linear-gradient(90deg, transparent 0%, rgba(199, 210, 254, 0.2) 20%, rgba(199, 210, 254, 0.4) 50%, rgba(199, 210, 254, 0.2) 80%, transparent 100%)',
-               transform: 'translate(-50%, -50%) rotate(20deg)',
-               borderRadius: '50%'
-             }} />
-      </div>
-
-      <div className="absolute w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-teal-600"
-           style={{ 
-             top: '60%', 
-             left: '15%',
-             boxShadow: '0 0 20px rgba(52, 211, 153, 0.5)',
-             opacity: 0.7,
-             zIndex: 1
-           }} />
-      
-      {/* Distant galaxies/nebulae */}
-      <div className="absolute w-64 h-40"
-           style={{
-             top: '40%',
-             left: '60%',
-             background: 'radial-gradient(ellipse at center, rgba(219, 39, 119, 0.3) 0%, rgba(219, 39, 119, 0) 70%)',
-             transform: 'rotate(-15deg)',
-             zIndex: 0
-           }} />
-      
-      <div className="absolute w-72 h-48"
-           style={{
-             top: '10%',
-             left: '20%',
-             background: 'radial-gradient(ellipse at center, rgba(79, 70, 229, 0.2) 0%, rgba(79, 70, 229, 0) 70%)',
-             zIndex: 0
-           }} />
-           
-      {/* Shooting stars */}
-      <div className="absolute"
-           style={{
-             top: '15%',
-             left: '40%',
-             width: '150px',
-             height: '2px',
-             background: 'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%)',
-             transform: 'rotate(-45deg)',
-             animation: 'meteor 10s linear infinite',
-             animationDelay: '3s',
-             opacity: 0
-           }} />
-           
-      <div className="absolute"
-           style={{
-             top: '30%',
-             left: '70%',
-             width: '100px',
-             height: '1px',
-             background: 'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%)',
-             transform: 'rotate(-30deg)',
-             animation: 'meteor 8s linear infinite',
-             animationDelay: '1s',
-             opacity: 0
-           }} />
-      
-      {/* Draggable clouds (now colored like space nebulae) */}
+      {/* Draggable clouds */}
       {clouds.map((cloud, index) => (
         <div
           key={cloud.id}
@@ -174,7 +98,7 @@ const RelaxBackground = ({ children }: { children: ReactNode }) => {
           className="absolute cursor-grab"
           style={{
             left: cloud.x,
-            top: cloud.y + Math.sin(offset + index) * 5, // Add gentle floating animation
+            top: cloud.y + Math.sin(offset + index) * 5,
             width: cloud.width,
             height: cloud.height,
             cursor: cloud.isDragging ? 'grabbing' : 'grab',
@@ -190,27 +114,6 @@ const RelaxBackground = ({ children }: { children: ReactNode }) => {
       
       {/* Render children passed to this component */}
       {children}
-      
-      {/* Add CSS animations */}
-      <style>{`
-        @keyframes twinkle {
-          0% { opacity: 0.2; }
-          100% { opacity: 0.8; }
-        }
-        
-        @keyframes meteor {
-          0% { 
-            transform: translateX(0) translateY(0) rotate(-45deg);
-            opacity: 0;
-          }
-          10% { opacity: 1; }
-          20% { opacity: 0; }
-          100% { 
-            transform: translateX(-500px) translateY(500px) rotate(-45deg);
-            opacity: 0;
-          }
-        }
-      `}</style>
     </div>
   );
 };

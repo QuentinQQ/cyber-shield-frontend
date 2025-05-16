@@ -50,52 +50,57 @@ const TextCheckerPage = () => {
   };
 
   return (
-    <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white p-4">
-      <div className="flex items-center justify-center min-h-[calc(100vh-2rem)]">
-        <div className="w-full max-w-xl bg-white text-black rounded-2xl shadow-xl p-8">
-          {/* Page title */}
-          <h1 className="text-2xl font-bold mb-6 text-center">
-            Is your message kind? Let's check together!
-          </h1>
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat text-white p-4"
+      style={{ backgroundImage: "url(ai-background.png)" }}
+    >
+      <PageWrapper>
+        <div className="flex items-center justify-center min-h-[calc(100vh-2rem)]">
+          <div className="w-full max-w-xl bg-white text-black rounded-2xl shadow-xl p-8">
+            {/* Page title */}
+            <h1 className="text-2xl font-bold mb-6 text-center">
+              Is your message kind? Let's check together!
+            </h1>
 
-          {/* Message input box */}
-          <textarea
-            className="w-full h-32 p-3 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Type your message here..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
+            {/* Message input box */}
+            <textarea
+              className="w-full h-32 p-3 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Type your message here..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
 
-          {/* Input validation error display */}
-          {inputValidationError && (
-            <p className="text-red-500 mt-2 text-sm text-center">
-              {inputValidationError}
-            </p>
-          )}
+            {/* Input validation error display */}
+            {inputValidationError && (
+              <p className="text-red-500 mt-2 text-sm text-center">
+                {inputValidationError}
+              </p>
+            )}
 
-          {/* Submission button */}
-          <button
-            className="mt-4 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded disabled:opacity-50"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? "Checking..." : "Check Text"}
-          </button>
+            {/* Submission button */}
+            <button
+              className="mt-4 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded disabled:opacity-50"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? "Checking..." : "Check Text"}
+            </button>
 
-          {/* Error message display */}
-          {error && (
-            <p className="text-red-500 mt-4 text-sm text-center">{error}</p>
-          )}
+            {/* Error message display */}
+            {error && (
+              <p className="text-red-500 mt-4 text-sm text-center">{error}</p>
+            )}
 
-          {/* Analysis result display */}
-          {result && <AnalysisResult result={result} />}
+            {/* Analysis result display */}
+            {result && <AnalysisResult result={result} />}
+          </div>
         </div>
-      </div>
-      
-      {/* Both Teleport Bubbles */}
-      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
-    </PageWrapper>
+        
+        {/* Both Teleport Bubbles */}
+        <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
+        <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
+      </PageWrapper>
+    </div>
   );
 };
 
