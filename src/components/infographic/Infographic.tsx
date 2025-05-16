@@ -375,23 +375,23 @@ const Infographic: React.FC = () => {
           transition={{ duration: 0.7 }}
           className="caption-container w-full max-w-[600px]"
         >
-          <div className={`text-white text-xl font-normal ${currentStep === 1 ? 'show' : 'hide'}`}>
+          <div className={`caption ${currentStep === 1 ? 'show orange' : 'hide'}`}>
             30% of students have experienced cyberbullying.
           </div>
           
-          <div className={`text-white text-xl font-normal ${currentStep === 2 ? 'show' : 'hide'}`}>
+          <div className={`caption ${currentStep === 2 ? 'show orange' : 'hide'}`}>
             Girls are more likely than boys to be targeted.
           </div>
           
-          <div className={`text-white text-xl font-normal ${currentStep === 3 ? 'show' : 'hide'}`}>
+          <div className={`caption ${currentStep === 3 ? 'show maroon' : 'hide'}`}>
             Only one in five who face cyberbullying share their pain with their parents.
           </div>
           
-          <div className={`text-white text-xl font-normal ${currentStep === 4 ? 'show' : 'hide'}`}>
+          <div className={`caption ${currentStep === 4 ? 'show blue' : 'hide'}`}>
             You don't have to face this alone - reach out for support.
           </div>
           
-          <div className={`text-white text-xl font-normal ${currentStep === 5 ? 'show' : 'hide'}`}>
+          <div className={`caption ${currentStep === 5 ? 'show blue' : 'hide'}`}>
             Talk to an adult, and together we can stop it!
           </div>
         </motion.div>
