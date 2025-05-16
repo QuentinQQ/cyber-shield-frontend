@@ -47,7 +47,7 @@ const RunningCharacter = () => {
       }}
     >
       <img 
-        src="/ezgif-69d805477686d4.gif"
+        src="/character-run.gif"
         alt="Running Character"
         style={{
           width: "650px",    
