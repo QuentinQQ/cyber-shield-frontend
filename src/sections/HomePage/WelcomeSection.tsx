@@ -6,74 +6,6 @@ import SectionWrapper from "@/components/SectionWrapper";
 import { useHomePage } from "@/hooks/useHomePage";
 import RunningCharacter from "@/components/RunningCharacter";
 
-// Space Hole component
-interface SpaceHoleProps {
-  size: number;
-  top?: string;
-  left?: string;
-  right?: string;
-  bottom?: string;
-  delay?: number;
-}
-
-const SpaceHole: React.FC<SpaceHoleProps> = ({ size, top, left, right, bottom, delay = 0 }) => {
-  return (
-    <motion.div 
-      className="absolute pointer-events-none"
-      style={{ 
-        top: top || undefined, 
-        left: left || undefined,
-        right: right || undefined,
-        bottom: bottom || undefined,
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(20, 24, 82, 0.8) 0%, rgba(8, 15, 40, 0.9) 50%, rgba(0, 0, 0, 0) 100%)',
-        boxShadow: 'inset 0 0 20px rgba(111, 168, 220, 0.5), 0 0 30px rgba(111, 168, 220, 0.3)',
-        zIndex: 1,
-      }}
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ 
-        opacity: 1, 
-        scale: 1,
-        rotate: 360,
-      }}
-      transition={{ 
-        delay,
-        duration: 2,
-        rotate: {
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear"
-        }
-      }}
-    >
-      {/* Stars inside the hole */}
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full bg-white"
-          style={{
-            width: Math.random() * 3 + 1,
-            height: Math.random() * 3 + 1,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            opacity: [0.2, 1, 0.2],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{
-            duration: Math.random() * 3 + 2,
-            repeat: Infinity,
-            delay: Math.random() * 2,
-          }}
-        />
-      ))}
-    </motion.div>
-  );
-};
-
 // Cosmic Star component for cursor trail
 interface CosmicStarProps {
   id: number;
@@ -177,6 +109,8 @@ const WelcomeSection: React.FC = () => {
     return () => clearInterval(interval);
   }, [cyberbullyingFacts.length]);
 
+  // No feature cards
+
   // Space-themed colors
   const spaceColors = [
     "rgba(191, 217, 250, 0.8)", // Blue
@@ -234,13 +168,6 @@ const WelcomeSection: React.FC = () => {
 
   return (
     <SectionWrapper id="welcome" withGrid gridRows={2} headerHeight={80}>
-      {/* Space Holes/Portals */}
-      <SpaceHole size={120} top="15%" left="5%" delay={0.3} right={undefined} bottom={undefined} />
-      <SpaceHole size={180} bottom="15%" left="15%" delay={0.8} top={undefined} right={undefined} />
-      <SpaceHole size={150} top="10%" left="60%" delay={0.5} right={undefined} bottom={undefined} /> 
-      <SpaceHole size={100} bottom="85%" right="8%" delay={1.2} top={undefined} left={undefined} />
-      <SpaceHole size={90} bottom="10%" right="30%" delay={0.7} top={undefined} left={undefined} /> 
-
       {/* Running Character Animation */}
       <RunningCharacter />
       
@@ -388,17 +315,28 @@ const WelcomeSection: React.FC = () => {
           transition={{ duration: 1.8, delay: 0.6, type: "spring" }}
           className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mt-2"
         >
-          "Remember, Words Can Wound"
+          "Your Space Mission Against Online Meanness"
         </motion.p>
         
-        {/* "Did you know?" facts component */}
-        <motion.div 
-          className="mt-26 bg-white/20 backdrop-blur-md p-4 rounded-xl max-w-xl border border-white/30 z-20"
+        {/* New hero message */}
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
+          transition={{ duration: 1.5, delay: 0.7 }}
+          className="text-white text-lg mt-4 max-w-lg"
         >
-          <h4 className="text-black font-bold mb-1">Did you know?</h4>
+          Join our cosmic adventure to become a digital defender! Learn to spot online bullies, 
+          discover your superpowers to stay safe, and help friends in need.
+        </motion.p>
+
+        {/* "Did you know?" facts component */}
+        <motion.div 
+          className="mt-8 bg-white/20 backdrop-blur-md p-4 rounded-xl max-w-xl border border-white/30 z-20"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, duration: 0.8 }}
+        >
+          <h4 className="text-white font-bold mb-1">Did you know?</h4>
           <motion.p 
             key={currentFactIndex}
             initial={{ opacity: 0 }}
@@ -409,8 +347,6 @@ const WelcomeSection: React.FC = () => {
             {cyberbullyingFacts[currentFactIndex]}
           </motion.p>
         </motion.div>
-
-        {/* Puzzle icon and popup removed */}
       </div>
 
       {/* Bottom right CTA - Space Theme */}
