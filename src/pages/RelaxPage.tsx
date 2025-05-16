@@ -137,10 +137,11 @@ const RelaxPage = () => {
       document.removeEventListener('click', enableAudio);
       if (audioRef.current) {
         audioRef.current.pause();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         audioRef.current.src = "";
       }
     };
-  }, []);
+  }, [isPlaying, volume]);
 
   // Hide speech bubble after 4 seconds
   useEffect(() => {

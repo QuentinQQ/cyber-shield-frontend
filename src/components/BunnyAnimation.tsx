@@ -1,5 +1,3 @@
-import React from 'react';
-
 const BunnyAnimation = () => {
   return (
     // Removed ALL background styles
