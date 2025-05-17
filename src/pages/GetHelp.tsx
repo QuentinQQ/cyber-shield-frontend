@@ -182,7 +182,6 @@ const GetHelp: React.FC = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
-  const [stars, setStars] = useState<Array<{id: number, x: number, y: number, size: number, opacity: number, animationDuration: number}>>([]);
   const navigate = useNavigate();
   const handleTeleportBack = () => {
     navigate(-1);
