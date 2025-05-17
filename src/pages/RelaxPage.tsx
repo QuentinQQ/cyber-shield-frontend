@@ -13,8 +13,12 @@ const RelaxPage = () => {
   const [showSpeechBubble, setShowSpeechBubble] = useState(true);
 
   // Navigation handler for both teleport bubbles
-  const handleTeleport = () => {
+  const handleTeleportNext = () => {
     navigate("/text-checker");
+  };
+
+  const handleTeleportBack = () => {
+    navigate(-1);
   };
 
   // Hide speech bubble after 4 seconds
@@ -125,8 +129,8 @@ const RelaxPage = () => {
       {showRabbit && <BunnyAnimation />}
       
       {/* Both Teleport Bubbles */}
-      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
     </RelaxBackground>
   );
 };

@@ -3,6 +3,7 @@ import YouTube from 'react-youtube';
 import PrimaryButton from "../components/PrimaryButton";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { TeleportBubble } from "@/components/TeleportBubble";
 
 const VideoPage: React.FC = () => {
     const videoId = 'qA1TJjJgdz8';
@@ -30,6 +31,10 @@ const VideoPage: React.FC = () => {
             rel: 0,
             modestbranding: 1,
         },
+    };
+
+    const handleTeleportBack = () => {
+        navigate(-1);
     };
 
     return (
@@ -153,6 +158,7 @@ const VideoPage: React.FC = () => {
                         </PrimaryButton>
                     </motion.div>
                 </div>
+                <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
             </div>
         </div>
     );

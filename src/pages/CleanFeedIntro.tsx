@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { TeleportBubble } from "@/components/TeleportBubble";
 
 // Character Dialog Component with proper type annotation
 interface CharacterDialogProps {
@@ -79,71 +80,6 @@ const CharacterDialog: React.FC<CharacterDialogProps> = ({ content, isVisible, c
   ) : null;
 };
 
-// Teleport Bubble component - reusable across pages
-const TeleportBubble: React.FC<{ onClick: () => void }> = ({ onClick }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ duration: 0.3 }}
-      className="absolute bottom-10 right-20 cursor-pointer z-50"
-      onClick={onClick}
-      style={{
-        width: '150px',
-        height: '150px',
-      }}
-    >
-      {/* Teleport bubble animation */}
-      <div 
-        className="teleport-bubble"
-        style={{
-          width: '150px',  
-          height: '150px',
-          background: 'hsl(212, 100%, 71%)',
-          border: '13px solid hsl(212, 100%, 81%)',
-          position: 'relative',
-          overflow: 'visible',
-          borderRadius: '48% 40% 62% 47% / 61% 49% 64% 43%',
-          animation: 'rotateTeleport 35s infinite linear',
-          zIndex: 10
-        }}
-      >
-        {/* Inner layers of the teleport bubble */}
-        <div 
-          style={{
-            content: '',
-            position: 'absolute',
-            top: '15px',
-            left: '15px',
-            width: 'calc(100% - 45px)',
-            height: 'calc(100% - 45px)',
-            background: 'hsl(212, 100%, 51%)',
-            border: '10px solid hsl(212, 100%, 61%)',
-            borderRadius: '41% 40% 50% 55% / 49% 52% 51% 43%',
-            zIndex: -2,
-            animation: 'rotateTeleportBefore 35s infinite linear'
-          }}
-        />
-        <div 
-          style={{
-            content: '',
-            position: 'absolute',
-            top: '30px',
-            left: '30px',
-            width: 'calc(100% - 75px)',
-            height: 'calc(100% - 75px)',
-            background: 'hsl(212, 100%, 31%)',
-            border: '7px solid hsl(212, 100%, 41%)',
-            borderRadius: '42% 63% 51% 60% / 47% 62% 42% 52%',
-            animation: 'rotateTeleportAfter 35s infinite linear'
-          }}
-        />
-      </div>
-    </motion.div>
-  );
-};
 
 // Glitch text effect for cat hover - keeping this unchanged
 const GlitchText: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -362,9 +298,12 @@ const CleanFeedIntro: React.FC = () => {
   };
   
   // Handle teleport to clean feed game page with skipIntro=true
-  const handleTeleport = () => {
-    console.log("Teleport clicked! Navigating to /clean-feed-game");
-    navigate("/clean-feed-game");
+  const handleTeleportNext = () => {
+    navigate("/safe-people");
+  };
+
+  const handleTeleportBack = () => {
+    navigate(-1);
   };
 
   // Handle click outside the button to dismiss the overlay
@@ -440,7 +379,8 @@ const CleanFeedIntro: React.FC = () => {
         }
       `}</style>
       {/* Teleport Bubble - always visible */}
-      <TeleportBubble onClick={handleTeleport} />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
 
       {/* Black Cat on the right side of the bed  */}
       <div 
