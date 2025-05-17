@@ -24,7 +24,7 @@ const RelaxPage = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Navigation handler for both teleport bubbles
-  const handleTeleport = () => {
+  const handleTeleportNext = () => {
     navigate("/text-checker");
   };
 
@@ -142,6 +142,10 @@ const RelaxPage = () => {
       }
     };
   }, [isPlaying, volume]);
+
+  const handleTeleportBack = () => {
+    navigate(-1);
+  };
 
   // Hide speech bubble after 4 seconds
   useEffect(() => {
@@ -455,9 +459,6 @@ const RelaxPage = () => {
         {showRabbit && <BunnyAnimation />}
       </div>
       
-      {/* Both Teleport Bubbles */}
-      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
 
       {/* Music visualization */}
       {isPlaying && (
@@ -497,7 +498,7 @@ const RelaxPage = () => {
         </p>
       </div>
 
-      {/* REMOVED: Invisible button that was blocking clicks */}
+
       {/* Now we'll use a different approach for enabling audio */}
       <div 
         className="fixed top-0 left-0 w-0 h-0 opacity-0 overflow-hidden"
@@ -515,6 +516,9 @@ const RelaxPage = () => {
         }}
       />
 
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+        
       {/* Global styles for animations */}
       <style>{`        
         @keyframes musicBounce {

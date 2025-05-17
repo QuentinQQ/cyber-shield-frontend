@@ -45,8 +45,12 @@ const TextCheckerPage = () => {
   };
 
   // Navigation handler for both teleport bubbles
-  const handleTeleport = () => {
+  const handleTeleportNext = () => {
     navigate("/get-help");
+  };
+
+  const handleTeleportBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -179,8 +183,8 @@ const TextCheckerPage = () => {
         </div>
         
         {/* Both Teleport Bubbles */}
-        <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
-        <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
+        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
+        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
       </PageWrapper>
       
       {/* Add CSS for animations */}
@@ -207,6 +211,7 @@ const TextCheckerPage = () => {
         }
       `}</style>
     </div>
+
   );
 };
 

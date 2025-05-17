@@ -86,6 +86,10 @@ const QuizPage: React.FC = () => {
     navigate("/story");
   };
 
+  const handleTeleportToBack = () => {
+    navigate(-1);
+  };
+
   // const handleTeleportToBack = () => {
   //   navigate("/");
   // };
@@ -261,7 +265,7 @@ const QuizPage: React.FC = () => {
       
       {/* Teleport Bubble */}
       <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" />
-      {/* <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" /> */}
+      <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" />
     </PageWrapper>
   );
 };

@@ -7,8 +7,8 @@ import { useCleanFeed } from "../hooks/useCleanFeed";
 import PageWrapper from "../components/PageWrapper";
 import EmptyAnswerScreen from "../components/cleanFeed/EmptyAnswerScreen";
 import LoadingOverlay from "../components/LoadingOverlay";
-// import { useNavigate } from "react-router-dom";
-
+import { TeleportBubble } from "@/components/TeleportBubble";
+import { useNavigate } from "react-router-dom";
 
 interface CleanFeedProps {
   skipIntro?: boolean;
@@ -26,11 +26,14 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
     handleGameEnd,
     resetGame,
   } = useCleanFeed();
-  // const navigate = useNavigate();
-  // const handleTeleport = () => {
-  //   navigate("/safe-people");
-  // };
 
+  const navigate = useNavigate();
+  const handleTeleportNext = () => {
+    navigate("/safe-people");
+  };
+  const handleTeleportBack = () => {
+    navigate(-1);
+  };
 
   // Auto-start game when skipIntro is true
   useEffect(() => {
@@ -90,6 +93,10 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
         {/* Game Over Screens */}
         {gameOver && renderGameOverScreen()}
       </div>
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+      
+      {/* Background styles */}
     </PageWrapper>
   );
 };
