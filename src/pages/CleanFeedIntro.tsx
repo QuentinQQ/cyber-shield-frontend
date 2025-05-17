@@ -292,9 +292,8 @@ const CleanFeedIntro: React.FC = () => {
   }, [characterPopupStage]);
   
   // Navigate using the hook directly with enhanced debugging
-  const handleNavigation = () => {
-    console.log("Navigation function called! Navigating to /safe-people");
-    navigate("/safe-people");
+  const handleStartGame = () => {
+    navigate("/clean-feed-game");
   };
   
   const handleTeleportNext = () => {
@@ -378,8 +377,8 @@ const CleanFeedIntro: React.FC = () => {
         }
       `}</style>
       {/* Teleport Bubble - always visible */}
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Support" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
 
       {/* Black Cat on the right side of the bed  */}
       <div 
@@ -481,7 +480,7 @@ const CleanFeedIntro: React.FC = () => {
             />
             
             <motion.button
-              onClick={handleNavigation}
+              onClick={handleStartGame}
               className="relative bg-[#C2E764] text-black px-8 py-6 rounded-full font-bold text-2xl shadow-lg z-10"
               whileHover={{ 
                 scale: 1.05,

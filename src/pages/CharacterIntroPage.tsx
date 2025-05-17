@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/PageWrapper";
 import NetworkBackground from "@/components/NetworkBackground";
+import { TeleportBubble } from "@/components/TeleportBubble";
 
 interface CharacterDialogProps {
   content: React.ReactNode;
@@ -77,100 +78,100 @@ const CustomCharacter = () => {
 };
 
 // Updated TeleportBubble to accept color and position
-const TeleportBubble: React.FC<{ 
-  onClick: () => void;
-  color: "blue" | "purple";
-  position: "left" | "right";
-}> = ({ onClick, color, position }) => {
-  // Define color values based on the color prop
-  const colorValues = {
-    blue: {
-      outer: 'hsl(212, 100%, 71%)',
-      outerBorder: 'hsl(212, 100%, 81%)',
-      middle: 'hsl(212, 100%, 51%)',
-      middleBorder: 'hsl(212, 100%, 61%)',
-      inner: 'hsl(212, 100%, 31%)',
-      innerBorder: 'hsl(212, 100%, 41%)'
-    },
-    purple: {
-      outer: 'hsl(270, 100%, 71%)',
-      outerBorder: 'hsl(270, 100%, 81%)',
-      middle: 'hsl(270, 100%, 51%)',
-      middleBorder: 'hsl(270, 100%, 61%)',
-      inner: 'hsl(270, 100%, 31%)',
-      innerBorder: 'hsl(270, 100%, 41%)'
-    }
-  };
+// const TeleportBubble: React.FC<{ 
+//   onClick: () => void;
+//   color: "blue" | "purple";
+//   position: "left" | "right";
+// }> = ({ onClick, color, position }) => {
+//   // Define color values based on the color prop
+//   const colorValues = {
+//     blue: {
+//       outer: 'hsl(212, 100%, 71%)',
+//       outerBorder: 'hsl(212, 100%, 81%)',
+//       middle: 'hsl(212, 100%, 51%)',
+//       middleBorder: 'hsl(212, 100%, 61%)',
+//       inner: 'hsl(212, 100%, 31%)',
+//       innerBorder: 'hsl(212, 100%, 41%)'
+//     },
+//     purple: {
+//       outer: 'hsl(270, 100%, 71%)',
+//       outerBorder: 'hsl(270, 100%, 81%)',
+//       middle: 'hsl(270, 100%, 51%)',
+//       middleBorder: 'hsl(270, 100%, 61%)',
+//       inner: 'hsl(270, 100%, 31%)',
+//       innerBorder: 'hsl(270, 100%, 41%)'
+//     }
+//   };
   
-  const selectedColor = colorValues[color];
+//   const selectedColor = colorValues[color];
   
-  // Set position based on the position prop
-  const positionStyle = position === "right" ? 
-    { right: '20px' } : 
-    { left: '20px' };
+//   // Set position based on the position prop
+//   const positionStyle = position === "right" ? 
+//     { right: '20px' } : 
+//     { left: '20px' };
   
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ duration: 0.3 }}
-      className={`absolute bottom-10 cursor-pointer z-30`}
-      onClick={onClick}
-      style={{
-        width: '150px',
-        height: '150px',
-        ...positionStyle
-      }}
-    >
-      <div 
-        className={`teleport-bubble-${color}`}
-        style={{
-          width: '150px',  
-          height: '150px',
-          background: selectedColor.outer,
-          border: `13px solid ${selectedColor.outerBorder}`,
-          position: 'relative',
-          overflow: 'visible',
-          borderRadius: '48% 40% 62% 47% / 61% 49% 64% 43%',
-          animation: 'rotateTeleport 35s infinite linear',
-          zIndex: 10
-        }}
-      >
-        <div 
-          style={{
-            content: '',
-            position: 'absolute',
-            top: '15px',
-            left: '15px',
-            width: 'calc(100% - 45px)',
-            height: 'calc(100% - 45px)',
-            background: selectedColor.middle,
-            border: `10px solid ${selectedColor.middleBorder}`,
-            borderRadius: '41% 40% 50% 55% / 49% 52% 51% 43%',
-            zIndex: -2,
-            animation: 'rotateTeleportBefore 35s infinite linear'
-          }}
-        />
-        <div 
-          style={{
-            content: '',
-            position: 'absolute',
-            top: '30px',
-            left: '30px',
-            width: 'calc(100% - 75px)',
-            height: 'calc(100% - 75px)',
-            background: selectedColor.inner,
-            border: `7px solid ${selectedColor.innerBorder}`,
-            borderRadius: '42% 63% 51% 60% / 47% 62% 42% 52%',
-            animation: 'rotateTeleportAfter 35s infinite linear'
-          }}
-        />
-      </div>
-    </motion.div>
-  );
-};
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, scale: 0.5 }}
+//       animate={{ opacity: 1, scale: 1 }}
+//       whileHover={{ scale: 1.1 }}
+//       whileTap={{ scale: 0.95 }}
+//       transition={{ duration: 0.3 }}
+//       className={`absolute bottom-10 cursor-pointer z-30`}
+//       onClick={onClick}
+//       style={{
+//         width: '150px',
+//         height: '150px',
+//         ...positionStyle
+//       }}
+//     >
+//       <div 
+//         className={`teleport-bubble-${color}`}
+//         style={{
+//           width: '150px',  
+//           height: '150px',
+//           background: selectedColor.outer,
+//           border: `13px solid ${selectedColor.outerBorder}`,
+//           position: 'relative',
+//           overflow: 'visible',
+//           borderRadius: '48% 40% 62% 47% / 61% 49% 64% 43%',
+//           animation: 'rotateTeleport 35s infinite linear',
+//           zIndex: 10
+//         }}
+//       >
+//         <div 
+//           style={{
+//             content: '',
+//             position: 'absolute',
+//             top: '15px',
+//             left: '15px',
+//             width: 'calc(100% - 45px)',
+//             height: 'calc(100% - 45px)',
+//             background: selectedColor.middle,
+//             border: `10px solid ${selectedColor.middleBorder}`,
+//             borderRadius: '41% 40% 50% 55% / 49% 52% 51% 43%',
+//             zIndex: -2,
+//             animation: 'rotateTeleportBefore 35s infinite linear'
+//           }}
+//         />
+//         <div 
+//           style={{
+//             content: '',
+//             position: 'absolute',
+//             top: '30px',
+//             left: '30px',
+//             width: 'calc(100% - 75px)',
+//             height: 'calc(100% - 75px)',
+//             background: selectedColor.inner,
+//             border: `7px solid ${selectedColor.innerBorder}`,
+//             borderRadius: '42% 63% 51% 60% / 47% 62% 42% 52%',
+//             animation: 'rotateTeleportAfter 35s infinite linear'
+//           }}
+//         />
+//       </div>
+//     </motion.div>
+//   );
+// };
 
 // Function to create a Mini Teleport bubble for display in dialogs
 const MiniTeleportBubble: React.FC<{ color: "blue" | "purple" }> = ({ color }) => {
@@ -454,8 +455,8 @@ const CharacterIntroPage: React.FC = () => {
       {/* Both Teleport Bubbles (show after all dialogs) */}
       {showTeleports && (
         <>
-          <TeleportBubble onClick={handleBlueTeleport} color="blue" position="right" />
-          <TeleportBubble onClick={handlePurpleTeleport} color="purple" position="left" />
+          <TeleportBubble onClick={handleBlueTeleport} color="blue" position="right" text="Voices" />
+          <TeleportBubble onClick={handlePurpleTeleport} color="purple" position="left" text="Back" />
         </>
       )}
       
