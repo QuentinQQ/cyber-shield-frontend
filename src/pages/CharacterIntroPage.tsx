@@ -455,7 +455,7 @@ const CharacterIntroPage: React.FC = () => {
       {/* Both Teleport Bubbles (show after all dialogs) */}
       {showTeleports && (
         <>
-          <TeleportBubble onClick={handleBlueTeleport} color="blue" position="right" text="Voices" />
+          <TeleportBubble onClick={handleBlueTeleport} color="blue" position="right" text="Class Quiz" />
           <TeleportBubble onClick={handlePurpleTeleport} color="purple" position="left" text="Back" />
         </>
       )}

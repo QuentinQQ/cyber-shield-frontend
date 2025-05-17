@@ -216,8 +216,8 @@ useEffect(() => {
       )}
 
 {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text='Voices'/>
+      <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text='Back'/>
     </div>
   );
 }
