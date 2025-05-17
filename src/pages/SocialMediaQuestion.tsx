@@ -2,6 +2,7 @@ import React from 'react';
 import { TeleportBubble } from "@/components/TeleportBubble";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface TextItem {
   text: string;
@@ -149,7 +150,7 @@ useEffect(() => {
 
       {!showResult && (
         <div className="flex flex-col items-center mt-4 bg-cyan-300 bg-opacity-80 p-4 rounded z-10">
-        <select
+        {/* <select
             className="p-2 rounded text-blue-900 font-semibold"
             onChange={(e) => setSelected(e.target.value)}
           >
@@ -158,7 +159,20 @@ useEffect(() => {
             <option value="instagram">Instagram</option>
             <option value="whatsapp">WhatsApp</option>
             <option value="snapchat">Snapchat</option>
-          </select>
+          </select> */}
+          <Select onValueChange={(value) => setSelected(value)}>
+            <SelectTrigger className="w-[200px] bg-white text-blue-900 font-semibold">
+              <SelectValue placeholder="-- Choose --" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="facebook">Facebook</SelectItem>
+                <SelectItem value="instagram">Instagram</SelectItem>
+                <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                <SelectItem value="snapchat">Snapchat</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <button
           className="mt-4 px-6 py-2 bg-blue-900 text-white rounded hover:bg-blue-700 disabled:opacity-50"
           disabled={!selected}
