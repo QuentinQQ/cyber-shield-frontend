@@ -181,11 +181,12 @@ const GetHelp: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
-  const [stars, setStars] = useState<Array<{id: number, x: number, y: number, size: number, opacity: number, animationDuration: number}>>([]);
+
   const navigate = useNavigate();
   const handleTeleportBack = () => {
     navigate(-1);
   };
+
 
   const checkMobile = useCallback(() => {
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -196,29 +197,6 @@ const GetHelp: React.FC = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, [checkMobile]);
-  
-  // Generate stars for the background
-  useEffect(() => {
-    const generateStars = () => {
-      const numberOfStars = 100;
-      const newStars = [];
-      
-      for (let i = 0; i < numberOfStars; i++) {
-        newStars.push({
-          id: i,
-          x: Math.random() * 100, // % position
-          y: Math.random() * 100, // % position
-          size: Math.random() * 0.3 + 0.1, // rem size (0.1-0.4rem)
-          opacity: Math.random() * 0.7 + 0.3, // opacity between 0.3-1
-          animationDuration: Math.random() * 3 + 2 // 2-5 seconds
-        });
-      }
-      
-      setStars(newStars);
-    };
-    
-    generateStars();
-  }, []);
 
   const handleCardClick = (index: number) => {
     if (activeStep === index) {
@@ -254,47 +232,21 @@ const GetHelp: React.FC = () => {
     return <p key={index} className="mb-2">{item.label}</p>;
   };
 
-  // CSS for star animation
-  const starStyles = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    overflow: "hidden",
-    zIndex: 0,
-    pointerEvents: "none"
-  } as React.CSSProperties;
-  
-  // Render the stars
-  const StarryBackground: React.FC = () => (
-    <div style={starStyles}>
-      {stars.map(star => (
-        <div 
-          key={star.id}
-          className="absolute rounded-full bg-white"
-          style={{
-            top: `${star.y}%`,
-            left: `${star.x}%`,
-            width: `${star.size}rem`,
-            height: `${star.size}rem`,
-            opacity: star.opacity,
-            animation: `twinkle ${star.animationDuration}s infinite alternate`
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes twinkle {
-          0% { opacity: ${Math.random() * 0.3 + 0.1}; }
-          100% { opacity: ${Math.random() * 0.7 + 0.3}; }
-        }
-      `}</style>
-    </div>
-  );
-
   const MobileView: React.FC = () => (
-    <div className="p-4 bg-gradient-to-b from-[#0064C5] to-[#1E90FF] min-h-screen relative overflow-hidden">
-      <StarryBackground />
+    <div 
+      style={{
+        backgroundImage: "url('/gethelp-screen.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      }}
+      className="min-h-screen relative p-4"
+    >
+      <div
+  className="absolute inset-0 bg-cover bg-center"
+  style={{ backgroundImage: "url('/gethelp-screen.png')", zIndex: 0 }}
+></div>
+      
       <div className="text-center text-white mb-6 relative z-10">
         <h1 className="text-3xl font-bold">Get Help</h1>
         <p className="text-lg">We're here for you whenever you need support</p>
@@ -303,7 +255,7 @@ const GetHelp: React.FC = () => {
       {HELP_STEPS.map((step, index) => (
         <div
           key={step.id}
-          className={`${step.color} ${step.borderColor} border rounded-lg mb-4 transition-all`}
+          className={`${step.color} ${step.borderColor} border rounded-lg mb-4 transition-all relative z-10`}
         >
           <div
             className="p-4 flex items-center justify-between cursor-pointer"
@@ -321,7 +273,7 @@ const GetHelp: React.FC = () => {
           
           {activeStep === index && (
             <div className="p-4 pt-0 space-y-2">
-              {step.content.map(renderContentItem)}
+              {step.content.map((item, i) => renderContentItem(item, i))}
             </div>
           )}
         </div>
@@ -335,8 +287,17 @@ const GetHelp: React.FC = () => {
     const bottomRowSteps = HELP_STEPS.slice(3);
 
     return (
-      <div className="bg-gradient-to-b from-[#0064C5] to-[#1E90FF] min-h-screen p-8 text-black relative overflow-hidden">
-        <StarryBackground />
+      <div 
+        style={{
+          backgroundImage: "url('/gethelp-screen.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat"
+        }}
+        className="min-h-screen relative p-8"
+      >
+
+        
         <div className="text-center text-white mb-10 relative z-10">
           <h1 className="text-4xl font-bold">Get Help</h1>
           <p className="text-lg">We're here for you whenever you need support</p>
@@ -379,14 +340,14 @@ const GetHelp: React.FC = () => {
           <div className="mt-12 max-w-3xl mx-auto">
             <button
               onClick={toggleDetails}
-              className={`w-full ${HELP_STEPS[activeStep].buttonColor} text-white p-3 rounded-t-lg font-medium flex justify-between items-center transition-colors`}
+              className={`w-full ${HELP_STEPS[activeStep].buttonColor} text-white p-3 rounded-t-lg font-medium flex justify-between items-center transition-colors relative z-10`}
             >
               <span>More About {HELP_STEPS[activeStep].title}</span>
               {showDetails ? <ChevronUp /> : <ChevronDown />}
             </button>
 
             {showDetails && (
-              <div className="bg-white rounded-b-lg p-6 shadow-lg animate-fadeIn">
+              <div className="bg-white rounded-b-lg p-6 shadow-lg relative z-10">
                 <div className="flex items-center mb-4">
                   <div
                     className={`p-3 rounded-full ${HELP_STEPS[activeStep].color} mr-4`}
@@ -445,7 +406,12 @@ const GetHelp: React.FC = () => {
     </div>
   );
 
-  return isMobile ? <MobileView /> : <DesktopView />;
+  return (
+    <div className="relative">
+      {/* Remove any extra elements, just render the view with background */}
+      {isMobile ? <MobileView /> : <DesktopView />}
+    </div>
+  );
 };
 
 export default GetHelp;

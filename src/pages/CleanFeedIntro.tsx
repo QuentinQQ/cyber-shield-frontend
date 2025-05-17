@@ -293,11 +293,10 @@ const CleanFeedIntro: React.FC = () => {
   
   // Navigate using the hook directly with enhanced debugging
   const handleNavigation = () => {
-    console.log("Navigation function called! Navigating to /clean-feed-game");
-    navigate("/clean-feed-game");
+    console.log("Navigation function called! Navigating to /safe-people");
+    navigate("/safe-people");
   };
   
-  // Handle teleport to clean feed game page with skipIntro=true
   const handleTeleportNext = () => {
     navigate("/safe-people");
   };
