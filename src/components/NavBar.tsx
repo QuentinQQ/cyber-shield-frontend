@@ -21,6 +21,8 @@ const NavBar = () => {
     { label: "Clean My Feed", path: "/clean-feed", color: "#06D6A0" },
     { label: "Someone Listens", path: "/safe-people", color: "#9381FF" },
     { label: "Detect my message", path: "/text-checker", color: "#F25F5C" },
+    { label: "Get Help", path: "/relax", color: "#FF9F00" },
+
   ];
 
   const totalItems = navItems.length;
