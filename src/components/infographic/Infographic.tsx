@@ -21,7 +21,6 @@ const Infographic: React.FC = () => {
     gridRef,
     handleStudentCountChange,
     generateIcons,
-    resetInfographic,
     getIconSrc,
     calculateIconSize
   } = useInfographicViewModel();

@@ -1,3 +1,4 @@
+import React from 'react';
 import { TeleportBubble } from "@/components/TeleportBubble";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,7 @@ interface TextItem {
   delay: number;
 }
 
-export default function SocialMediaQuestion(): JSX.Element {
+const SocialMediaQuestion: React.FC = () => {
   const [selected, setSelected] = useState<string>("");
   const [showResult, setShowResult] = useState<boolean>(false);
   const [currentText, setCurrentText] = useState<string>("");
@@ -220,3 +221,5 @@ useEffect(() => {
     </div>
   );
 }
+
+export default SocialMediaQuestion;
