@@ -82,9 +82,13 @@ const QuizPage: React.FC = () => {
   const navigate = useNavigate();
 
   // Navigation handler for teleport button
-  const handleTeleport = () => {
+  const handleTeleportToNext = () => {
     navigate("/story");
   };
+
+  // const handleTeleportToBack = () => {
+  //   navigate("/");
+  // };
   
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white overflow-hidden relative">
@@ -152,7 +156,7 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Character with speech bubble */}
-      <div className="absolute left-10 bottom-0 h-full z-20 flex items-center">
+      <div className="absolute left-20 bottom-10 h-full z-20 flex items-center">
         <div className="relative h-3/4 flex items-end mt-32">
           {/* Speech bubble */}
           <AnimatePresence>
@@ -165,7 +169,7 @@ const QuizPage: React.FC = () => {
                 className="speech-bubble absolute"
                 style={{
                   position: "absolute",
-                  top: "130px",
+                  top: "100px",
                   left: "30px", /* Moved left from centered to directly above the character head */
                   transform: "translateX(0) rotate(0deg)", /* Removed rotation and center transform */
                   borderRadius: "10px", /* More rounded corners like in the image */
@@ -256,7 +260,8 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" />
+      {/* <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" /> */}
     </PageWrapper>
   );
 };

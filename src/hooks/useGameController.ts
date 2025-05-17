@@ -28,7 +28,7 @@ export function useGameController(comments: CommentData[], onFinish: (submission
 
   useEffect(() => {
     setStartTime(Date.now());
-    const timeout = setTimeout(() => onFinish(submissionsRef.current), 30000);
+    const timeout = setTimeout(() => onFinish(submissionsRef.current), 15000);
     return () => clearTimeout(timeout);
   }, []);
 
