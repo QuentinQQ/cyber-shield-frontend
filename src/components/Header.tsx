@@ -10,13 +10,15 @@ const Header = () => {
   // Navigation items with shorter but clear labels
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "Class Quiz", path: "/quiz" },            // Shortened from "What's Your Class Like?"
-    { label: "Voices", path: "/story" },               // Shortened from "Hear Their Voices"
-    { label: "Scenarios", path: "/scenario" },         // Shortened from "Step Into Story"
+    { label: "Class Quiz", path: "/quiz" },            
+    { label: "Voices", path: "/story" },               
+    { label: "Scenarios", path: "/scenario" },         
     { label: "Clean Feed", path: "/clean-feed" },
-    { label: "Support", path: "/safe-people" },        // Shortened from "Someone Listens"
+    { label: "Support", path: "/safe-people" },        
+    { label: "Relax", path: "/relax" },                // Added new Relax page
     { label: "Text Check", path: "/text-checker" },
     { label: "Get Help", path: "/get-help" },
+
   ];
 
   return (
