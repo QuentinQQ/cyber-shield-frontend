@@ -83,7 +83,7 @@ const QuizPage: React.FC = () => {
 
   // Navigation handler for teleport button
   const handleTeleportToNext = () => {
-    navigate("/story");
+    navigate("/quiz-2");
   };
 
   const handleTeleportToBack = () => {

@@ -13,6 +13,7 @@ import CleanFeedIntro from './pages/CleanFeedIntro';
 import TextAnalysisPage from './pages/TextAnalysisPage';
 import SpaceCursor from './components/SpaceCursor'; 
 import RelaxPage from './pages/RelaxPage';
+import SocialMediaQuestion from './pages/SocialMediaQuestion';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/clean-feed" element={<CleanFeedIntro />} />
             <Route path="/clean-feed-game" element={<CleanFeed skipIntro={true} />} />
             <Route path="/quiz" element={<QuizPage />} />
+            <Route path="/quiz-2" element={<SocialMediaQuestion />} />
             <Route path="/safe-people" element={<SafePeople />} />
             <Route path="/scenario" element={<ScenarioGame />} />
             <Route path="/get-help" element={<GetHelp />} />
