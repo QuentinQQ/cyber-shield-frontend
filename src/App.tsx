@@ -14,6 +14,7 @@ import TextAnalysisPage from './pages/TextAnalysisPage';
 import SpaceCursor from './components/SpaceCursor'; 
 import RelaxPage from './pages/RelaxPage';
 import SocialMediaQuestion from './pages/SocialMediaQuestion';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="/character-intro" element={<CharacterIntroPage />} />
             <Route path="/text-checker" element={<TextAnalysisPage />} />
             <Route path="/relax" element={<RelaxPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           </Routes>
         </div>
       </BrowserRouter>

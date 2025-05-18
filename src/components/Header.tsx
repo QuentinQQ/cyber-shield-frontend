@@ -18,7 +18,7 @@ const Header = () => {
     { label: "Relax", path: "/relax" },                // Added new Relax page
     { label: "Text Check", path: "/text-checker" },
     { label: "Get Help", path: "/get-help" },
-
+    { label: "Privacy", path: "/privacy-policy", isSpecial: true },
   ];
 
   return (
@@ -86,13 +86,14 @@ const Header = () => {
           
           // Calculate background color based on index
           const hue = (index * (360 / numItems)) % 360;
-          const bgColor = `hsl(${hue}, 80%, 65%)`;
+          const bgColor = item.isSpecial ? '#A78BFA' : `hsl(${hue}, 80%, 65%)`;
 
           return (
             <Link
               key={index}
               to={item.path}
-              className="absolute w-16 h-16 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-500"
+              className={`absolute w-16 h-16 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-500`}
+
               style={{
                 transform: `translate(${posX}px, ${posY}px) scale(${isOpen ? 1 : 0})`,
                 opacity: isOpen ? 1 : 0,
