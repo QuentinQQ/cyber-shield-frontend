@@ -56,7 +56,7 @@ const TextCheckerPage = () => {
   return (
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat text-white p-4"
-      style={{ backgroundImage: "url(ai-background.png)" }}
+      style={{ backgroundImage: "url(ai_text_detector.png)" }}
     >
       <PageWrapper>
         <div className="flex items-start pt-28 justify-start min-h-[calc(100vh-2rem)]">
