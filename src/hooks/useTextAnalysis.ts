@@ -14,12 +14,17 @@ export const useTextAnalysis = () => {
       const response = await analyzeText({ text });
       setResult(response);
     } catch (err) {
-      setError("Analysis failed.");
-      
+      console.error("Text analysis error:", err);
+      setError("Analysis failed. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  return { result, loading, error, submitText };
+  const resetAnalysis = () => {
+    setResult(null);
+    setError(null);
+  };
+
+  return { result, loading, error, submitText, resetAnalysis };
 };

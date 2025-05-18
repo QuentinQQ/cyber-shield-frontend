@@ -9,6 +9,9 @@ export interface AnalyzeRequest {
  * Interface representing the API response after analyzing text.
  */
 export interface AnalyzeResponse {
-  is_bullying: boolean;
+  zone: string;
+  likelihood: string;
+  comment: string;
   suggested_text: string;
+  bullying_level: number;
 }
