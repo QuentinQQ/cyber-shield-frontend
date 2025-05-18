@@ -3,6 +3,7 @@ import { useInfographicViewModel } from '@/hooks/useInfoGraphic';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import './Infographic.css';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Interactive visualization demonstrating cyberbullying statistics.
@@ -20,10 +21,11 @@ const Infographic: React.FC = () => {
     gridRef,
     handleStudentCountChange,
     generateIcons,
-    resetInfographic,
     getIconSrc,
     calculateIconSize
   } = useInfographicViewModel();
+
+  const navigate = useNavigate();
   
   const { studentCount, showCaptions, icons, isAnimating, currentStep } = state;
   
@@ -444,9 +446,9 @@ const Infographic: React.FC = () => {
                 ease: "easeInOut"
               }
             }}
-            onClick={resetInfographic}
+            onClick={() => navigate('/quiz-2')}
           >
-            Try Again
+            Let's install some apps!
             
             {/* Ring orbits */}
             <motion.div

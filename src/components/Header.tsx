@@ -10,13 +10,15 @@ const Header = () => {
   // Navigation items with shorter but clear labels
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "Class Quiz", path: "/quiz" },            // Shortened from "What's Your Class Like?"
-    { label: "Voices", path: "/story" },               // Shortened from "Hear Their Voices"
-    { label: "Scenarios", path: "/scenario" },         // Shortened from "Step Into Story"
+    { label: "Class Quiz", path: "/quiz" },            
+    { label: "Voices", path: "/story" },               
+    { label: "Scenarios", path: "/scenario" },         
     { label: "Clean Feed", path: "/clean-feed" },
-    { label: "Support", path: "/safe-people" },        // Shortened from "Someone Listens"
+    { label: "Support", path: "/safe-people" },        
+    { label: "Relax", path: "/relax" },                // Added new Relax page
     { label: "Text Check", path: "/text-checker" },
     { label: "Get Help", path: "/get-help" },
+    { label: "Privacy", path: "/privacy-policy", isSpecial: true },
   ];
 
   return (
@@ -84,13 +86,14 @@ const Header = () => {
           
           // Calculate background color based on index
           const hue = (index * (360 / numItems)) % 360;
-          const bgColor = `hsl(${hue}, 80%, 65%)`;
+          const bgColor = item.isSpecial ? '#A78BFA' : `hsl(${hue}, 80%, 65%)`;
 
           return (
             <Link
               key={index}
               to={item.path}
-              className="absolute w-16 h-16 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-500"
+              className={`absolute w-16 h-16 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-500`}
+
               style={{
                 transform: `translate(${posX}px, ${posY}px) scale(${isOpen ? 1 : 0})`,
                 opacity: isOpen ? 1 : 0,

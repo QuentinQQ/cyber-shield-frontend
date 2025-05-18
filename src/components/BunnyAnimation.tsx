@@ -1,6 +1,7 @@
 const BunnyAnimation = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-8 py-16 bg-gradient-to-b from-pink-50 to-pink-100">
+    // Removed ALL background styles
+    <div className="flex flex-col items-center justify-center">
       <div className="bunny-container mx-auto">
         <div className="text"></div>
         <div className="bunny">

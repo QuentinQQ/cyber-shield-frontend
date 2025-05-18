@@ -38,9 +38,12 @@ const SafePeople = () => {
   const [showBubbles] = useState(true);
   const navigate = useNavigate();
 
-  // Updated navigation handler - both teleport bubbles go to the same destination
-  const handleTeleport = () => {
+  const handleTeleportNext = () => {
     navigate("/relax");
+  };
+
+  const handleTeleportBack = () => {
+    navigate(-1);
   };
 
   // Generate mini space bubbles
@@ -691,8 +694,8 @@ const SafePeople = () => {
       </div>
       
       {/* Both Teleport Bubbles */}
-      <TeleportBubble onClick={handleTeleport} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleport} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text='Relax'/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text='Back'/>
     </div>
   );
 };
