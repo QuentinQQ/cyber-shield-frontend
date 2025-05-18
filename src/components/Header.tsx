@@ -10,7 +10,7 @@ const Header = () => {
   // Navigation items with shorter but clear labels
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "Class Quiz", path: "/quiz" },            
+    { label: "Cyber Stats", path: "/quiz" },            
     { label: "Voices", path: "/story" },               
     { label: "Scenarios", path: "/scenario" },         
     { label: "Clean Feed", path: "/clean-feed" },

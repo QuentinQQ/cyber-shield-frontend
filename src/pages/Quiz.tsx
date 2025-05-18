@@ -264,7 +264,7 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="Voices" />
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="App Insights" />
       <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text="Back" />
     </PageWrapper>
   );
