@@ -694,8 +694,8 @@ const SafePeople = () => {
       </div>
       
       {/* Both Teleport Bubbles */}
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text='Relax'/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text='Back'/>
     </div>
   );
 };

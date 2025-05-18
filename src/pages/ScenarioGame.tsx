@@ -206,8 +206,8 @@ const ScenarioGame: React.FC = () => {
       </div>
 
       {/* Teleport Bubble - always visible */}
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Clean Feed" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="container mx-auto relative h-full flex flex-col">
