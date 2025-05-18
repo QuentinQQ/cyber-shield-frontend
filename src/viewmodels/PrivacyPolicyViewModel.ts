@@ -23,14 +23,8 @@ export class PrivacyPolicyViewModel {
    * @returns {void} Triggers PDF download
    */
   downloadPolicyPDF = (): void => {
-    // In a real implementation, this would either:
-    // 1. Generate a PDF dynamically using a library like jsPDF
-    // 2. Fetch a pre-made PDF from a server
-    // For this example, we'll simulate downloading a static file
-
-    // Create a link to the PDF file
     const link = document.createElement('a');
-    link.href = '/privacy-policy.pdf'; // Path to the PDF file in the public folder
+    link.href = '/WorldWeCreated-Privacy-Policy.pdf';
     link.download = 'WorldWeCreated-Privacy-Policy.pdf';
     document.body.appendChild(link);
     link.click();
