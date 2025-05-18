@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import RelaxBackground from '@/components/RelaxBackground';
@@ -8,6 +8,218 @@ import { TeleportBubble } from '@/components/TeleportBubble';
 // Import music player icons from lucide-react
 import { Play, Pause, Volume2, VolumeX, Sparkles } from 'lucide-react';
 
+// Define the WebKit AudioContext for TypeScript
+interface Window {
+  webkitAudioContext: typeof AudioContext;
+}
+
+// Custom hook for audio playback and visualization
+function useAudioPlayer(audioPath: string) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1.0);
+  const [audioData, setAudioData] = useState<Uint8Array | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const analyserNodeRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const initialized = useRef(false);
+
+  // Set audio source path
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.src = audioPath;
+      audioRef.current.load();
+    }
+  }, [audioPath]);
+
+  // Initialize audio context and nodes
+  const initializeAudio = useCallback(() => {
+    if (initialized.current) return;
+    
+    try {
+      // Create AudioContext
+      const AudioContext = window.AudioContext || (window as unknown as Window).webkitAudioContext;
+      if (!AudioContext) {
+        throw new Error("AudioContext not supported");
+      }
+      
+      audioContextRef.current = new AudioContext();
+      
+      if (!audioRef.current) return;
+      
+      // Create source node
+      sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+      
+      // Create gain node for volume control
+      gainNodeRef.current = audioContextRef.current.createGain();
+      gainNodeRef.current.gain.value = volume;
+      
+      // Create analyser node for visualization
+      analyserNodeRef.current = audioContextRef.current.createAnalyser();
+      analyserNodeRef.current.fftSize = 256;
+      
+      // Connect nodes: source -> gain -> analyser -> destination
+      sourceNodeRef.current.connect(gainNodeRef.current);
+      gainNodeRef.current.connect(analyserNodeRef.current);
+      analyserNodeRef.current.connect(audioContextRef.current.destination);
+      
+      initialized.current = true;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to initialize audio";
+      setError(errorMessage);
+      console.error("Audio initialization error:", err);
+    }
+  }, [volume]);
+
+  // Toggle play/pause
+  const togglePlay = useCallback(() => {
+    if (!audioRef.current) return;
+    
+    // Initialize audio on first play
+    if (!initialized.current) {
+      initializeAudio();
+    }
+    
+    // Resume AudioContext if suspended
+    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume().catch(err => {
+        console.error("Failed to resume AudioContext:", err);
+      });
+    }
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      setIsPlaying(false);
+    } else {
+      // Ensure volume is set correctly
+      audioRef.current.volume = volume;
+      if (gainNodeRef.current) {
+        gainNodeRef.current.gain.value = isMuted ? 0 : volume;
+      }
+      
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+          updateVisualization();
+        })
+        .catch(err => {
+          const errorMessage = err instanceof Error ? err.message : "Failed to play audio";
+          setError(errorMessage);
+          console.error("Audio play error:", err);
+        });
+    }
+  }, [isPlaying, isMuted, volume, initializeAudio]);
+
+  // Update visualization data
+  const updateVisualization = useCallback(() => {
+    if (!analyserNodeRef.current || !isPlaying) return;
+    
+    const dataArray = new Uint8Array(analyserNodeRef.current.frequencyBinCount);
+    analyserNodeRef.current.getByteFrequencyData(dataArray);
+    setAudioData(dataArray);
+    
+    animationFrameRef.current = requestAnimationFrame(updateVisualization);
+  }, [isPlaying]);
+
+  // Toggle mute
+  const toggleMute = useCallback(() => {
+    if (gainNodeRef.current) {
+      if (isMuted) {
+        gainNodeRef.current.gain.value = volume;
+      } else {
+        gainNodeRef.current.gain.value = 0;
+      }
+    }
+    
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+    
+    setIsMuted(!isMuted);
+  }, [isMuted, volume]);
+
+  // Handle volume change
+  const handleVolumeChange = useCallback((newVolume: number | string) => {
+    const numericVolume = typeof newVolume === 'number' ? newVolume : parseFloat(newVolume);
+    
+    setVolume(numericVolume);
+    
+    if (audioRef.current) {
+      audioRef.current.volume = numericVolume;
+    }
+    
+    if (gainNodeRef.current && !isMuted) {
+      gainNodeRef.current.gain.value = numericVolume;
+    }
+  }, [isMuted]);
+
+  // Setup and cleanup
+  useEffect(() => {
+    // Check if the browser supports AudioContext
+    const AudioContext = window.AudioContext || (window as unknown as Window).webkitAudioContext;
+    if (!AudioContext) {
+      setError("Your browser doesn't support Web Audio API");
+      return;
+    }
+    
+    // Handle document click to enable audio (browsers require user interaction)
+    const enableAudio = () => {
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume().catch(console.error);
+      }
+    };
+    
+    document.addEventListener('click', enableAudio);
+    
+    // Cleanup function
+    return () => {
+      document.removeEventListener('click', enableAudio);
+      
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      
+      // Disconnect and clean up audio nodes
+      if (sourceNodeRef.current) {
+        sourceNodeRef.current.disconnect();
+      }
+      
+      if (gainNodeRef.current) {
+        gainNodeRef.current.disconnect();
+      }
+      
+      if (analyserNodeRef.current) {
+        analyserNodeRef.current.disconnect();
+      }
+      
+      // Close AudioContext
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(console.error);
+      }
+    };
+  }, []);
+
+  return {
+    audioRef,
+    isPlaying,
+    isMuted,
+    volume,
+    audioData,
+    error,
+    togglePlay,
+    toggleMute,
+    handleVolumeChange
+  };
+}
+
 const RelaxPage = () => {
   const navigate = useNavigate();
   // Show both rabbit and character immediately
@@ -16,61 +228,38 @@ const RelaxPage = () => {
   const [showSpeechBubble, setShowSpeechBubble] = useState(true);
   const [showSparkles, setShowSparkles] = useState(true);
   
-  // Audio player states
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.5);
-  const [audioError, setAudioError] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  // Use our custom audio hook
+  const {
+    audioRef,
+    isPlaying,
+    isMuted,
+    volume,
+    audioData,
+    error: audioError,
+    togglePlay,
+    toggleMute,
+    handleVolumeChange
+  } = useAudioPlayer(`${window.location.origin}/blue-skies.mp3`);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isUnmounting = useRef(false);
+
+  // Update error message when audio error changes
+  useEffect(() => {
+    if (audioError) {
+      setErrorMessage(audioError);
+    }
+  }, [audioError]);
 
   // Navigation handler for both teleport bubbles
   const handleTeleportNext = () => {
+    isUnmounting.current = true;
     navigate("/text-checker");
   };
 
-  // Audio controls
-  const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        // Create a promise to handle play attempt
-        const playPromise = audioRef.current.play();
-        
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              setIsPlaying(true);
-              setAudioError(false);
-            })
-            .catch(error => {
-              console.error("Audio play error:", error);
-              setAudioError(true);
-              setIsPlaying(false);
-              
-              // Show a notification or alert here if needed
-              alert("Please interact with the page first to enable audio playback.");
-            });
-        }
-      }
-    }
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
+  const handleTeleportBack = () => {
+    isUnmounting.current = true;
+    navigate(-1);
   };
 
   // Toggle sparkles effect
@@ -78,73 +267,9 @@ const RelaxPage = () => {
     setShowSparkles(!showSparkles);
   };
 
-  // Set up audio on component mount
-  useEffect(() => {
-    // Create an audio context to check if audio is suspended
-    const audioContext = new AudioContext();
-    
-    if (audioRef.current) {
-      // Set initial volume
-      audioRef.current.volume = volume;
-      
-      // Listen for the canplaythrough event
-      audioRef.current.addEventListener('canplaythrough', () => {
-        console.log("Audio can play through - ready to play");
-      });
-      
-      // Listen for errors
-      audioRef.current.addEventListener('error', (e) => {
-        console.error("Audio error:", e);
-        setAudioError(true);
-      });
-      
-      // Setup audio element
-      audioRef.current.src = "/blue-skies.mp3"; // Your downloaded track
-      audioRef.current.load();
-      
-      // We won't try to autoplay immediately to avoid browser restrictions
-      console.log("Audio context state:", audioContext.state);
-    }
-    
-    // Add a click event listener to the document to enable audio context
-    const enableAudio = () => {
-      if (audioContext.state === 'suspended') {
-        audioContext.resume();
-      }
-      
-      // Try to play audio on user interaction if not already playing
-      if (audioRef.current && !isPlaying) {
-        const playAttempt = audioRef.current.play();
-        if (playAttempt) {
-          playAttempt
-            .then(() => {
-              setIsPlaying(true);
-              setAudioError(false);
-            })
-            .catch(error => {
-              console.log("Audio play attempt failed:", error);
-            });
-        }
-      }
-      
-      // Remove the event listener after first interaction
-      document.removeEventListener('click', enableAudio);
-    };
-    
-    document.addEventListener('click', enableAudio);
-    
-    return () => {
-      document.removeEventListener('click', enableAudio);
-      if (audioRef.current) {
-        audioRef.current.pause();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        audioRef.current.src = "";
-      }
-    };
-  }, [isPlaying, volume]);
-
-  const handleTeleportBack = () => {
-    navigate(-1);
+  // Handle volume change from UI slider
+  const onVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleVolumeChange(parseFloat(e.target.value));
   };
 
   // Hide speech bubble after 4 seconds
@@ -191,6 +316,31 @@ const RelaxPage = () => {
     };
   });
 
+  // Calculate visualization data for UI
+  const getVisualizationBars = () => {
+    if (!audioData) return Array(20).fill(0);
+    
+    // Sample the frequency data to create 20 bars
+    const sampleSize = Math.floor(audioData.length / 20);
+    const bars = [];
+    
+    for (let i = 0; i < 20; i++) {
+      const startIndex = i * sampleSize;
+      let sum = 0;
+      
+      // Average the values in this sample range
+      for (let j = 0; j < sampleSize && startIndex + j < audioData.length; j++) {
+        sum += audioData[startIndex + j];
+      }
+      
+      // Scale to a reasonable height (5-40px)
+      const height = (sum / sampleSize) * 0.4;
+      bars.push(Math.max(5, Math.min(40, height)));
+    }
+    
+    return bars;
+  };
+
   return (
     <RelaxBackground>
       {/* Audio element - hidden but functional */}
@@ -199,15 +349,25 @@ const RelaxPage = () => {
         loop
         preload="auto"
         crossOrigin="anonymous"
+        style={{ display: 'none' }}
+        src={`${window.location.origin}/blue-skies.mp3`}
       />
 
       {/* Simple Music Player - centered at the top without cloud shape */}
       <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
-        <div className="relative px-6 py-3 flex items-center gap-3 bg-gradient-to-r from-blue-500/70 to-purple-600/70 rounded-full backdrop-blur-md border border-white/20 shadow-lg">
-          {/* Play/Pause Button */}
+        <div className={`relative px-6 py-3 flex items-center gap-3 rounded-full backdrop-blur-md border shadow-lg transition-all duration-300 ${
+          isPlaying 
+            ? 'bg-gradient-to-r from-blue-600/80 to-purple-700/80 border-blue-400/40 shadow-blue-500/30' 
+            : 'bg-gradient-to-r from-blue-500/70 to-purple-600/70 border-white/20'
+        }`}>
+          {/* Play/Pause Button with enhanced visual feedback */}
           <button 
             onClick={togglePlay}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white transition-all duration-300 shadow-md"
+            className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 shadow-md ${
+              isPlaying 
+                ? 'bg-blue-400/40 hover:bg-blue-400/60 text-white scale-110 shadow-blue-400/50' 
+                : 'bg-white/20 hover:bg-white/30 text-white'
+            }`}
           >
             {isPlaying ? 
               <Pause size={20} /> : 
@@ -219,7 +379,11 @@ const RelaxPage = () => {
           <div className="flex items-center gap-2">
             <button 
               onClick={toggleMute}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors duration-300 ${
+                isMuted 
+                  ? 'bg-red-500/40 hover:bg-red-500/60 text-white' 
+                  : 'bg-white/10 hover:bg-white/20 text-white'
+              }`}
             >
               {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
             </button>
@@ -230,8 +394,12 @@ const RelaxPage = () => {
               max="1"
               step="0.01"
               value={volume}
-              onChange={handleVolumeChange}
-              className="w-16 h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer"
+              onChange={onVolumeChange}
+              className={`w-16 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                isMuted 
+                  ? 'bg-red-300/30' 
+                  : isPlaying ? 'bg-blue-300/50' : 'bg-white/30'
+              }`}
             />
           </div>
           
@@ -249,19 +417,27 @@ const RelaxPage = () => {
           
           {/* Music info with glowing text */}
           <div className="ml-1">
-            <p className="text-xs text-white font-medium opacity-90">
+            <p className={`text-xs font-medium opacity-90 ${isPlaying ? 'text-blue-100' : 'text-white'}`}>
               Blue Skies
             </p>
-            <p className="text-xs text-blue-100 opacity-80">
+            <p className={`text-xs opacity-80 ${isPlaying ? 'text-blue-200' : 'text-blue-100'}`}>
               by Zambolino
             </p>
           </div>
         </div>
         
-        {/* Audio error message */}
+        {/* Audio status indicator */}
+        {isPlaying && (
+          <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 flex items-center justify-center bg-blue-500/20 backdrop-blur-sm rounded-full px-2 py-0.5">
+            <span className="animate-pulse w-2 h-2 bg-blue-400 rounded-full mr-1"></span>
+            <span className="text-xs text-blue-100">Playing</span>
+          </div>
+        )}
+        
+        {/* Audio error message with more details */}
         {audioError && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-red-500/80 text-white text-xs p-2 rounded-md text-center">
-            Click anywhere to enable audio playback
+          <div className="absolute top-full left-0 right-0 mt-2 bg-red-500/80 text-white text-xs p-2 rounded-md text-center max-w-xs mx-auto">
+            {errorMessage || "Click anywhere to enable audio playback"}
           </div>
         )}
       </div>
@@ -460,28 +636,28 @@ const RelaxPage = () => {
       </div>
       
 
-      {/* Music visualization */}
-      {isPlaying && (
-        <div className="fixed bottom-0 left-0 right-0 h-1 z-40">
-          <div className="flex justify-around items-end h-full">
-            {[...Array(20)].map((_, i) => (
-              <div 
-                key={i}
-                className="w-1 rounded-t-full opacity-70 bg-gradient-to-t from-purple-600 to-blue-400"
-                style={{
-                  height: `${Math.random() * 20 + 5}px`,
-                  animationDuration: `${Math.random() * 2 + 0.5}s`,
-                  animationDelay: `${Math.random() * 0.5}s`,
-                  animationIterationCount: 'infinite',
-                  animationDirection: 'alternate',
-                  animationTimingFunction: 'ease-in-out',
-                  animationName: 'musicBounce'
-                }}
-              ></div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Enhanced Music visualization with real audio data */}
+      <div className="fixed bottom-0 left-0 right-0 h-12 z-40 flex flex-col items-center">
+        {isPlaying && (
+          <>
+            <div className="flex justify-around items-end h-10 w-full max-w-2xl px-4">
+              {getVisualizationBars().map((height, i) => (
+                <div 
+                  key={i}
+                  className="w-1 rounded-t-full opacity-90 bg-gradient-to-t from-purple-600 to-blue-400"
+                  style={{
+                    height: `${height}px`,
+                    transition: "height 0.1s ease-in-out"
+                  }}
+                ></div>
+              ))}
+            </div>
+            <div className="text-xs text-blue-200 opacity-80 animate-pulse">
+              Sound is playing
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Music Attribution - Centered at the bottom */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40 text-white text-xs opacity-60 hover:opacity-100 transition-opacity text-center">
@@ -497,24 +673,6 @@ const RelaxPage = () => {
           </a>
         </p>
       </div>
-
-
-      {/* Now we'll use a different approach for enabling audio */}
-      <div 
-        className="fixed top-0 left-0 w-0 h-0 opacity-0 overflow-hidden"
-        onClick={() => {
-          if (audioRef.current && !isPlaying) {
-            audioRef.current.play()
-              .then(() => {
-                setIsPlaying(true);
-                setAudioError(false);
-              })
-              .catch(() => {
-                // Silent fail
-              });
-          }
-        }}
-      />
 
       <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Text Check"/>
       <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back"/>
