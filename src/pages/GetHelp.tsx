@@ -529,6 +529,10 @@ const GetHelp: React.FC = () => {
               </div>
             )}
           </div>
+        ))}
+      </div>
+      
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back"/>
     </div>
   );
 
