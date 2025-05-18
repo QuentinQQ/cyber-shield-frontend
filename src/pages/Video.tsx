@@ -37,6 +37,10 @@ const VideoPage: React.FC = () => {
         navigate(-1);
     };
 
+    const handleTeleportNext = () => {
+      navigate("/clean-feed");
+  };
+
     return (
         <div className="relative w-full h-screen overflow-hidden">
             {/* Full-screen cinema background */}
@@ -136,29 +140,8 @@ const VideoPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Nav to next page: Clean Feed */}
-                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-                    <motion.div
-                        initial={{ opacity: 0, y: 100 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                            duration: 2.2,
-                            delay: 0.3,
-                            type: "spring",
-                            stiffness: 100,
-                            damping: 10,
-                        }}
-                    >
-                        <PrimaryButton
-                            variant="cta"
-                            rotate
-                            onClick={() => navigate("/clean-feed")}
-                        >
-                            Clean Your Feed
-                        </PrimaryButton>
-                    </motion.div>
-                </div>
                 <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
+                <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Clean Feed" />
             </div>
         </div>
     );
