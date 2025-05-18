@@ -516,8 +516,8 @@ const RelaxPage = () => {
         }}
       />
 
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Text Check"/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back"/>
         
       {/* Global styles for animations */}
       <style>{`        

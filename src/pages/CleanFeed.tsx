@@ -93,8 +93,12 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
         {/* Game Over Screens */}
         {gameOver && renderGameOverScreen()}
       </div>
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+
+      {/* Teleport Bubbles with higher z-index */}
+      <div className="relative">
+        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Support" />
+        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
+      </div>
       
       {/* Background styles */}
     </PageWrapper>

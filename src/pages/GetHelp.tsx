@@ -278,7 +278,7 @@ const GetHelp: React.FC = () => {
           )}
         </div>
       ))}
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back"/>
     </div>
   );
 
@@ -386,7 +386,7 @@ const GetHelp: React.FC = () => {
             )}
           </div>
         )}
-        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back"/>
       </div>
     );
   };

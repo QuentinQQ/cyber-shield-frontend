@@ -183,8 +183,8 @@ const TextCheckerPage = () => {
         </div>
         
         {/* Both Teleport Bubbles */}
-        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" />
-        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" />
+        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Get Help" />
+        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
       </PageWrapper>
       
       {/* Add CSS for animations */}
