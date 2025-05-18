@@ -339,7 +339,13 @@ const Infographic: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: icons.length > 0 ? 1 : 0 }}
         transition={{ duration: 0.5 }}
-        className="grid gap-2 justify-center w-full max-w-3xl mt-8"
+        className="grid gap-2 justify-center w-full max-w-3xl mt-8 rounded-xl p-6 shadow-lg"
+        style={{
+          backgroundColor: 'rgba(163, 156, 194, 0.8)', 
+          border: '2px solid rgba(230, 218, 203, 0.5)',
+          borderRadius: '20px',
+          padding: '2rem',
+        }}
       >
         {icons.map((icon, index) => (
           <motion.img
