@@ -19,12 +19,13 @@ const TextCheckerPage = () => {
   const navigate = useNavigate();
   // State to hold the user input
   const [text, setText] = useState<string>("");
+  const [submittedText, setSubmittedText] = useState<string>("");
   const [inputValidationError, setInputValidationError] = useState<
     string | null
   >(null);
 
   // ViewModel hook that handles text submission and analysis result
-  const { result, loading, error, submitText } = useTextAnalysis();
+  const { result, loading, error, submitText, resetAnalysis } = useTextAnalysis();
 
   /**
    * Handle form submission.
@@ -41,7 +42,18 @@ const TextCheckerPage = () => {
       return;
     }
     setInputValidationError(null);
+    setSubmittedText(text);
     submitText(text);
+  };
+
+  /**
+   * Handle reset to check another message
+   * Clears the result and resets the form
+   */
+  const handleCheckAnother = (): void => {
+    setText("");
+    setSubmittedText("");
+    resetAnalysis();
   };
 
   // Navigation handler for both teleport bubbles
@@ -53,16 +65,19 @@ const TextCheckerPage = () => {
     navigate(-1);
   };
 
+  // Determine whether to show the input form or the results
+  const showResults = result !== null;
+
   return (
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat text-white p-4"
-      style={{ backgroundImage: "url(ai-background.png)" }}
+      style={{ backgroundImage: "url(ai_text_detector.png)" }}
     >
       <PageWrapper>
-        <div className="flex items-start pt-28 justify-start min-h-[calc(100vh-2rem)]">
+        <div className="flex items-center justify-center pt-28 min-h-[calc(100vh-2rem)]">
           {/* Improved space-themed container */}
           <div 
-            className="w-full max-w-xl rounded-2xl shadow-xl p-8 ml-136 overflow-hidden relative"
+            className="w-full max-w-xl rounded-2xl shadow-xl p-8 overflow-hidden relative"
             style={{
               background: "linear-gradient(to bottom, #191970, #483D8B)",
               border: "1px solid rgba(138, 43, 226, 0.4)",
@@ -84,101 +99,110 @@ const TextCheckerPage = () => {
               }}
             ></div>
             
-            {/* Page title - keeping your original but with space styling */}
-            <h1 
-              className="text-2xl font-bold mb-6 text-center relative"
-              style={{ 
-                color: "#E6E6FA",
-                textShadow: "0 0 10px rgba(138, 43, 226, 0.7)"
-              }}
-            >
-              Is your message kind? Let's check together!
-            </h1>
-
-            {/* Message input box - space themed but preserving your structure */}
-            <div className="relative">
-              <textarea
-                className="w-full h-32 p-3 rounded resize-none focus:outline-none focus:ring-2 focus:ring-purple-400"
-                placeholder="Type your message here..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                style={{
-                  background: "rgba(25, 25, 112, 0.3)",
-                  border: "1px solid rgba(138, 43, 226, 0.4)",
-                  color: "#E6E6FA",
-                  backdropFilter: "blur(4px)"
-                }}
-              />
-              
-              {/* Scanner line animation */}
-              <div 
-                className="absolute inset-x-0 h-1 pointer-events-none" 
-                style={{
-                  top: "0",
-                  background: "linear-gradient(90deg, transparent, #9370DB, transparent)",
-                  animation: "scanline 2s linear infinite",
-                  opacity: 0.7
-                }}
-              ></div>
-            </div>
-
-            {/* Input validation error display - keeping structure */}
-            {inputValidationError && (
-              <p className="mt-2 text-sm text-center" style={{ color: "#FF6B6B" }}>
-                {inputValidationError}
-              </p>
-            )}
-
-            {/* Submission button - styled like PrimaryButton */}
-            <div className="relative mt-4">
-              {/* Shadow beneath the button */}
-              <div 
-                className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
-                style={{
-                  animation: "shadowMove 2s infinite alternate",
-                  width: "90%",
-                  marginLeft: "5%"
-                }}
-              />
-              
-              <button
-                className="relative font-bold rounded-full px-8 py-4 shadow-lg z-10 w-full
-                           bg-[#C2E764] text-black"
-                onClick={handleSubmit}
-                disabled={loading}
-                style={{
-                  animation: loading ? "" : "buttonBounce 1.2s infinite ease-in-out",
-                  transform: loading ? "scale(0.95)" : "scale(1)"
-                }}
-              >
-                {loading ? "Checking..." : "Check Text"}
-                
-                {/* Ring orbits */}
-                <div
-                  className="absolute inset-0 border-2 border-black/10 rounded-full"
-                  style={{
-                    animation: "ringPulse1 3s infinite"
+            {!showResults ? (
+              // Input Form View
+              <>
+                {/* Page title - keeping your original but with space styling */}
+                <h1 
+                  className="text-2xl font-bold mb-6 text-center relative"
+                  style={{ 
+                    color: "#E6E6FA",
+                    textShadow: "0 0 10px rgba(138, 43, 226, 0.7)"
                   }}
-                />
-                <div
-                  className="absolute inset-0 border-2 border-black/5 rounded-full"
-                  style={{
-                    animation: "ringPulse2 3s infinite",
-                    animationDelay: "0.2s"
-                  }}
-                />
-              </button>
-            </div>
+                >
+                  Is your message kind? Let's check together!
+                </h1>
 
-            {/* Error message display - keeping structure */}
-            {error && (
-              <p className="mt-4 text-sm text-center" style={{ color: "#FF6B6B" }}>
-                {error}
-              </p>
+                {/* Message input box - space themed but preserving your structure */}
+                <div className="relative">
+                  <textarea
+                    className="w-full h-32 p-3 rounded resize-none focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    placeholder="Type your message here..."
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    style={{
+                      background: "rgba(25, 25, 112, 0.3)",
+                      border: "1px solid rgba(138, 43, 226, 0.4)",
+                      color: "#E6E6FA",
+                      backdropFilter: "blur(4px)"
+                    }}
+                  />
+                  
+                  {/* Scanner line animation */}
+                  <div 
+                    className="absolute inset-x-0 h-1 pointer-events-none" 
+                    style={{
+                      top: "0",
+                      background: "linear-gradient(90deg, transparent, #9370DB, transparent)",
+                      animation: "scanline 2s linear infinite",
+                      opacity: 0.7
+                    }}
+                  ></div>
+                </div>
+
+                {/* Input validation error display - keeping structure */}
+                {inputValidationError && (
+                  <p className="mt-2 text-sm text-center" style={{ color: "#FF6B6B" }}>
+                    {inputValidationError}
+                  </p>
+                )}
+
+                {/* Submission button - styled like PrimaryButton */}
+                <div className="relative mt-4">
+                  {/* Shadow beneath the button */}
+                  <div 
+                    className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
+                    style={{
+                      animation: "shadowMove 2s infinite alternate",
+                      width: "90%",
+                      marginLeft: "5%"
+                    }}
+                  />
+                  
+                  <button
+                    className="relative font-bold rounded-full px-8 py-4 shadow-lg z-10 w-full
+                               bg-[#C2E764] text-black"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    style={{
+                      animation: loading ? "" : "buttonBounce 1.2s infinite ease-in-out",
+                      transform: loading ? "scale(0.95)" : "scale(1)"
+                    }}
+                  >
+                    {loading ? "Checking..." : "Check Text"}
+                    
+                    {/* Ring orbits */}
+                    <div
+                      className="absolute inset-0 border-2 border-black/10 rounded-full"
+                      style={{
+                        animation: "ringPulse1 3s infinite"
+                      }}
+                    />
+                    <div
+                      className="absolute inset-0 border-2 border-black/5 rounded-full"
+                      style={{
+                        animation: "ringPulse2 3s infinite",
+                        animationDelay: "0.2s"
+                      }}
+                    />
+                  </button>
+                </div>
+
+                {/* Error message display - keeping structure */}
+                {error && (
+                  <p className="mt-4 text-sm text-center" style={{ color: "#FF6B6B" }}>
+                    {error}
+                  </p>
+                )}
+              </>
+            ) : (
+              // Results View
+              <AnalysisResult 
+                result={result} 
+                originalText={submittedText} 
+                onCheckAnother={handleCheckAnother} 
+              />
             )}
-
-            {/* Analysis result display - keeping structure */}
-            {result && <AnalysisResult result={result} />}
           </div>
         </div>
         
