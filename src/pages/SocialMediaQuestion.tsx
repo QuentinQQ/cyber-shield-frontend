@@ -3,6 +3,7 @@ import { TeleportBubble } from "@/components/TeleportBubble";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface TextItem {
   text: string;
@@ -16,8 +17,18 @@ const SocialMediaQuestion: React.FC = () => {
   const [currentText, setCurrentText] = useState<string>("");
   const [textColor, setTextColor] = useState<string>("white");
   const [gifKey, setGifKey] = useState<number>(0);
+  const [showBubble, setShowBubble] = useState<boolean>(true);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (showBubble) {
+      const timer = setTimeout(() => {
+        setShowBubble(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showBubble]);
 
   useEffect(() => {
     if (showResult && selected === "facebook") {
@@ -133,11 +144,68 @@ useEffect(() => {
       style={{ backgroundImage: "url('/space1.png')" }}
     >
       {!showResult && (
+          <>
+          <div onClick={() => setShowBubble(true)}>
+
         <img
           src="/gleepo1.gif"
           alt="Gleepo"
           className="absolute bottom-4 left-4 w-130 h-130"
         />
+         </div>
+        <AnimatePresence>
+          {showBubble && (
+                    <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.9 }}
+          transition={{ duration: 0.5 }}
+          className="absolute left-[9rem] bottom-[28rem] text-black text-lg font-medium z-20"
+          style={{
+            position: "absolute",
+            padding: "1em",
+            width: "15em",
+            minHeight: "4em",
+            borderRadius: "0.25em",
+            transform: "rotate(-4deg) rotateY(15deg)",
+            background: "#629bdd",
+            fontFamily: "Century Gothic, Verdana, sans-serif",
+            fontSize: "1.3rem",
+            textAlign: "center"
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              zIndex: -1,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              borderRadius: "0.25em",
+              transform: "rotate(2deg) translate(.35em, -.15em) scale(1.02)",
+              background: "#f4fbfe"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              zIndex: -1,
+              border: "solid 0 transparent",
+              borderRight: "solid 3.5em #f4fbfe",
+              borderBottom: "solid .25em #629bdd",
+              bottom: ".25em",
+              left: "1.25em",
+              width: 0,
+              height: "1em",
+              transform: "rotate(45deg) skewX(75deg)"
+            }}
+          />
+          Hey, what social media app do you think I should try? Got a favorite?
+        </motion.div>
+          )}
+        </AnimatePresence>
+        </>
       )}
 
       <h1 className="pt-10 text-white text-3xl font-bold text-center">
