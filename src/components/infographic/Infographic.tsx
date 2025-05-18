@@ -146,7 +146,7 @@ const Infographic: React.FC = () => {
         
         /* Caption container */
         .caption-container {
-          background: linear-gradient(135deg, #030B33 0%, #0A1A5E 100%);
+          background: linear-gradient(135deg, #184D97 0%, #184D97 20%, #1E88E5 100%);
           padding: 1.5rem;
           border-radius: 15px;
           position: relative;
@@ -229,7 +229,7 @@ const Infographic: React.FC = () => {
       )}
       
       <motion.h1 
-        className="text-center text-3xl md:text-4xl font-bold text-black"
+        className="text-center text-3xl md:text-4xl font-bold text-white -mt-[2cm]"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
@@ -341,7 +341,7 @@ const Infographic: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="grid gap-2 justify-center w-full max-w-3xl mt-8 rounded-xl p-6 shadow-lg"
         style={{
-          backgroundColor: 'rgba(163, 156, 194, 0.8)', 
+          backgroundColor: ' rgba(143, 175, 217, 0.9)', 
           border: '2px solid rgba(230, 218, 203, 0.5)',
           borderRadius: '20px',
           padding: '2rem',
