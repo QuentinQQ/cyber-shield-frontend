@@ -42,6 +42,17 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
   const handleTeleportBack = () => {
     navigate("/scenario");
   };
+  
+  // Clear localStorage items related to the game when component mounts
+  useEffect(() => {
+    // Remove any local storage items related to the Clean Feed game
+    const keysToRemove = Object.keys(localStorage).filter(key => 
+      key.startsWith('cleanFeed') || key.includes('cleanFeed') || key.includes('feed_result'));
+    
+    keysToRemove.forEach(key => {
+      localStorage.removeItem(key);
+    });
+  }, []);
 
   // Auto-start game when skipIntro is true
   useEffect(() => {
