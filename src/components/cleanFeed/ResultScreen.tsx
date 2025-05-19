@@ -318,11 +318,6 @@ const ResultScreen: React.FC<{
         />
       </motion.div>
 
-      {/* Teleport button - positioned in the bottom right */}
-      <div className="absolute bottom-50 right-20 z-50 -mr-0">
-        <TeleportBubble onClick={handleTeleport} />
-      </div>
-
       {/* Content Container - centered but shifted up with negative margin */}
       <div className="flex flex-col items-center justify-center gap-6 max-w-2xl px-6 transform translate-y-[-80px] mx-auto">
         {/* Animated title with space theme */}
