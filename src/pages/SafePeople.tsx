@@ -2,6 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { Copy, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TeleportBubble } from '@/components/TeleportBubble';
+import { motion, AnimatePresence } from "framer-motion";
+
+/**
+ * @page
+ * @description This page, "Safe People," aims to empower users by providing
+ * pre-written message templates they can copy and send to trusted adults for support.
+ * It features an animated space environment with twinkling and shooting stars.
+ */
 
 interface MessageTemplate {
   id: number;
@@ -30,6 +38,63 @@ interface Bubble {
   popping: boolean;
 }
 
+// Adding the CharacterDialog component for consistency with CharacterIntroPage
+interface CharacterDialogProps {
+  content: React.ReactNode;
+  isVisible: boolean;
+  className?: string;
+  customStyle?: React.CSSProperties;
+  onClick?: () => void;
+}
+
+const CharacterDialog: React.FC<CharacterDialogProps> = ({ 
+  content, 
+  isVisible, 
+  className = "", 
+  customStyle = {},
+  onClick
+}) => {
+  return (
+    <AnimatePresence mode="wait">
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.9 }}
+          transition={{ duration: 0.5 }}
+          className={`speech-bubble relative ${className} ${onClick ? 'cursor-pointer' : ''}`}
+          style={{
+            position: "relative",
+            margin: "0.5em 0",
+            padding: "1em",
+            width: "15em",
+            minHeight: "4em",
+            borderRadius: "0.25em",
+            transform: "rotate(-4deg) rotateY(15deg)",
+            background: "#629bdd",
+            fontFamily: "Century Gothic, Verdana, sans-serif",
+            fontSize: "1.5rem",
+            textAlign: "center",
+            zIndex: 2,
+            ...customStyle,
+          }}
+          onClick={onClick}
+        >
+          <motion.div 
+            className="text-lg font-medium text-gray-800 z-10 relative"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            style={{ position: "relative", zIndex: 5 }}
+          >
+            {content}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
 const SafePeople = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [stars, setStars] = useState<Star[]>([]);
@@ -37,6 +102,16 @@ const SafePeople = () => {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [showBubbles] = useState(true);
   const navigate = useNavigate();
+  
+  // State to manage speech bubble visibility
+  const [visibleBubble, setVisibleBubble] = useState<number | null>(null);
+  const [bubbleSequenceComplete, setBubbleSequenceComplete] = useState(false);
+  
+  // Dialogue content for the speech bubbles
+  const dialogues = [
+    "You know who your safe people are, right?",
+    "They are grown-ups who you know got your back no matter what."
+  ];
 
   const handleTeleportNext = () => {
     navigate("/relax");
@@ -45,6 +120,62 @@ const SafePeople = () => {
   const handleTeleportBack = () => {
     navigate(-1);
   };
+  
+  // Function to handle bubble click
+  const handleBubbleClick = () => {
+    if (bubbleSequenceComplete) {
+      // Reset and play the sequence again when clicked after completion
+      resetBubbleSequence();
+    }
+  };
+  
+  // Function to reset and play the entire bubble sequence again
+  const resetBubbleSequence = () => {
+    setBubbleSequenceComplete(false);
+    setVisibleBubble(null);
+    
+    // Show first bubble after a short delay
+    setTimeout(() => {
+      setVisibleBubble(0);
+      
+      // Hide first bubble and show second bubble after a delay
+      setTimeout(() => {
+        setVisibleBubble(1);
+        
+        // Mark sequence as complete after second bubble has been shown
+        setTimeout(() => {
+          setBubbleSequenceComplete(true);
+        }, 2000);
+      }, 3000); // Time before first bubble disappears and second appears
+    }, 500);
+  };
+
+  // Show the bubbles sequentially on initial load
+  useEffect(() => {
+    // Start with no bubbles visible
+    setVisibleBubble(null);
+    
+    // Show first bubble after a short delay
+    const firstBubbleTimer = setTimeout(() => {
+      setVisibleBubble(0);
+      
+      // Hide first bubble and show second bubble after a delay
+      const secondBubbleTimer = setTimeout(() => {
+        setVisibleBubble(1);
+        
+        // Mark sequence as complete
+        const completeTimer = setTimeout(() => {
+          setBubbleSequenceComplete(true);
+        }, 2000);
+        
+        return () => clearTimeout(completeTimer);
+      }, 3000); // Time before first bubble disappears and second appears
+      
+      return () => clearTimeout(secondBubbleTimer);
+    }, 1000);
+    
+    return () => clearTimeout(firstBubbleTimer);
+  }, []);
 
   // Generate mini space bubbles
   useEffect(() => {
@@ -247,7 +378,7 @@ const SafePeople = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 pt-32 pb-32 relative"> {/* Increased top padding */}
+    <div className="min-h-screen p-8 pt-32 pb-32 relative"> 
       {/* Sky background with stars */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <img 
@@ -447,15 +578,6 @@ const SafePeople = () => {
               }
             }
             
-            .space-bubble {
-              border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%;
-              animation: space-float 12s ease-in-out infinite, bubble-wobble 8s ease-in-out infinite;
-              background: linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(202,234,255,0.9) 50%, rgba(151,205,255,0.8) 100%);
-              backdrop-filter: blur(5px);
-              box-shadow: inset 0 0 15px rgba(255,255,255,0.8), 0 0 15px rgba(120,190,255,0.5);
-              border: 1px solid rgba(255,255,255,0.6);
-            }
-            
             .mini-bubble {
               position: absolute;
               border-radius: 50%;
@@ -531,6 +653,34 @@ const SafePeople = () => {
             .glow-text {
               animation: text-glow 4s ease-in-out infinite;
             }
+            
+            /* Speech bubble styles from CharacterIntroPage */
+            .speech-bubble:before, .speech-bubble:after {
+              position: absolute;
+              z-index: -1;
+              content: '';
+            }
+            
+            .speech-bubble:after {
+              top: 0; 
+              right: 0; 
+              bottom: 0; 
+              left: 0;
+              border-radius: inherit;
+              transform: rotate(2deg) translate(.35em, -.15em) scale(1.02);
+              background: #f4fbfe;
+            }
+            
+            .speech-bubble:before {
+              border: solid 0 transparent;
+              border-right: solid 3.5em #f4fbfe;
+              border-bottom: solid .25em #629bdd;
+              bottom: .25em; 
+              left: 1.25em;
+              width: 0; 
+              height: 1em;
+              transform: rotate(45deg) skewX(75deg);
+            }
           `}</style>
 
           {/* Render the stars */}
@@ -557,82 +707,41 @@ const SafePeople = () => {
         </div>
       </div>
 
-      {/* No custom rotating bubble - removed */}
-
       {/* Main content container with character and messages - moved down with more top margin */}
       <div className="relative z-10 flex flex-col-reverse md:flex-row mt-20">
         {/* Character on the left side with floating animation */}
         <div className="w-full md:w-1/3 flex flex-col items-center justify-center mt-8 md:mt-0">
-          <div className="relative drifting mb-20"> {/* Added margin to move character down */}
-            {/* Space bubbles above character */}
-            <div className="absolute -top-30 left-0 right-0 flex flex-col items-center space-y-8">
-              {/* First bubble */}
-              <div className="relative w-64 h-32 flex items-center justify-center space-bubble"
-                   style={{
-                     '--float-x1': '10px',
-                     '--float-y1': '-15px',
-                     '--float-x2': '-15px',
-                     '--float-y2': '5px',
-                     '--float-x3': '5px',
-                     '--float-y3': '-8px',
-                   } as React.CSSProperties}>
-                     
-                {/* Mini decorative bubbles around the first bubble */}
-                {bubbles.slice(0, 7).map((bubble) => (
-                  <div 
-                    key={`top-${bubble.id}`}
-                    className={`mini-bubble ${bubble.popping ? 'popping' : ''}`}
-                    style={{
-                      width: `${bubble.size}px`,
-                      height: `${bubble.size}px`,
-                      left: `${50 + bubble.x}%`,
-                      top: `${50 + bubble.y}%`,
-                      '--bubble-speed': `${bubble.speed}s`,
-                      '--mini-x': `${bubble.x / 2}px`,
-                      '--mini-y': `${bubble.y / 2}px`,
-                    } as React.CSSProperties}
-                  />
-                ))}
-                
-                <p className="text-center text-blue-900 font-medium px-6 z-10">
-                  You know who your safe people are, right?
-                </p>
-              </div>
+          {/* STABLE CONTAINER FOR SPEECH BUBBLES - not affected by any animations */}
+          <div className="relative" style={{ height: 0, overflow: 'visible', zIndex: 20 }}>
+            <div className="absolute top-[-9.5rem] left-0 right-0 flex flex-col items-center space-y-8">
+              {/* First speech bubble */}
+              <CharacterDialog
+                content={dialogues[0]}
+                isVisible={visibleBubble === 0}
+                customStyle={{
+                  width: "18em",
+                  transform: "rotate(-4deg) rotateY(15deg)",
+                  cursor: bubbleSequenceComplete ? 'pointer' : 'default'
+                }}
+                onClick={handleBubbleClick}
+              />
               
-              {/* Second bubble */}
-              <div className="relative w-72 h-40 flex items-center justify-center space-bubble"
-                   style={{
-                     '--float-x1': '-12px',
-                     '--float-y1': '10px',
-                     '--float-x2': '8px',
-                     '--float-y2': '-12px',
-                     '--float-x3': '-5px',
-                     '--float-y3': '8px',
-                   } as React.CSSProperties}>
-                     
-                {/* Mini decorative bubbles around the second bubble */}
-                {bubbles.slice(7).map((bubble) => (
-                  <div 
-                    key={`bottom-${bubble.id}`}
-                    className={`mini-bubble ${bubble.popping ? 'popping' : ''}`}
-                    style={{
-                      width: `${bubble.size}px`,
-                      height: `${bubble.size}px`,
-                      left: `${50 + bubble.x}%`,
-                      top: `${(50 + bubble.y) - 0}%`,
-                      '--bubble-speed': `${bubble.speed}s`,
-                      '--mini-x': `${bubble.x / 2}px`,
-                      '--mini-y': `${bubble.y / 2}px`,
-                    } as React.CSSProperties}
-                  />
-                ))}
-                
-                <p className="text-center text-blue-900 font-medium px-6 z-10">
-                  They are grown-ups who you know got your back no matter what.
-                </p>
-              </div>
+              {/* Second speech bubble */}
+              <CharacterDialog
+                content={dialogues[1]}
+                isVisible={visibleBubble === 1}
+                customStyle={{
+                  width: "20em",
+                  transform: "rotate(-2deg) rotateY(15deg)",
+                  cursor: bubbleSequenceComplete ? 'pointer' : 'default'
+                }}
+                onClick={handleBubbleClick}
+              />
             </div>
-            
+          </div>
+          
+          {/* Character with drifting animation */}
+          <div className="relative drifting mb-20 z-10"> 
             {/* Outer glow effect */}
             <div className="absolute inset-0 bg-blue-400 rounded-full blur-3xl opacity-20 glow-effect -z-10"></div>
             
@@ -640,8 +749,7 @@ const SafePeople = () => {
             <div className="absolute inset-0 bg-cyan-300 rounded-full blur-xl opacity-30 -z-10 glow-effect" 
                  style={{animationDelay: '-4s'}}></div>
             
-            {/* Character with floating animation */}
-            <div className="floating mt-38"> {/* Added margin-top to move character down */}
+            <div className="floating mt-38"> 
               <img 
                 src="/character-in-space.gif" 
                 alt="Character in space" 
@@ -694,8 +802,8 @@ const SafePeople = () => {
       </div>
       
       {/* Both Teleport Bubbles */}
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text='Relax'/>
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text='Back'/>
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text='6.Relax'/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text='5.Support'/>
     </div>
   );
 };
