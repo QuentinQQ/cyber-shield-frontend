@@ -239,7 +239,7 @@ const RelaxPage = () => {
     togglePlay,
     toggleMute,
     handleVolumeChange
-  } = useAudioPlayer(`${window.location.origin}/blue-skies.mp3`);
+  } = useAudioPlayer(`/blue-skies.mp3`);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isUnmounting = useRef(false);
