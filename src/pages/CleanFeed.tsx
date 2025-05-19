@@ -4,7 +4,6 @@ import StartScreen from "../components/cleanFeed/StartScreen";
 import GameScreen from "../components/cleanFeed/GameScreen";
 import ResultScreen from "../components/cleanFeed/ResultScreen";
 import { useCleanFeed } from "../hooks/useCleanFeed";
-import PageWrapper from "../components/PageWrapper";
 import EmptyAnswerScreen from "../components/cleanFeed/EmptyAnswerScreen";
 import LoadingOverlay from "../components/LoadingOverlay";
 import { TeleportBubble } from "@/components/TeleportBubble";
