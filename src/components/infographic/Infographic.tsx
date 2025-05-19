@@ -238,7 +238,7 @@ const Infographic: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.7 }}
-          className="block mt-3 text-2xl md:text-3xl font-bold"
+          className="block mt-3 text-2xl md:text-3xl font-bold "
         >
           How many students hang out in your class?
         </motion.span>
@@ -454,7 +454,7 @@ const Infographic: React.FC = () => {
             }}
             onClick={() => navigate('/quiz-2')}
           >
-            Let's install some apps!
+            Discover App Dangers!
             
             {/* Ring orbits */}
             <motion.div
