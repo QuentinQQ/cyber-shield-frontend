@@ -10,6 +10,14 @@ import LoadingOverlay from "../components/LoadingOverlay";
 import { TeleportBubble } from "@/components/TeleportBubble";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * @page
+ * @description This page presents the "Clean Feed" game, an interactive experience
+ * where users learn to identify and filter out harmful or negative online comments.
+ * It features different game states: an optional intro screen, the main game screen,
+ * and a result screen upon completion. It also handles loading and error states.
+ */ 
+
 interface CleanFeedProps {
   skipIntro?: boolean;
 }
@@ -31,8 +39,9 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
   const handleTeleportNext = () => {
     navigate("/safe-people");
   };
+
   const handleTeleportBack = () => {
-    navigate(-1);
+    navigate("/scenario");
   };
 
   // Auto-start game when skipIntro is true
@@ -96,8 +105,8 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
 
       {/* Teleport Bubbles with higher z-index */}
       <div className="relative">
-        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Support" />
-        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
+        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="5.Support" />
+        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="4. Scenarios" />
       </div>
       
       {/* Background styles */}
