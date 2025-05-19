@@ -5,23 +5,39 @@ interface VideoPlayerProps {
   src: string;
   onEnded: () => void;
   videoRef: React.RefObject<HTMLVideoElement | null>;
+  skipPlayback?: boolean;
 }
 
 /**
  * @component VideoPlayer
  * @description Handles video playback with loading states
  */
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded, videoRef }) => {
-  const [isLoading, setIsLoading] = useState(true);
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ 
+  src, 
+  onEnded, 
+  videoRef,
+  skipPlayback = false
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [videoStarted, setVideoStarted] = useState(false);
 
   useEffect(() => {
     // Reset state when src changes
-    setIsLoading(true);
+    setIsLoading(false);
     setError(null);
-  }, [src]);
+    setVideoStarted(false);
+    
+    // If skipPlayback is true, immediately trigger onEnded
+    if (skipPlayback) {
+      onEnded();
+    }
+  }, [src, skipPlayback, onEnded]);
 
   const handleCanPlay = () => {
+    // If skipPlayback, we shouldn't play the video at all
+    if (skipPlayback) return;
+    
     setIsLoading(false);
     // Ensure video plays
     if (videoRef.current) {
@@ -32,14 +48,31 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded, videoRef }) => 
     }
   };
 
+  const handlePlay = () => {
+    setIsLoading(false);
+    setVideoStarted(true);
+  };
+
+  const handleTimeUpdate = () => {
+    if (!videoStarted && videoRef.current && videoRef.current.currentTime > 0) {
+      setIsLoading(false);
+      setVideoStarted(true);
+    }
+  };
+
   const handleError = () => {
     setIsLoading(false);
     setError(`Failed to load video: ${src}`);
   };
 
+  // If skipPlayback is true, don't render the video at all
+  if (skipPlayback) {
+    return null;
+  }
+
   return (
     <div className="w-full h-full">
-      {isLoading && (
+      {isLoading && !videoStarted && (
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div 
             animate={{ rotate: 360 }}
@@ -60,9 +93,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, onEnded, videoRef }) => 
         src={src}
         className="w-full h-full object-cover"
         onCanPlay={handleCanPlay}
+        onPlay={handlePlay}
+        onTimeUpdate={handleTimeUpdate}
         onEnded={onEnded}
         onError={handleError}
         autoPlay
+        playsInline
       />
     </div>
   );

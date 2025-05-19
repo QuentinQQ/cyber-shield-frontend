@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useScenarioPlayer } from "../hooks/useScenarioPlayer";
 import { MediaType } from "../types/scenario.types";
 import VideoPlayer from "../components/scenario/VideoPlayer";
@@ -69,8 +69,11 @@ const ScenarioGame: React.FC = () => {
     started,
     currentNode,
     showOptions,
-    // caption,
     videoRef,
+    wrongOptions,
+    isShowingFeedback,
+    originalNodeId,
+    skipVideoPlayback,
     startScenario,
     resetScenario,
     handleMediaEnd,
@@ -78,39 +81,46 @@ const ScenarioGame: React.FC = () => {
     handleContinue,
   } = useScenarioPlayer();
   const [showCharacterDialog, setShowCharacterDialog] = useState(true);
-  const [dialogStage] = useState(1);
+  const [dialogStage, setDialogStage] = useState(1);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
 
   // Auto-hide the speech bubble after a few seconds
-  React.useEffect(() => {
-    // Show the bubble initially
+  useEffect(() => {
     setShowCharacterDialog(true);
-    
-    // Hide it after 5 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
     }, 5000);
-    
-    // Clean up on unmount
     return () => clearTimeout(timer);
   }, []);
+
+  // Update feedback message when a feedback video is shown
+  useEffect(() => {
+    if (isShowingFeedback) {
+      setFeedbackMessage("That's not quite right. Let's think about this again.");
+      setDialogStage(2); // Update dialog to show feedback in character speech bubble
+      setShowCharacterDialog(true);
+    } else {
+      setDialogStage(1);
+    }
+  }, [isShowingFeedback]);
 
   // Handle character click to show the speech bubble again
   const handleCharacterClick = () => {
     setShowCharacterDialog(true);
-    
-    // Hide it again after 5 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
     }, 5000);
-    
     return () => clearTimeout(timer);
   };
 
-  // Determine if the game has ended - when it's a TEXT node with no nextNodeId and no options
+  // Determine if the game has ended
   const isGameEnded = started && 
-    currentNode?.type === MediaType.TEXT && 
-    !currentNode.nextNodeId && 
-    !showOptions;
+    (
+      // Original condition
+      (currentNode?.type === MediaType.TEXT && !currentNode.nextNodeId && !showOptions) ||
+      // Additional condition: If current node is A012 and has no nextNodeId, consider game ended
+      (currentNode?.id === "A012" && !currentNode.nextNodeId)
+    );
 
   // Handle teleport to story page
   const handleTeleportNext = () => {
@@ -125,6 +135,8 @@ const ScenarioGame: React.FC = () => {
   const getDialogContent = (stageNum: number) => {
     if (stageNum === 1) {
       return "See how your decisions play out & the impact of cyberbullying. Choose like it's happening to you!";
+    } else if (stageNum === 2) {
+      return "That choice wasn't right. Try a different option!";
     }
     return "";
   };
@@ -137,8 +149,23 @@ const ScenarioGame: React.FC = () => {
         left: "30px",
         position: "absolute" as const,
       };
+    } else if (stageNum === 2) {
+      return {
+        top: "-180px",
+        left: "30px",
+        position: "absolute" as const,
+        background: "#e74c3c",
+      };
     }
     return {};
+  };
+
+  // Get incorrect options for the current node
+  const getIncorrectOptions = () => {
+    if (!originalNodeId && currentNode) {
+      return wrongOptions[currentNode.id] || [];
+    }
+    return originalNodeId ? (wrongOptions[originalNodeId] || []) : [];
   };
 
   // Error handling to prevent page crashes
@@ -327,21 +354,32 @@ const ScenarioGame: React.FC = () => {
                       ) : (
                         <>
                           {currentNode.type === MediaType.VIDEO && (
-                            <VideoPlayer src={currentNode.src} onEnded={handleMediaEnd} videoRef={videoRef} />
+                            <VideoPlayer 
+                              src={currentNode.src} 
+                              onEnded={handleMediaEnd} 
+                              videoRef={videoRef}
+                              skipPlayback={skipVideoPlayback}
+                            />
                           )}
                           {currentNode.type === MediaType.IMAGE && (
                             <ImageDisplay src={currentNode.src} onLoad={handleMediaEnd} />
                           )}
                           {currentNode.type === MediaType.TEXT && (
                             <TextDisplay
-                              text={currentNode.title ?? ""}   // 🔄 UPDATED — 直接用 title
+                              text={currentNode.title ?? ""}
                               onContinue={currentNode.nextNodeId ? handleContinue : undefined}
+                              isFeedback={isShowingFeedback}
+                              title={isShowingFeedback ? feedbackMessage : undefined}
                             />
                           )}
 
                           {/* Options overlay - stays in the player area */}
                           {showOptions && currentNode.options && (
-                            <OptionsOverlay options={currentNode.options} onSelect={handleOptionSelect} />
+                            <OptionsOverlay 
+                              options={currentNode.options} 
+                              onSelect={handleOptionSelect}
+                              incorrectOptions={getIncorrectOptions()}
+                            />
                           )}
                           
                           {/* Updated Play Again button with Planet Bounce style */}
@@ -350,7 +388,7 @@ const ScenarioGame: React.FC = () => {
                               initial={{ opacity: 0, scale: 0.9 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ delay: 1, duration: 0.5 }}
-                              className="absolute bottom-8 left-0 right-0 flex justify-center"
+                              className="absolute bottom-8 left-0 right-0 flex justify-center z-20"
                             >
                               <div className="relative">
                                 {/* Shadow beneath the button */}
@@ -376,7 +414,6 @@ const ScenarioGame: React.FC = () => {
                                   whileTap={{ 
                                     scale: 0.95,
                                   }}
-                                  // Add a bouncing animation for the button
                                   animate={{
                                     y: [0, -8, 0],
                                   }}
@@ -409,7 +446,7 @@ const ScenarioGame: React.FC = () => {
                                       strokeLinejoin="round"
                                     />
                                   </svg>
-                                  <span>Give it another try?</span>
+                                  <span>Try Again</span>
                                   
                                   {/* Ring orbits */}
                                   <motion.div

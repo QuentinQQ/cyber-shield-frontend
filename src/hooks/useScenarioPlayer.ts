@@ -12,6 +12,10 @@ import { MediaType, ScenarioNode } from "../types/scenario.types";
  *  currentNode: ScenarioNode,
  *  showOptions: boolean,
  *  videoRef: React.RefObject<HTMLVideoElement>,
+ *  wrongOptions: Record<string, string[]>,
+ *  isShowingFeedback: boolean,
+ *  originalNodeId: string | null,
+ *  skipVideoPlayback: boolean,
  *  startScenario: () => void,
  *  resetScenario: () => void,
  *  handleMediaEnd: () => void,
@@ -29,6 +33,18 @@ export function useScenarioPlayer() {
   // Whether to show option buttons on screen
   const [showOpts, setShowOpts] = useState(false);
 
+  // Track which options were tried and incorrect for each node
+  const [wrongOptions, setWrongOptions] = useState<Record<string, string[]>>({});
+
+  // Keep track of original node ID when showing feedback
+  const [originalNodeId, setOriginalNodeId] = useState<string | null>(null);
+
+  // Flag to indicate if we're showing a feedback video
+  const [isShowingFeedback, setIsShowingFeedback] = useState(false);
+
+  // Flag to skip video playback and just show options
+  const [skipVideoPlayback, setSkipVideoPlayback] = useState(false);
+
   // Ref to control the HTML video element (used in VideoPlayer component)
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -36,14 +52,25 @@ export function useScenarioPlayer() {
    * Internal helper to move to a specific node in the scenario.
    *
    * @param id - The ID of the target scenario node.
+   * @param skipVideo - If true, will immediately show options without playing the video
    */
-  const goTo = (id: string) => {
+  const goTo = (id: string, skipVideo: boolean = false) => {
     if (!scenarioData[id]) {
       console.error("Node not found:", id);
       return;
     }
     setShowOpts(false);
     setCurrentId(id);
+    
+    // If skipVideo is true, we will show options immediately
+    setSkipVideoPlayback(skipVideo);
+    
+    // If we're skipping the video, show options immediately
+    if (skipVideo) {
+      setTimeout(() => {
+        setShowOpts(true);
+      }, 50);
+    }
   };
 
   /**
@@ -52,7 +79,11 @@ export function useScenarioPlayer() {
    */
   const startScenario = () => {
     setStarted(true);
-    goTo("A002"); // First playable node (skip intro image)
+    setWrongOptions({});
+    setOriginalNodeId(null);
+    setIsShowingFeedback(false);
+    setSkipVideoPlayback(false);
+    goTo("A001"); // Start with the first content node
   };
 
   /**
@@ -63,6 +94,10 @@ export function useScenarioPlayer() {
     setStarted(false);
     setCurrentId("start");
     setShowOpts(false);
+    setWrongOptions({});
+    setOriginalNodeId(null);
+    setIsShowingFeedback(false);
+    setSkipVideoPlayback(false);
 
     // Optional small delay before re-starting for smoother UX
     setTimeout(startScenario, 300);
@@ -74,6 +109,21 @@ export function useScenarioPlayer() {
    */
   const handleMediaEnd = () => {
     const node = scenarioData[currentId];
+
+    // If this is a feedback video, return to showing options for the original node
+    // without replaying the original video
+    if (isShowingFeedback && originalNodeId) {
+      setIsShowingFeedback(false);
+      goTo(originalNodeId, true); // Skip video playback when returning from feedback
+      return;
+    }
+
+    // Special case for final node A012 - just show options (which will be empty)
+    // This triggers the isGameEnded condition in ScenarioGame.tsx
+    if (currentId === "A012") {
+      setShowOpts(true);
+      return;
+    }
 
     // If this node has options, show them
     if (node.options?.length) {
@@ -88,16 +138,52 @@ export function useScenarioPlayer() {
   };
 
   /**
+   * Mark an option as a wrong answer.
+   */
+  const markWrongOption = (nodeId: string, optionId: string) => {
+    setWrongOptions(prev => {
+      const nodeWrongOptions = prev[nodeId] || [];
+      if (!nodeWrongOptions.includes(optionId)) {
+        return {
+          ...prev,
+          [nodeId]: [...nodeWrongOptions, optionId]
+        };
+      }
+      return prev;
+    });
+  };
+
+  /**
    * Called when the user selects an option.
    * Navigates to the next node linked to that option.
    *
    * @param optId - The ID of the selected option (e.g., "A", "B_2").
    */
   const handleOptionSelect = (optId: string) => {
-    const option = scenarioData[currentId].options?.find((o) => o.id === optId);
-    if (option?.nextNodeId) {
-      goTo(option.nextNodeId);
+    const currentNode = scenarioData[currentId];
+    const option = currentNode.options?.find((o) => o.id === optId);
+    
+    if (!option?.nextNodeId) return;
+    
+    // Check if this option leads to a feedback video
+    const feedbackNodes = ["A002", "A004", "A006", "A008"];
+    const isFeedbackNode = feedbackNodes.includes(option.nextNodeId);
+    
+    if (isFeedbackNode) {
+      // Mark this as a wrong option
+      markWrongOption(currentId, optId);
+      
+      // Store the original node ID so we can return to it
+      setOriginalNodeId(currentId);
+      setIsShowingFeedback(true);
+
+      console.log(`User selected incorrect option ${optId} on node ${currentId}. Going to feedback node ${option.nextNodeId}`);
+    } else {
+      console.log(`User selected correct option ${optId} on node ${currentId}. Going to next node ${option.nextNodeId}`);
     }
+    
+    // Go to the next node
+    goTo(option.nextNodeId);
   };
 
   /**
@@ -117,6 +203,10 @@ export function useScenarioPlayer() {
     currentNode: scenarioData[currentId],
     showOptions: showOpts,
     videoRef,
+    wrongOptions,
+    isShowingFeedback,
+    originalNodeId,
+    skipVideoPlayback,
 
     // Public methods
     startScenario,
