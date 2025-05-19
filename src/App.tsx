@@ -37,6 +37,7 @@ function App() {
             <Route path="/get-help" element={<GetHelp />} />
             <Route path="/story" element={<Story />} />
             <Route path="/video" element={<Video />} />
+            <Route path="/video/:videoId" element={<Video />} />
             <Route path="/character-intro" element={<CharacterIntroPage />} />
             <Route path="/text-checker" element={<TextAnalysisPage />} />
             <Route path="/relax" element={<RelaxPage />} />
