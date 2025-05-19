@@ -74,6 +74,7 @@ const ScenarioGame: React.FC = () => {
     isShowingFeedback,
     originalNodeId,
     skipVideoPlayback,
+    isFinalVideoCompleted,
     startScenario,
     resetScenario,
     handleMediaEnd,
@@ -118,8 +119,8 @@ const ScenarioGame: React.FC = () => {
     (
       // Original condition
       (currentNode?.type === MediaType.TEXT && !currentNode.nextNodeId && !showOptions) ||
-      // Additional condition: If current node is A012 and has no nextNodeId, consider game ended
-      (currentNode?.id === "A012" && !currentNode.nextNodeId)
+      // Additional condition: If current node is A012, has no nextNodeId, and the video has completed
+      (currentNode?.id === "A012" && !currentNode.nextNodeId && isFinalVideoCompleted)
     );
 
   // Handle teleport to story page
@@ -387,7 +388,7 @@ const ScenarioGame: React.FC = () => {
                             <motion.div 
                               initial={{ opacity: 0, scale: 0.9 }}
                               animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 1, duration: 0.5 }}
+                              transition={{ delay: 0.5, duration: 0.5 }}
                               className="absolute bottom-8 left-0 right-0 flex justify-center z-20"
                             >
                               <div className="relative">
@@ -407,46 +408,30 @@ const ScenarioGame: React.FC = () => {
                                 
                                 <motion.button 
                                   onClick={resetScenario}
-                                  className="relative bg-[#C2E764] text-black px-6 py-3 rounded-full font-bold cursor-pointer z-10 shadow-lg flex items-center space-x-2"
+                                  className="relative bg-[#C2E764] text-black font-bold py-4 px-8 rounded-full z-10 shadow-lg"
                                   whileHover={{ 
                                     scale: 1.05,
                                   }}
                                   whileTap={{ 
                                     scale: 0.95,
                                   }}
-                                  animate={{
-                                    y: [0, -8, 0],
+                                  // Combined initial and animate states with transitions
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ 
+                                    opacity: 1, 
+                                    y: [0, -8, 0] 
                                   }}
                                   transition={{
+                                    opacity: { duration: 0.5, delay: 0.3 },
                                     y: {
                                       duration: 1.2,
                                       repeat: Infinity,
-                                      ease: "easeInOut"
+                                      ease: "easeInOut",
+                                      delay: 0.3
                                     }
                                   }}
                                 >
-                                  <svg 
-                                    className="w-5 h-5" 
-                                    viewBox="0 0 24 24"
-                                    fill="none" 
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path 
-                                      d="M1 4V10H7" 
-                                      stroke="currentColor" 
-                                      strokeWidth="2" 
-                                      strokeLinecap="round" 
-                                      strokeLinejoin="round"
-                                    />
-                                    <path 
-                                      d="M3.51 15C4.15839 17.0732 5.38734 18.8954 7.0718 20.2066C8.75625 21.5178 10.8431 22.2583 12.9999 22.3116C15.1567 22.365 17.2783 21.7297 19.0272 20.5087C20.7761 19.2877 22.0789 17.5433 22.7973 15.5128C23.5157 13.4824 23.6138 11.264 23.0783 9.1701C22.5429 7.07615 21.3986 5.20785 19.7964 3.81318C18.1941 2.41851 16.2109 1.56634 14.1176 1.36788C12.0243 1.16943 9.92526 1.63427 8.12 2.7" 
-                                      stroke="currentColor" 
-                                      strokeWidth="2" 
-                                      strokeLinecap="round" 
-                                      strokeLinejoin="round"
-                                    />
-                                  </svg>
-                                  <span>Try Again</span>
+                                  Try Again
                                   
                                   {/* Ring orbits */}
                                   <motion.div

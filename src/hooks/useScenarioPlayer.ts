@@ -16,6 +16,7 @@ import { MediaType, ScenarioNode } from "../types/scenario.types";
  *  isShowingFeedback: boolean,
  *  originalNodeId: string | null,
  *  skipVideoPlayback: boolean,
+ *  isFinalVideoCompleted: boolean,
  *  startScenario: () => void,
  *  resetScenario: () => void,
  *  handleMediaEnd: () => void,
@@ -44,6 +45,9 @@ export function useScenarioPlayer() {
 
   // Flag to skip video playback and just show options
   const [skipVideoPlayback, setSkipVideoPlayback] = useState(false);
+  
+  // Flag to indicate if the final video A012 has completed playing
+  const [isFinalVideoCompleted, setIsFinalVideoCompleted] = useState(false);
 
   // Ref to control the HTML video element (used in VideoPlayer component)
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -61,6 +65,11 @@ export function useScenarioPlayer() {
     }
     setShowOpts(false);
     setCurrentId(id);
+    
+    // Reset final video completion flag when navigating to a new node
+    if (id !== "A012") {
+      setIsFinalVideoCompleted(false);
+    }
     
     // If skipVideo is true, we will show options immediately
     setSkipVideoPlayback(skipVideo);
@@ -83,6 +92,7 @@ export function useScenarioPlayer() {
     setOriginalNodeId(null);
     setIsShowingFeedback(false);
     setSkipVideoPlayback(false);
+    setIsFinalVideoCompleted(false);
     goTo("A001"); // Start with the first content node
   };
 
@@ -98,6 +108,7 @@ export function useScenarioPlayer() {
     setOriginalNodeId(null);
     setIsShowingFeedback(false);
     setSkipVideoPlayback(false);
+    setIsFinalVideoCompleted(false);
 
     // Optional small delay before re-starting for smoother UX
     setTimeout(startScenario, 300);
@@ -118,10 +129,10 @@ export function useScenarioPlayer() {
       return;
     }
 
-    // Special case for final node A012 - just show options (which will be empty)
-    // This triggers the isGameEnded condition in ScenarioGame.tsx
+    // Special case for final node A012 - mark as completed
     if (currentId === "A012") {
-      setShowOpts(true);
+      setIsFinalVideoCompleted(true);
+      setShowOpts(true); // Show empty options to trigger game end condition
       return;
     }
 
@@ -207,6 +218,7 @@ export function useScenarioPlayer() {
     isShowingFeedback,
     originalNodeId,
     skipVideoPlayback,
+    isFinalVideoCompleted,
 
     // Public methods
     startScenario,
