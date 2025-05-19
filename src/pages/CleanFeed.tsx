@@ -4,7 +4,6 @@ import StartScreen from "../components/cleanFeed/StartScreen";
 import GameScreen from "../components/cleanFeed/GameScreen";
 import ResultScreen from "../components/cleanFeed/ResultScreen";
 import { useCleanFeed } from "../hooks/useCleanFeed";
-import PageWrapper from "../components/PageWrapper";
 import EmptyAnswerScreen from "../components/cleanFeed/EmptyAnswerScreen";
 import LoadingOverlay from "../components/LoadingOverlay";
 import { TeleportBubble } from "@/components/TeleportBubble";
@@ -68,8 +67,14 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
   };
 
   return (
-    <PageWrapper className={`min-h-screen ${(!gameStarted || gameOver || isLoading || error || comments.length === 0) ? 'bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA]' : 'bg-[#ACE3FC]'} text-white p-4`}>
-      {/* Content container */}
+
+    
+
+    <div
+    className="relative w-full min-h-screen bg-cover bg-center text-white p-4"
+    style={{ backgroundImage: `url('/space2.png')` }}
+  >
+
       <div className="relative z-10">
         {/* Onboarding Screen - only show if not skipping intro */}
         {!skipIntro && !gameStarted && !gameOver && (
@@ -110,7 +115,7 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
       </div>
       
       {/* Background styles */}
-    </PageWrapper>
+      </div>
   );
 };
 

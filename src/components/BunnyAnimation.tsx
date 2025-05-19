@@ -316,14 +316,41 @@ const BunnyAnimation = () => {
           15%, 40%, 65%, 90% { opacity: 1 }
         }
 
+        @keyframes textGlow {
+          0%, 50% { /* Breathe in - blue glow */
+            text-shadow: 
+              0 0 5px rgba(255, 255, 255, 0.8),
+              0 0 10px rgba(0, 180, 255, 0.8),
+              0 0 15px rgba(0, 180, 255, 0.6),
+              0 0 20px rgba(0, 180, 255, 0.4),
+              0 0 35px rgba(0, 180, 255, 0.2);
+          }
+          
+          50.1%, 100% { /* Breathe out - purple glow */
+            text-shadow: 
+              0 0 5px rgba(255, 255, 255, 0.8),
+              0 0 10px rgba(170, 0, 255, 0.8),
+              0 0 15px rgba(170, 0, 255, 0.6),
+              0 0 20px rgba(170, 0, 255, 0.4),
+              0 0 35px rgba(170, 0, 255, 0.2);
+          }
+        }
+
         .text::before {
           content: "breathe in";
           text-transform: uppercase;
           font-weight: 900;
-          font-size: 1.2rem;
+          font-size: 1.5rem;
           letter-spacing: 8px;
-          color: var(--text-color);
-          animation: breatheTextAnim var(--breathe-duration) linear infinite;
+          color: white; /* Changed from var(--text-color) to white for better glow effect */
+          animation: breatheTextAnim var(--breathe-duration) linear infinite, textGlow var(--breathe-duration) linear infinite;
+          text-shadow: 
+            0 0 5px rgba(255, 255, 255, 0.8),
+            0 0 10px rgba(0, 180, 255, 0.8),
+            0 0 15px rgba(0, 180, 255, 0.6),
+            0 0 20px rgba(0, 180, 255, 0.4),
+            0 0 35px rgba(0, 180, 255, 0.2);
+          filter: brightness(1.2);
         }
 
         .bubbles {

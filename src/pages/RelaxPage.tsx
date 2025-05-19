@@ -239,7 +239,7 @@ const RelaxPage = () => {
     togglePlay,
     toggleMute,
     handleVolumeChange
-  } = useAudioPlayer(`${window.location.origin}/blue-skies.mp3`);
+  } = useAudioPlayer(`/blue-skies.mp3`);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isUnmounting = useRef(false);
@@ -674,8 +674,8 @@ const RelaxPage = () => {
         </p>
       </div>
 
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Text Check"/>
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back"/>
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="7.Text Check"/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="5.Support"/>
         
       {/* Global styles for animations */}
       <style>{`        

@@ -1,12 +1,34 @@
 import React, { useEffect, useState } from "react";
 import YouTube from 'react-youtube';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TeleportBubble } from "@/components/TeleportBubble";
 
+interface VideoData {
+    id: string;
+    title: string;
+    description: string;
+}
+
+const videoLibrary: Record<string, VideoData> = {
+    "emma": {
+        id: "qA1TJjJgdz8",
+        title: "Emma's Story",
+        description: "How Emma dealt with online bullying"
+    },
+    "elena": {
+        id: "e5CDOxLD6Jc",
+        title: "elena's Story",
+        description: "Keeping personal information safe online"
+    }
+};
+
 const VideoPage: React.FC = () => {
-    const videoId = 'qA1TJjJgdz8';
+    const { videoId = "emma" } = useParams<{ videoId: string }>();
     const navigate = useNavigate();
     const [glowIntensity, setGlowIntensity] = useState(0.7);
+    
+    // Get video data from library or use default
+    const videoData = videoLibrary[videoId] || videoLibrary.emma;
 
     // Old TV flicker effect
     useEffect(() => {
@@ -37,7 +59,7 @@ const VideoPage: React.FC = () => {
 
     const handleTeleportNext = () => {
       navigate("/clean-feed");
-  };
+    };
 
     return (
         <div className="relative w-full h-screen overflow-hidden">
@@ -51,6 +73,12 @@ const VideoPage: React.FC = () => {
             </div>
 
             <div className="relative z-10 w-full h-full flex flex-col">
+                {/* Video title overlay */}
+                <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+                    <h1 className="text-white text-2xl font-bold drop-shadow-lg">{videoData.title}</h1>
+                    <p className="text-blue-200 text-center drop-shadow-md">{videoData.description}</p>
+                </div>
+                
                 <div className="flex-1 flex items-center justify-center">
                     <div className="relative w-full max-w-7xl mx-auto" style={{ height: '100%' }}>
                         {/* Video positioned to align with cinema screen - with dynamic flicker */}
@@ -130,7 +158,7 @@ const VideoPage: React.FC = () => {
                                 transition: 'all 0.08s ease-out'
                             }}>
                                 <YouTube
-                                    videoId={videoId}
+                                    videoId={videoData.id}
                                     opts={opts}
                                 />
                             </div>
@@ -138,8 +166,8 @@ const VideoPage: React.FC = () => {
                     </div>
                 </div>
 
-                <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
-                <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Clean Feed" />
+                <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="2.Voices" />
+                <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="4.Clean Feed" />
             </div>
         </div>
     );
