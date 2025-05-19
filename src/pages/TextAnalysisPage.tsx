@@ -206,12 +206,14 @@ const TextCheckerPage = () => {
                 )}
               </>
             ) : (
+              
               // Results View
               <AnalysisResult 
                 result={result} 
                 originalText={submittedText} 
                 onCheckAnother={handleCheckAnother} 
               />
+              
             )}
           </div>
         </div>
@@ -220,6 +222,10 @@ const TextCheckerPage = () => {
         <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="8.Get Help" />
         <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="6.Relax" />
       </PageWrapper>
+
+      <footer className="text-[14px] text-center text-[#fbe9e4] opacity-80 py-2">
+        Hey! Our AI does its best, but it doesn’t always get things right. You know the context better — trust your gut and be kind. We're always working to make it smarter and more helpful.
+      </footer>
       
       {/* Add CSS for animations */}
       <style>{`

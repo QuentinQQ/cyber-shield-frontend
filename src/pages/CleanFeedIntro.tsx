@@ -244,6 +244,17 @@ const CleanFeedIntro: React.FC = () => {
   const [isCatHovered, setIsCatHovered] = useState(false);
   const [showCharacterDialog, setShowCharacterDialog] = useState(true);
   
+  // Clear localStorage items related to the game when component mounts
+  useEffect(() => {
+    // Remove any local storage items related to the Clean Feed game
+    const keysToRemove = Object.keys(localStorage).filter(key => 
+      key.startsWith('cleanFeed') || key.includes('cleanFeed') || key.includes('feed_result'));
+    
+    keysToRemove.forEach(key => {
+      localStorage.removeItem(key);
+    });
+  }, []);
+  
   // Auto-hide the speech bubble after a few seconds
   useEffect(() => {
     // Show the bubble initially
