@@ -64,7 +64,7 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
 
     <div
     className="relative w-full min-h-screen bg-cover bg-center text-white p-4"
-    style={{ backgroundImage: `url('/room1.png')` }}
+    style={{ backgroundImage: `url('/space2.png')` }}
   >
 
       <div className="relative z-10">
