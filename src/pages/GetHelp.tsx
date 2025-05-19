@@ -401,13 +401,13 @@ const GetHelp: React.FC = () => {
       // Hide speech bubble again after 5 seconds
       const timer = setTimeout(() => {
         setShowSpeechBubble(false);
-      }, 5000);
+      }, 2000);
       
       return () => clearTimeout(timer);
     };
     
     return (
-      <div className="absolute left-0 top-55 z-20">
+      <div className="absolute left-0 top-55 transform -translate-x-20 z-50">
         <style>{`
           /* Global styles for the speech bubble */
           .speech-bubble:before, .speech-bubble:after {
@@ -474,7 +474,7 @@ const GetHelp: React.FC = () => {
         <img 
           src="/gethelp-char.gif" 
           alt="Helper character" 
-          className="h-80 md:h-105 cursor-pointer"
+          className="h-100 md:h-125 cursor-pointer"
           onClick={handleCharacterClick}
         />
       </div>
