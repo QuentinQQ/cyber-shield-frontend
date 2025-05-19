@@ -74,14 +74,24 @@ const TextCheckerPage = () => {
       style={{ backgroundImage: "url(ai_text_detector.png)" }}
     >
       <PageWrapper>
-        <div className="flex items-center justify-center pt-28 min-h-[calc(100vh-2rem)]">
-          {/* Improved space-themed container */}
+        <div className="flex items-center justify-center pt-1 min-h-[calc(100vh-2rem)]">
+          {/* Character image positioned on the left side */}
+          <div className="absolute left-8 top-1/4 transform -translate-y-1/4 z-10">
+            <img 
+              src="/public/ai-char.gif" 
+              alt="AI Character" 
+              className="w-140 h-auto"
+            />
+          </div>
+          
+          {/* Improved space-themed container - positioned higher */}
           <div 
-            className="w-full max-w-xl rounded-2xl shadow-xl p-8 overflow-hidden relative"
+            className="w-full max-w-xl rounded-2xl shadow-xl p-8 overflow-hidden relative mt-12"
             style={{
               background: "linear-gradient(to bottom, #191970, #483D8B)",
               border: "1px solid rgba(138, 43, 226, 0.4)",
-              boxShadow: "0 0 30px rgba(138, 43, 226, 0.3), inset 0 0 20px rgba(148, 0, 211, 0.2)"
+              boxShadow: "0 0 30px rgba(138, 43, 226, 0.3), inset 0 0 20px rgba(148, 0, 211, 0.2)",
+              marginTop: "-5rem" // This makes the box higher on the screen
             }}
           >
             {/* Cosmic elements */}
@@ -241,7 +251,6 @@ const TextCheckerPage = () => {
         }
       `}</style>
     </div>
-
   );
 };
 

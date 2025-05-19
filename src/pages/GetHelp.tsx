@@ -32,7 +32,7 @@ const PrivacyPolicyPage: React.FC = () => {
   };
 
   return (
-    <PageWrapper className="min-h-screen text-white py-10 overflow-hidden relative bg-[#1e40af]">
+    <PageWrapper className="min-h-screen text-white py-10 overflow-hidden relative bg-blue-900">
       {/* Starry background - only adding this */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {Array.from({ length: 100 }).map((_, i) => (
