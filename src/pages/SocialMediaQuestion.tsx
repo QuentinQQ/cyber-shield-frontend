@@ -209,13 +209,14 @@ useEffect(() => {
       )}
 
       <h1 className="pt-10 text-white text-3xl font-bold text-center">
-        <span className="bg-blue-900 bg-opacity-90 px-4 py-1 rounded">
+      <span className="px-4 py-1">
           What is your favorite social media platform?
         </span>
       </h1>
 
       {!showResult && (
-        <div className="flex flex-col items-center mt-4 bg-cyan-300 bg-opacity-80 p-4 rounded z-10">
+       <div className="flex flex-col items-center mt-4 p-4 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-xl z-10">
+
         {/* <select
             className="p-2 rounded text-blue-900 font-semibold"
             onChange={(e) => setSelected(e.target.value)}
@@ -226,9 +227,10 @@ useEffect(() => {
             <option value="whatsapp">WhatsApp</option>
             <option value="snapchat">Snapchat</option>
           </select> */}
+          
           <Select onValueChange={(value) => setSelected(value)}>
-            <SelectTrigger className="w-[200px] bg-white text-blue-900 font-semibold">
-              <SelectValue placeholder="-- Choose --" />
+          <SelectTrigger className="w-[200px] bg-white text-black border-2 border-[#C2E764] rounded-[15px] font-normal text-lg text-center shadow-md focus:outline-none focus:border-[#C2E764] focus:shadow-md transition-all duration-200">
+          <SelectValue placeholder="-- Choose --" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -239,13 +241,19 @@ useEffect(() => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <button
+          <motion.button
             className={[
               'relative font-bold rounded-full px-8 py-1 shadow-lg z-10',
               'bg-[#C2E764] text-black -rotate-6 hover:rotate-0',
               !selected ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
             ].join(' ')}
             disabled={!selected}
+            animate={{ y: [0, -6, 0] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
           onClick={() => {
             setShowResult(false);
             setCurrentText("");
@@ -254,17 +262,24 @@ useEffect(() => {
           }}
           >
             Show
-          </button>
+            </motion.button>
         </div>
       )}
 
       {showResult && selected === "facebook" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
         <img key={gifKey} src={`/facebook1.gif?${gifKey}`} alt="Facebook" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-        <div className="bg-cyan-300 bg-opacity-90 p-4 rounded w-[28rem] text-2xl fixed" style={{ top: "calc(50% - 1cm)", right: "6%" }}
-    >
-            <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
-          </div>
+        <div
+          className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
+          style={{
+            top: "calc(50% - 1cm)",
+            right: "6%",
+            background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
+        </div>
         </div>
       )}
 
@@ -272,30 +287,51 @@ useEffect(() => {
       {showResult && selected === "instagram" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
         <img key={gifKey} src={`/insta1.gif?${gifKey}`} alt="Instagram" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-        <div className="bg-cyan-300 bg-opacity-90 p-4 rounded w-[28rem] text-2xl fixed" style={{ top: "calc(50% - 1cm)", right: "6%" }}
-    >
-            <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
-          </div>
+        <div
+          className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
+          style={{
+            top: "calc(50% - 1cm)",
+            right: "6%",
+            background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
+        </div>
         </div>
       )}
 
         {showResult && selected === "whatsapp" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
         <img key={gifKey} src={`/whatsapp1.gif?${gifKey}`} alt="WhatsApp" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-        <div className="bg-cyan-300 bg-opacity-90 p-4 rounded w-[28rem] text-2xl fixed" style={{ top: "calc(50% - 1cm)", right: "6%" }}
-    >
-            <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
-          </div>
+        <div
+          className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
+          style={{
+            top: "calc(50% - 1cm)",
+            right: "6%",
+            background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
+        </div>
         </div>
       )}
 
         {showResult && selected === "snapchat" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
         <img key={gifKey} src={`/snapchat1.gif?${gifKey}`} alt="WhatsApp" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-        <div className="bg-cyan-300 bg-opacity-90 p-4 rounded w-[28rem] text-2xl fixed" style={{ top: "calc(50% - 1cm)", right: "6%" }}
-    >
-            <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
-          </div>
+        <div
+          className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
+          style={{
+            top: "calc(50% - 1cm)",
+            right: "6%",
+            background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
+        </div>
         </div>
       )}
 

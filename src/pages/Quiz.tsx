@@ -129,7 +129,7 @@ const QuizPage: React.FC = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/quiz-class.png" 
+          src="/quiz-class1.png" 
           alt="Classroom background"
           className="w-full h-full object-cover"
         />
@@ -175,7 +175,7 @@ const QuizPage: React.FC = () => {
                   position: "absolute",
                   top: "100px",
                   left: "30px", /* Moved left from centered to directly above the character head */
-                  transform: "translateX(0) rotate(0deg)", /* Removed rotation and center transform */
+                  transform: "none", /* Removed rotation and center transform */
                   borderRadius: "10px", /* More rounded corners like in the image */
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)", /* Light shadow */
                   margin: "0.5em 0", 
@@ -264,7 +264,7 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="Voices" />
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="App Insights" />
       <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text="Back" />
     </PageWrapper>
   );
