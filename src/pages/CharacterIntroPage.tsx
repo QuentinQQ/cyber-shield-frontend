@@ -5,6 +5,13 @@ import PageWrapper from "@/components/PageWrapper";
 import NetworkBackground from "@/components/NetworkBackground";
 import { TeleportBubble } from "@/components/TeleportBubble";
 
+/**
+ * @component
+ * @description This page introduces the user to the site's character, Gleepo,
+ * and explains the purpose of the two teleport bubbles for navigating the site.
+ * It uses animations and timed sequences to guide the user through the introduction.
+ */
+
 interface CharacterDialogProps {
   content: React.ReactNode;
   isVisible: boolean;
@@ -77,102 +84,6 @@ const CustomCharacter = () => {
   );
 };
 
-// Updated TeleportBubble to accept color and position
-// const TeleportBubble: React.FC<{ 
-//   onClick: () => void;
-//   color: "blue" | "purple";
-//   position: "left" | "right";
-// }> = ({ onClick, color, position }) => {
-//   // Define color values based on the color prop
-//   const colorValues = {
-//     blue: {
-//       outer: 'hsl(212, 100%, 71%)',
-//       outerBorder: 'hsl(212, 100%, 81%)',
-//       middle: 'hsl(212, 100%, 51%)',
-//       middleBorder: 'hsl(212, 100%, 61%)',
-//       inner: 'hsl(212, 100%, 31%)',
-//       innerBorder: 'hsl(212, 100%, 41%)'
-//     },
-//     purple: {
-//       outer: 'hsl(270, 100%, 71%)',
-//       outerBorder: 'hsl(270, 100%, 81%)',
-//       middle: 'hsl(270, 100%, 51%)',
-//       middleBorder: 'hsl(270, 100%, 61%)',
-//       inner: 'hsl(270, 100%, 31%)',
-//       innerBorder: 'hsl(270, 100%, 41%)'
-//     }
-//   };
-  
-//   const selectedColor = colorValues[color];
-  
-//   // Set position based on the position prop
-//   const positionStyle = position === "right" ? 
-//     { right: '20px' } : 
-//     { left: '20px' };
-  
-//   return (
-//     <motion.div
-//       initial={{ opacity: 0, scale: 0.5 }}
-//       animate={{ opacity: 1, scale: 1 }}
-//       whileHover={{ scale: 1.1 }}
-//       whileTap={{ scale: 0.95 }}
-//       transition={{ duration: 0.3 }}
-//       className={`absolute bottom-10 cursor-pointer z-30`}
-//       onClick={onClick}
-//       style={{
-//         width: '150px',
-//         height: '150px',
-//         ...positionStyle
-//       }}
-//     >
-//       <div 
-//         className={`teleport-bubble-${color}`}
-//         style={{
-//           width: '150px',  
-//           height: '150px',
-//           background: selectedColor.outer,
-//           border: `13px solid ${selectedColor.outerBorder}`,
-//           position: 'relative',
-//           overflow: 'visible',
-//           borderRadius: '48% 40% 62% 47% / 61% 49% 64% 43%',
-//           animation: 'rotateTeleport 35s infinite linear',
-//           zIndex: 10
-//         }}
-//       >
-//         <div 
-//           style={{
-//             content: '',
-//             position: 'absolute',
-//             top: '15px',
-//             left: '15px',
-//             width: 'calc(100% - 45px)',
-//             height: 'calc(100% - 45px)',
-//             background: selectedColor.middle,
-//             border: `10px solid ${selectedColor.middleBorder}`,
-//             borderRadius: '41% 40% 50% 55% / 49% 52% 51% 43%',
-//             zIndex: -2,
-//             animation: 'rotateTeleportBefore 35s infinite linear'
-//           }}
-//         />
-//         <div 
-//           style={{
-//             content: '',
-//             position: 'absolute',
-//             top: '30px',
-//             left: '30px',
-//             width: 'calc(100% - 75px)',
-//             height: 'calc(100% - 75px)',
-//             background: selectedColor.inner,
-//             border: `7px solid ${selectedColor.innerBorder}`,
-//             borderRadius: '42% 63% 51% 60% / 47% 62% 42% 52%',
-//             animation: 'rotateTeleportAfter 35s infinite linear'
-//           }}
-//         />
-//       </div>
-//     </motion.div>
-//   );
-// };
-
 // Function to create a Mini Teleport bubble for display in dialogs
 const MiniTeleportBubble: React.FC<{ color: "blue" | "purple" }> = ({ color }) => {
   // Define color values based on the color prop
@@ -242,39 +153,86 @@ const MiniTeleportBubble: React.FC<{ color: "blue" | "purple" }> = ({ color }) =
   );
 };
 
+// Highlight component to highlight teleport bubbles
+const HighlightEffect: React.FC<{ position: "left" | "right"; intense?: boolean }> = ({ position, intense = false }) => {
+  const positionStyle = position === "left" 
+    ? { left: "20px" } 
+    : { right: "20px" };
+    
+  const intensityStyle = intense ? {
+    background: "rgba(255, 215, 0, 0.6)",
+    boxShadow: "0 0 30px 10px rgba(255, 215, 0, 0.4)",
+    animation: "pulse 1.5s infinite"
+  } : {
+    background: "rgba(255, 215, 0, 0.3)",
+    filter: "blur(15px)"
+  };
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ 
+        opacity: intense ? [0.6, 1, 0.6] : [0.2, 0.7, 0.2],
+        scale: intense ? [1, 1.2, 1] : [1, 1.15, 1]
+      }}
+      transition={{ 
+        duration: intense ? 1.2 : 1.8,
+        repeat: Infinity,
+        repeatType: "loop" 
+      }}
+      className="absolute bottom-10 z-20"
+      style={{
+        ...positionStyle,
+        width: "180px",
+        height: "180px",
+        borderRadius: "50%",
+        ...intensityStyle
+      }}
+    />
+  );
+};
+
 const CharacterIntroPage: React.FC = () => {
   const navigate = useNavigate();
   
   const [stage, setStage] = useState(1);
   const [imageError] = useState(false);
   const [showTeleports, setShowTeleports] = useState(false);
+  const [showPurpleTeleport, setShowPurpleTeleport] = useState(false);
+  const [showBlueTeleport, setShowBlueTeleport] = useState(false);
+  const [showPurpleArrow, setShowPurpleArrow] = useState(false);
+  const [showBlueArrow, setShowBlueArrow] = useState(false);
+  const [showBluePulse, setShowBluePulse] = useState(false);
   
-  // Updated dialog content with separate explanations for both teleport options
+  
+  // Updated dialog content with Australian kid-friendly language
   const getDialogContent = (stageNum: number) => {
     if (stageNum === 1) {
-      return "Hi, my name is Gleepo!";
+      return "G'day mate! I'm Gleepo!";
     } else if (stageNum === 2) {
-      return "Guess what?! My mom finally got me a phone! Super excited! You wanna play some games together?";
+      return "Guess what?! Mum finally got me a phone! Heaps excited! Wanna play some ripper games together?";
     } else if (stageNum === 3) {
       return (
         <div className="flex flex-col items-center gap-3">
-          <p>If you see this blue teleport bubble on the right:</p>
+          <p>Check out this cool blue teleport bubble:</p>
           <div className="flex justify-center relative h-32">
             <MiniTeleportBubble color="blue" />
           </div>
-          <p>Click it if you're not sure if what you're experiencing online is cyberbullying.</p>
+          <p>Give it a click to take the next step in our journey!</p>
         </div>
       );
     } else if (stageNum === 4) {
       return (
         <div className="flex flex-col items-center gap-3">
-          <p>And if you see this purple teleport bubble on the left:</p>
+          <p>And this purple one here:</p>
           <div className="flex justify-center relative h-32">
             <MiniTeleportBubble color="purple" />
           </div>
-          <p>Click it if you know you're being cyberbullied and need help right away.</p>
+          <p>It's your back button, in case you want to go back to where you were before. Bonza, right?</p>
         </div>
       );
+    } else if (stageNum === 5) {
+      return "If you're ready to go on an awesome adventure, tap the glowing blue teleport bubble! Let's get started!";
     }
     return "";
   };
@@ -306,17 +264,23 @@ const CharacterIntroPage: React.FC = () => {
         left: "-230px",
         position: "absolute" as const,
       };
+    } else if (stageNum === 5) {
+      return {
+        top: "-480px",
+        left: "-230px",
+        position: "absolute" as const,
+      };
     }
     return {};
   };
   
   // Updated navigation handlers for both paths
   const handleBlueTeleport = () => {
-    navigate("/quiz");
+    navigate("/quiz"); // Next step
   };
   
   const handlePurpleTeleport = () => {
-    navigate("/safe-people"); 
+    navigate("/safe-people"); // Back button
   };
   
   // Start the intro sequence after component mounts
@@ -340,25 +304,56 @@ const CharacterIntroPage: React.FC = () => {
     
     if (stage === 2) {
       const timer = setTimeout(() => {
-        setStage(3); // Show blue teleport explanation
+        setStage(3); // Show purple teleport explanation
       }, 5000);
       
       return () => clearTimeout(timer);
     }
 
     if (stage === 3) {
+      // Show blue teleport with highlight
+      const timerShowTeleport = setTimeout(() => {
+        setShowBlueTeleport(true);
+        setShowBlueArrow(true);
+      }, 1500);
+      
       const timer = setTimeout(() => {
         setStage(4); // Show purple teleport explanation
+        setShowBlueArrow(false);
       }, 5000);
       
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(timerShowTeleport);
+      };
     }
     
     if (stage === 4) {
+      // Show purple teleport with highlight
+      const timerShowTeleport = setTimeout(() => {
+        setShowPurpleTeleport(true);
+        setShowPurpleArrow(true);
+      }, 1500);
+      
       const timer = setTimeout(() => {
-        setStage(5); // Show both teleport buttons
+        setStage(5); // Show final call-to-action dialog
+        setShowPurpleArrow(false);
+        setShowPurpleTeleport(false);
+        setShowBlueTeleport(false);
         setShowTeleports(true);
       }, 5000);
+      
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(timerShowTeleport);
+      };
+    }
+    
+    if (stage === 5) {
+      // After the final dialog, make the blue teleport pulse
+      const timer = setTimeout(() => {
+        setShowBluePulse(true);
+      }, 1000);
       
       return () => clearTimeout(timer);
     }
@@ -391,6 +386,11 @@ const CharacterIntroPage: React.FC = () => {
           70% { transform: rotate(1deg); }
           80% { transform: rotate(-1deg); }
           90% { transform: rotate(1deg); }
+        }
+        @keyframes pulse {
+          0% { transform: scale(1); opacity: 0.6; }
+          50% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(1); opacity: 0.6; }
         }
         .hover\\:animate-shake:hover {
           animation: shake 0.6s ease-in-out;
@@ -452,11 +452,26 @@ const CharacterIntroPage: React.FC = () => {
         interactive={true}
       />
 
-      {/* Both Teleport Bubbles (show after all dialogs) */}
-      {showTeleports && (
+      {/* Purple Teleport Bubble with Highlight (Appears during explanation) */}
+      {showPurpleTeleport && (
+        <TeleportBubble onClick={handlePurpleTeleport} color="purple" position="left" text="Back" />
+      )}
+      
+      {showPurpleArrow && <HighlightEffect position="left" />}
+      
+      {/* Blue Teleport Bubble with Highlight (Appears during explanation) */}
+      {showBlueTeleport && (
+        <TeleportBubble onClick={handleBlueTeleport} color="blue" position="right" text="Next Step" />
+      )}
+      
+      {showBlueArrow && <HighlightEffect position="right" />}
+      
+      {/* Both Teleport Bubbles (permanent display after all dialogs) */}
+      {showTeleports && !showPurpleTeleport && !showBlueTeleport && (
         <>
-          <TeleportBubble onClick={handleBlueTeleport} color="blue" position="right" text="Class Quiz" />
-          <TeleportBubble onClick={handlePurpleTeleport} color="purple" position="left" text="Back" />
+          <TeleportBubble onClick={handleBlueTeleport} color="blue" position="right" text="1.Quiz" />
+          <TeleportBubble onClick={handlePurpleTeleport} color="purple" position="left" text="Home" />
+          {showBluePulse && <HighlightEffect position="right" intense={true} />}
         </>
       )}
       
@@ -510,7 +525,7 @@ const CharacterIntroPage: React.FC = () => {
         {/* Dialog section - each bubble has its own position */}
         <div className="relative z-20">
           <AnimatePresence mode="wait">
-            {stage >= 1 && stage <= 4 && (
+            {stage >= 1 && stage <= 5 && (
               <CharacterDialog
                 key={`dialog-${stage}`}
                 content={getDialogContent(stage)}
