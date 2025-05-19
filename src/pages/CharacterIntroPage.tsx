@@ -280,7 +280,7 @@ const CharacterIntroPage: React.FC = () => {
   };
   
   const handlePurpleTeleport = () => {
-    navigate("/safe-people"); // Back button
+    navigate("/"); // Back button
   };
   
   // Start the intro sequence after component mounts

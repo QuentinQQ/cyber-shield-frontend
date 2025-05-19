@@ -377,8 +377,8 @@ const CleanFeedIntro: React.FC = () => {
         }
       `}</style>
       {/* Teleport Bubble - always visible */}
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Support" />
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="5.Support" />
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="3.Scenarios" />
 
       {/* Black Cat on the right side of the bed  */}
       <div 

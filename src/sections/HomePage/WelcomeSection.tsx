@@ -869,7 +869,7 @@ const WelcomeSection: React.FC = () => {
             onMouseLeave={() => setCursorHovered(true)}
           >
             <PrimaryButton variant="cta" onClick={goToCharacterIntroPage}>
-              Let's Go!
+              Let's Kill Cyberbullying!
             </PrimaryButton>
           </motion.div>
         </div>
