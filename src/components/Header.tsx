@@ -7,17 +7,16 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled] = useState(false);
 
-  // Navigation items with shorter but clear labels
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "Cyber Stats", path: "/quiz" },            
-    { label: "Voices", path: "/story" },               
-    { label: "Scenarios", path: "/scenario" },         
-    { label: "Clean Feed", path: "/clean-feed" },
-    { label: "Support", path: "/safe-people" },        
-    { label: "Relax", path: "/relax" },                // Added new Relax page
-    { label: "Text Check", path: "/text-checker" },
-    { label: "Get Help", path: "/get-help" },
+    { label: "1.Cyber Stats", path: "/quiz" },            
+    { label: "2.Voices", path: "/story" },               
+    { label: "3.Scenarios", path: "/scenario" },         
+    { label: "4.Clean Feed", path: "/clean-feed" },
+    { label: "5.Support", path: "/safe-people" },        
+    { label: "6.Relax", path: "/relax" },                
+    { label: "7.Text Check", path: "/text-checker" },
+    { label: "8.Get Help", path: "/get-help" },
     { label: "Privacy", path: "/privacy-policy", isSpecial: true },
   ];
 
@@ -92,7 +91,7 @@ const Header = () => {
             <Link
               key={index}
               to={item.path}
-              className={`absolute w-16 h-16 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-500`}
+              className={`absolute w-16 h-16 rounded-full flex items-center justify-center text-black text-xs font-bold shadow-md transition-all duration-500`}
 
               style={{
                 transform: `translate(${posX}px, ${posY}px) scale(${isOpen ? 1 : 0})`,
