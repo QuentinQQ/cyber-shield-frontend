@@ -138,8 +138,8 @@ const VideoPage: React.FC = () => {
                     </div>
                 </div>
 
-                <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="Back" />
-                <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="Clean Feed" />
+                <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="2.Voices" />
+                <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="4.Clean Feed" />
             </div>
         </div>
     );
