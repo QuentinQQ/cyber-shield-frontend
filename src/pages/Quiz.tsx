@@ -16,9 +16,10 @@ import { TeleportBubble } from "@/components/TeleportBubble";
 const QuizPage: React.FC = () => {
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; opacity: number; blinkDuration: number; }[]>([]);
   const [showDialog, setShowDialog] = useState(true);
+  const [dialogStep, setDialogStep] = useState(1);  
 
   // Speech bubble timeout ref to clear on new clicks
-  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null); 
 
   // Generate random stars for the background
   useEffect(() => {
@@ -48,46 +49,53 @@ const QuizPage: React.FC = () => {
   }, []);
   
   // Auto-hide the speech bubble after a few seconds
-  useEffect(() => {
-    setShowDialog(true);
+    useEffect(() => {  
+      runDialogSequence();
     
-    timeoutRef.current = setTimeout(() => {
-      setShowDialog(false);
-    }, 8000);
+      return () => { 
+        if (timeoutRef.current) clearTimeout(timeoutRef.current); 
+      };
+    }, []);
     
-    // Clean up on unmount
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+    const runDialogSequence = () => {
+      setDialogStep(1);
+      setShowDialog(true);
+     
+      // first timeout to hide the dialog after 3 seconds
+      timeoutRef.current = setTimeout(() => {
+        setShowDialog(false);
+     
+        // second timeout to show the dialog again after 2 seconds
+        timeoutRef.current = setTimeout(() => {
+          setDialogStep(2);
+          setShowDialog(true);
+    
+          // Hide the dialog 
+          timeoutRef.current = setTimeout(() => {
+            setShowDialog(false);
+          }, 5000);
+        }, 2000);  
+      }, 3000); 
     };
-  }, []);
 
   // Handle character click
-  const handleCharacterClick = () => {
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    // Show the dialog
-    setShowDialog(true);
-    
-    // Set a new timeout
-    timeoutRef.current = setTimeout(() => {
-      setShowDialog(false);
-    }, 8000);
-  };
+    const handleCharacterClick = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+     
+      runDialogSequence();
+    }; 
+   
+
   
   const navigate = useNavigate();
 
   // Navigation handler for teleport button
   const handleTeleportToNext = () => {
-    navigate("/quiz-2");
+    navigate("/story");
   };
 
   const handleTeleportToBack = () => {
-    navigate(-1);
+    navigate("/character-intro");
   };
 
   // const handleTeleportToBack = () => {
@@ -129,7 +137,7 @@ const QuizPage: React.FC = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/quiz-class.png" 
+          src="/quiz-class1.png" 
           alt="Classroom background"
           className="w-full h-full object-cover"
         />
@@ -175,7 +183,7 @@ const QuizPage: React.FC = () => {
                   position: "absolute",
                   top: "100px",
                   left: "30px", /* Moved left from centered to directly above the character head */
-                  transform: "translateX(0) rotate(0deg)", /* Removed rotation and center transform */
+                  transform: "none", /* Removed rotation and center transform */
                   borderRadius: "10px", /* More rounded corners like in the image */
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)", /* Light shadow */
                   margin: "0.5em 0", 
@@ -196,7 +204,7 @@ const QuizPage: React.FC = () => {
                   transition={{ delay: 0.2, duration: 0.8 }}
                   style={{ position: "relative", zIndex: 5 }}
                 >
-                  Count your squad!
+                  {dialogStep === 1 ? "Count your squad!" : "Hang on until the animation's done — then help me pick an app!!"}
                 </motion.div>
               </motion.div>
             )}
@@ -264,8 +272,8 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="Voices" />
-      <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text="Back" />
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="2.Voices" />
+      <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text="Intro" />
     </PageWrapper>
   );
 };
