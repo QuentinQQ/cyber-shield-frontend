@@ -24,7 +24,7 @@ const StartScreen: React.FC<{ onStart: () => void }> = ({
       You have 15 SECONDS to like or dislike as many comments as you can!
     </p>
     <PrimaryButton variant="cta" onClick={onStart} rotate>
-      Let's Start 🚀
+      Let's Start!
     </PrimaryButton>
   </div>
 );
