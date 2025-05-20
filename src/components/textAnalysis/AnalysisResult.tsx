@@ -83,14 +83,42 @@ const AnalysisResult: React.FC<Props> = ({ result, originalText, onCheckAnother 
       </div>
       
       {/* Check Another button */}
-      <div className="mt-8 flex justify-center">
+      <div className="relative mt-6">
+        {/* Shadow beneath the button */}
+        <div 
+          className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
+          style={{
+            animation: "shadowMove 2s infinite alternate",
+            width: "90%",
+            marginLeft: "5%"
+          }}
+        />
+        
         <button
+          className="relative font-bold rounded-full px-8 py-4 shadow-lg z-10 w-full
+                    bg-[#C2E764] text-black"
           onClick={onCheckAnother}
-          className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold py-3 px-6 rounded-full 
-                   shadow-lg hover:from-purple-600 hover:to-indigo-700 transform transition-all 
-                   duration-300 hover:scale-105 flex items-center"
+          style={{
+            animation: "buttonBounce 1.2s infinite ease-in-out",
+            transform: "scale(1)"
+          }}
         >
           Check Another Message
+          
+          {/* Ring orbits */}
+          <div
+            className="absolute inset-0 border-2 border-black/10 rounded-full"
+            style={{
+              animation: "ringPulse1 3s infinite"
+            }}
+          />
+          <div
+            className="absolute inset-0 border-2 border-black/5 rounded-full"
+            style={{
+              animation: "ringPulse2 3s infinite",
+              animationDelay: "0.2s"
+            }}
+          />
         </button>
       </div>
     </div>
