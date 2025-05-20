@@ -77,15 +77,16 @@ const TextCheckerPage = () => {
       <PageWrapper>
         <div className="flex items-center justify-center pt-1 min-h-[calc(100vh-2rem)]">
           {/* Character */}
-          <div className="absolute left-8 top-[60%] transform -translate-y-1/2 z-10">
-            <div className="w-140 h-auto">
-              <img 
-                src="/ai-char.gif" 
-                alt="AI Character" 
-                className="max-w-full max-h-full object-contain"
-              />
-            </div>
-          </div>
+        <div className="absolute -left-20 top-[60%] transform -translate-y-1/2 z-10">
+          <img 
+            src="/ai-char.gif" 
+            alt="AI Character" 
+            style={{ 
+              width: "600px",
+              height: "auto"
+            }}
+          />
+        </div>
 
           {/* Speech bubble matching RelaxPage style */}
           <AnimatePresence>
@@ -97,7 +98,7 @@ const TextCheckerPage = () => {
               className="speech-bubble relative"
               style={{
                 position: "absolute",
-                top: "calc(50% - 180px)",   
+                top: "calc(45% - 180px)",   
                 left: "80px",  
                 margin: "0.5em 0", 
                 padding: "1em",
