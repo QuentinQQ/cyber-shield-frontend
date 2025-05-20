@@ -316,7 +316,7 @@ const Infographic: React.FC = () => {
             onClick={handleButtonClick}
             disabled={isAnimating}
           >
-            {isAnimating ? 'Working Magic...' : 'Show Me!'}
+            {isAnimating ? 'Getting Facts...' : 'Show Me!'}
             
             {/* Ring orbits */}
             <motion.div

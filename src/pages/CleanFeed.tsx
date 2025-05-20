@@ -36,7 +36,7 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
 
   const navigate = useNavigate();
   const handleTeleportNext = () => {
-    navigate("/safe-people");
+    navigate("/text-checker");
   };
 
   const handleTeleportBack = () => {
@@ -121,7 +121,7 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
 
       {/* Teleport Bubbles with higher z-index */}
       <div className="relative">
-        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="5.Support" />
+        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="5.Text Checker" />
         <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="4. Scenarios" />
       </div>
       
