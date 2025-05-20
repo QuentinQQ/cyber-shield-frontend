@@ -4,7 +4,6 @@ import { MediaType } from "../types/scenario.types";
 import VideoPlayer from "../components/scenario/VideoPlayer";
 import ImageDisplay from "../components/scenario/ImageDisplay";
 import OptionsOverlay from "../components/scenario/OptionsOverlay";
-// import CaptionDisplay from "../components/scenario/CaptionDisplay";
 import PageWrapper from "../components/PageWrapper";
 import LoadingOverlay from "../components/LoadingOverlay";
 import TextDisplay from "../components/scenario/TextDisplay";
@@ -227,7 +226,7 @@ const ScenarioGame: React.FC = () => {
       {/* Full-screen game background */}
       <div className="absolute inset-0 w-full h-full z-0">
         <img
-          src="/game-screen.png"
+          src="/game-screen-v2.png"
           alt="Game Screen Background"
           className="w-full h-full object-cover"
         />
@@ -279,14 +278,14 @@ const ScenarioGame: React.FC = () => {
 
           {/* Game content container positioned in the center of screen */}
           <div className="flex-1 flex items-center justify-center">
-            <div className="w-full max-w-4xl mx-auto md:ml-40">
+            <div className="w-full max-w-4xl mx-auto">
               {/* Content area positioned to align with the screen in the background */}
               <div className="relative aspect-video">
                 {/* Screen glow effect */}
-                <div className="absolute top-[15%] left-[10%] right-[3%] bottom-[10%] -z-1 bg-cyan-400 blur-xl opacity-30 animate-pulse"></div>
+                <div className="absolute inset-0 -z-1 bg-cyan-400 blur-xl opacity-30 animate-pulse"></div>
                 
                 {/* Player container */}
-                <div className="absolute top-[20%] left-[15%] right-[8%] bottom-[15%] flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   {/* Screen border glow */}
                   <div className="absolute inset-0 rounded-md bg-cyan-200 blur-md opacity-70 animate-pulse"></div>
                   
