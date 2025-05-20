@@ -154,7 +154,7 @@ const PrivacyPolicyPage: React.FC = () => {
               left: 0,
               borderRadius: "0.25em",
               transform: "rotate(2deg) translate(.35em, -.15em) scale(1.02)",
-              background: "#629bdd"
+              background: "#f4fbfe"
             }}
           />
           <div
