@@ -137,12 +137,6 @@ const GameScreen: React.FC<{
           </div>
         </div>
       )}
-
-      <div className="text-center max-w-md mx-auto px-4">
-        <p className="text-white text-sm opacity-80 mt-4">
-          Swipe through comments and indicate whether they are appropriate (Like) or inappropriate (Dislike).
-        </p>
-      </div>
     </div>
   );
 };
