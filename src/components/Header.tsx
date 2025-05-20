@@ -13,9 +13,9 @@ const Header = () => {
     { label: "2.Voices", path: "/story" },               
     { label: "3.Scenarios", path: "/scenario" },         
     { label: "4.Clean Feed", path: "/clean-feed" },
-    { label: "5.Support", path: "/safe-people" },        
-    { label: "6.Relax", path: "/relax" },                
-    { label: "7.Text Check", path: "/text-checker" },
+    { label: "5.Text Check", path: "/text-checker" },
+    { label: "6.Support", path: "/safe-people" },        
+    { label: "7.Relax", path: "/relax" },                
     { label: "8.Get Help", path: "/get-help" },
     { label: "Privacy", path: "/privacy-policy", isSpecial: true },
   ];
