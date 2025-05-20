@@ -58,7 +58,7 @@ const VideoPage: React.FC = () => {
     };
 
     const handleTeleportNext = () => {
-      navigate("/clean-feed");
+      navigate("/scenario");
     };
 
     return (
@@ -167,7 +167,7 @@ const VideoPage: React.FC = () => {
                 </div>
 
                 <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="2.Voices" />
-                <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="4.Clean Feed" />
+                <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="3.Scenario" />
             </div>
         </div>
     );
