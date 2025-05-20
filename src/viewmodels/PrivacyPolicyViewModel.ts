@@ -24,8 +24,8 @@ export class PrivacyPolicyViewModel {
    */
   downloadPolicyPDF = (): void => {
     const link = document.createElement('a');
-    link.href = '/WorldWeCreated-Privacy-Policy.pdf';
-    link.download = 'WorldWeCreated-Privacy-Policy.pdf';
+    link.href = '/World_We_Created_Privacy_Policy.pdf';
+    link.download = 'World_We_Created_Privacy_Policy.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
