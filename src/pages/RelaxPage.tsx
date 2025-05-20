@@ -276,7 +276,7 @@ const RelaxPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSpeechBubble(false);
-    }, 4000);
+    }, 9000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -285,7 +285,7 @@ const RelaxPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCharacter(false);
-    }, 7000); // Character disappears after 7 seconds
+    }, 9000); // Character disappears after 7 seconds
 
     return () => clearTimeout(timer);
   }, []);
