@@ -15,8 +15,8 @@ const Header = () => {
     { label: "4.Clean Feed", path: "/clean-feed" },
     { label: "5.Text Check", path: "/text-checker" },
     { label: "6.Support", path: "/safe-people" },        
-    { label: "7.Relax", path: "/relax" },                
-    { label: "8.Get Help", path: "/get-help" },
+    { label: "7.Relax", path: "/relax" },              
+    { label: "Get Help", path: "/get-help" },
     { label: "Privacy", path: "/privacy-policy", isSpecial: true },
   ];
 

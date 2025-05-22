@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { usePrivacyPolicyViewModel } from '../viewmodels/PrivacyPolicyViewModel';
 import PageWrapper from '@/components/PageWrapper';
-import { cn } from '@/lib/utils'; // Make sure this import exists
+import { cn } from '@/lib/utils'; 
 
 /**
  * PrivacyPolicyPage Component
