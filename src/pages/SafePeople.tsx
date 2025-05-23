@@ -169,7 +169,7 @@ const SafePeople = () => {
         }, 2000);
         
         return () => clearTimeout(completeTimer);
-      }, 3000); // Time before first bubble disappears and second appears
+      }, 4000); // Time before first bubble disappears and second appears
       
       return () => clearTimeout(secondBubbleTimer);
     }, 1000);
@@ -802,8 +802,8 @@ const SafePeople = () => {
       </div>
       
       {/* Both Teleport Bubbles */}
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text='6.Relax'/>
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text='4.Clean feed'/>
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text='7.relax'/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text='5.text check'/>
     </div>
   );
 };

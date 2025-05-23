@@ -250,6 +250,7 @@ const CleanFeedIntro: React.FC = () => {
     const keysToRemove = Object.keys(localStorage).filter(key => 
       key.startsWith('cleanFeed') || key.includes('cleanFeed') || key.includes('feed_result'));
     
+  
     keysToRemove.forEach(key => {
       localStorage.removeItem(key);
     });
@@ -263,7 +264,7 @@ const CleanFeedIntro: React.FC = () => {
     // Hide it after 5 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
-    }, 10000);
+    }, 15000);
     
     // Clean up on unmount
     return () => clearTimeout(timer);
@@ -276,7 +277,7 @@ const CleanFeedIntro: React.FC = () => {
     // Hide it again after 5 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
-    }, 5000);
+    }, 6000);
     
     return () => clearTimeout(timer);
   };
@@ -287,7 +288,7 @@ const CleanFeedIntro: React.FC = () => {
       const timer = setTimeout(() => {
         console.log("Moving to stage 2");
         setCharacterPopupStage(2); // Show second dialog
-      }, 4000);
+      }, 6000);
       
       return () => clearTimeout(timer);
     }
@@ -296,7 +297,7 @@ const CleanFeedIntro: React.FC = () => {
       const timer = setTimeout(() => {
         console.log("Moving to stage 3 - button should appear");
         setCharacterPopupStage(3); // Show button
-      }, 5000);
+      }, 6000);
       
       return () => clearTimeout(timer);
     }
@@ -308,7 +309,7 @@ const CleanFeedIntro: React.FC = () => {
   };
   
   const handleTeleportNext = () => {
-    navigate("/safe-people");
+    navigate("/text-checker");
   };
 
   const handleTeleportBack = () => {
@@ -388,7 +389,7 @@ const CleanFeedIntro: React.FC = () => {
         }
       `}</style>
       {/* Teleport Bubble - always visible */}
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="5.Support" />
+      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="5.Text Checker" />
       <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="3.Scenarios" />
 
       {/* Black Cat on the right side of the bed  */}

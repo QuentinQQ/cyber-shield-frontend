@@ -15,6 +15,7 @@ import SpaceCursor from './components/SpaceCursor';
 import RelaxPage from './pages/RelaxPage';
 import SocialMediaQuestion from './pages/SocialMediaQuestion';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import Congratulations from './pages/Congratulations';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/text-checker" element={<TextAnalysisPage />} />
             <Route path="/relax" element={<RelaxPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/congratulations" element={<Congratulations />} />
           </Routes>
         </div>
       </BrowserRouter>

@@ -64,7 +64,7 @@ const StoryPage: React.FC = () => {
         // Hide it after 5 seconds
         const timer = setTimeout(() => {
           setShowCharacterDialog(false);
-        }, 5000);
+        }, 7000);
         
         // Clean up on unmount
         return () => clearTimeout(timer);

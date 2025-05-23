@@ -204,7 +204,7 @@ const QuizPage: React.FC = () => {
                   transition={{ delay: 0.2, duration: 0.8 }}
                   style={{ position: "relative", zIndex: 5 }}
                 >
-                  {dialogStep === 1 ? "Count your squad!" : "Hang on until the animation's done — then help me pick an app!!"}
+                  {dialogStep === 1 ? "Count your classmates!" : "Hang on until the animation's done — then help me pick an app!!"}
                 </motion.div>
               </motion.div>
             )}

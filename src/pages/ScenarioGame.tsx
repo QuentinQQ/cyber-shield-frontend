@@ -89,7 +89,7 @@ const ScenarioGame: React.FC = () => {
     setShowCharacterDialog(true);
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
-    }, 5000);
+    }, 7000);
     return () => clearTimeout(timer);
   }, []);
 
