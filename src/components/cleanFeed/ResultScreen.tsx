@@ -73,7 +73,7 @@ const ResultScreen: React.FC<{
     // Hide it after 8 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
-    }, 8000);
+    }, 13000);
     
     // Clean up on unmount
     return () => clearTimeout(timer);

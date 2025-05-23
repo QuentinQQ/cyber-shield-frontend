@@ -263,7 +263,7 @@ const CleanFeedIntro: React.FC = () => {
     // Hide it after 5 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
-    }, 10000);
+    }, 15000);
     
     // Clean up on unmount
     return () => clearTimeout(timer);
@@ -276,7 +276,7 @@ const CleanFeedIntro: React.FC = () => {
     // Hide it again after 5 seconds
     const timer = setTimeout(() => {
       setShowCharacterDialog(false);
-    }, 5000);
+    }, 6000);
     
     return () => clearTimeout(timer);
   };
@@ -287,7 +287,7 @@ const CleanFeedIntro: React.FC = () => {
       const timer = setTimeout(() => {
         console.log("Moving to stage 2");
         setCharacterPopupStage(2); // Show second dialog
-      }, 4000);
+      }, 6000);
       
       return () => clearTimeout(timer);
     }
@@ -296,7 +296,7 @@ const CleanFeedIntro: React.FC = () => {
       const timer = setTimeout(() => {
         console.log("Moving to stage 3 - button should appear");
         setCharacterPopupStage(3); // Show button
-      }, 5000);
+      }, 6000);
       
       return () => clearTimeout(timer);
     }

@@ -305,7 +305,7 @@ const CharacterIntroPage: React.FC = () => {
     if (stage === 2) {
       const timer = setTimeout(() => {
         setStage(3); // Show purple teleport explanation
-      }, 5000);
+      }, 7000);
       
       return () => clearTimeout(timer);
     }
@@ -315,12 +315,12 @@ const CharacterIntroPage: React.FC = () => {
       const timerShowTeleport = setTimeout(() => {
         setShowBlueTeleport(true);
         setShowBlueArrow(true);
-      }, 1500);
+      }, 8000);
       
       const timer = setTimeout(() => {
         setStage(4); // Show purple teleport explanation
         setShowBlueArrow(false);
-      }, 5000);
+      }, 8000);
       
       return () => {
         clearTimeout(timer);
@@ -333,7 +333,7 @@ const CharacterIntroPage: React.FC = () => {
       const timerShowTeleport = setTimeout(() => {
         setShowPurpleTeleport(true);
         setShowPurpleArrow(true);
-      }, 1500);
+      }, 3500);
       
       const timer = setTimeout(() => {
         setStage(5); // Show final call-to-action dialog
