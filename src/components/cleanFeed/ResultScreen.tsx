@@ -372,7 +372,7 @@ const ResultScreen: React.FC<{
               }
             }}
           >
-            Try Again
+            Play Again with New Stuff!
           </motion.button>
         </div>
       </div>

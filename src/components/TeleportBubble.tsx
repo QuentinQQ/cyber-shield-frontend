@@ -4,7 +4,7 @@ import React, { useState } from "react";
 // Updated TeleportBubble component with color and position props
 export const TeleportBubble: React.FC<{ 
   onClick: () => void;
-  color?: "blue" | "purple"; // Optional with "blue" as default
+  color?: "blue" | "purple" | "rainbow"; // Added rainbow option
   position?: "left" | "right"; // Optional with "right" as default
   text?: string; // Optional text to display where the bubble leads to
 }> = ({ 
@@ -30,6 +30,14 @@ export const TeleportBubble: React.FC<{
       middleBorder: 'hsl(270, 100%, 61%)',
       inner: 'hsl(270, 100%, 31%)',
       innerBorder: 'hsl(270, 100%, 41%)'
+    },
+    rainbow: {
+      outer: '#FF6B6B', // Red-pink
+      outerBorder: '#FF8E8E', // Lighter red-pink
+      middle: '#4ECDC4', // Teal-blue  
+      middleBorder: '#7ED4CD', // Lighter teal
+      inner: '#FFD93D', // Yellow
+      innerBorder: '#FFE066' // Lighter yellow
     }
   };
   
@@ -211,7 +219,7 @@ export const TeleportBubble: React.FC<{
 
 // You can also create a mini version for use in other components
 export const MiniTeleportBubble: React.FC<{ 
-  color?: "blue" | "purple";
+  color?: "blue" | "purple" | "rainbow"; // Added rainbow option
   size?: number;
   text?: string; // Optional text for mini bubble
 }> = ({ 
@@ -236,6 +244,14 @@ export const MiniTeleportBubble: React.FC<{
       middleBorder: 'hsl(270, 100%, 61%)',
       inner: 'hsl(270, 100%, 31%)',
       innerBorder: 'hsl(270, 100%, 41%)'
+    },
+    rainbow: {
+      outer: '#FF6B6B', 
+      outerBorder: '#daff6b',
+      middle: '#4ECDC4', 
+      middleBorder: '#7ED4CD', 
+      inner: '#FFD93D',
+      innerBorder: '#daff6b'
     }
   };
   

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Phone,
   Heart,
@@ -181,8 +181,6 @@ const GetHelp: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const confettiIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const navigate = useNavigate();
   const handleTeleportBack = () => {
@@ -193,120 +191,14 @@ const GetHelp: React.FC = () => {
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
   }, []);
 
-  // Confetti animation function
-  const startConfetti = useCallback(() => {
-    if (!canvasRef.current) return;
-    
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Set canvas dimensions
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    // Colors for confetti
-    const colors = [
-      '#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', 
-      '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', 
-      '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'
-    ];
-    
-    // Create particles
-    const particles: Array<{
-      x: number;
-      y: number;
-      size: number;
-      color: string;
-      speed: number;
-      angle: number;
-      rotation: number;
-      shape: string;
-    }> = [];
-    
-    for (let i = 0; i < 150; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * -canvas.height,
-        size: Math.random() * 10 + 5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        speed: Math.random() * 3 + 2,
-        angle: Math.random() * 6.28,
-        rotation: Math.random() * 0.2 - 0.1,
-        shape: Math.random() > 0.5 ? 'square' : 'circle'
-      });
-    }
-    
-    // Animation function
-    let animationFrame: number;
-    const animate = () => {
-      if (!ctx) return;
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Update and draw particles
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        
-        // Move particles
-        p.y += p.speed;
-        p.angle += p.rotation;
-        
-        // Draw particle
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.angle);
-        ctx.fillStyle = p.color;
-        
-        if (p.shape === 'square') {
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        } else {
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        
-        ctx.restore();
-        
-        // Reset particles that fall off screen
-        if (p.y > canvas.height) {
-          p.y = Math.random() * -100;
-          p.x = Math.random() * canvas.width;
-        }
-      }
-      
-      animationFrame = requestAnimationFrame(animate);
-    };
-    
-    // Start animation
-    animate();
-    
-    // After 2 seconds, stop animation
-    setTimeout(() => {
-      cancelAnimationFrame(animationFrame);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }, 5000); // Changed from 2000 to 5000 ms (5 seconds duration)
-  }, []);
-
   useEffect(() => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     
-    // Start confetti on component mount
-    startConfetti();
-    
-    // Set interval for confetti every 8 seconds
-    confettiIntervalRef.current = setInterval(() => {
-      startConfetti();
-    }, 8000);
-    
     return () => {
       window.removeEventListener("resize", checkMobile);
-      if (confettiIntervalRef.current) {
-        clearInterval(confettiIntervalRef.current);
-      }
     };
-  }, [checkMobile, startConfetti]);
+  }, [checkMobile]);
 
   const handleCardClick = (index: number) => {
     if (activeStep === index) {
@@ -496,9 +388,6 @@ const GetHelp: React.FC = () => {
         style={{ backgroundImage: "url('/gethelp-screen.png')", zIndex: 0 }}
       ></div>
       
-      {/* Confetti canvas */}
-      <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-50" />
-      
       {/* Character animation */}
       <CharacterAnimation />
 
@@ -550,9 +439,6 @@ const GetHelp: React.FC = () => {
         }}
         className="min-h-screen relative p-8"
       >
-        {/* Confetti canvas */}
-        <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-50" />
-        
         {/* Character animation */}
         <CharacterAnimation />
         

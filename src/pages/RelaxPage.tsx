@@ -254,7 +254,7 @@ const RelaxPage = () => {
   // Navigation handler for both teleport bubbles
   const handleTeleportNext = () => {
     isUnmounting.current = true;
-    navigate("/text-checker");
+    navigate("/congratulations");
   };
 
   const handleTeleportBack = () => {
@@ -674,8 +674,8 @@ const RelaxPage = () => {
         </p>
       </div>
 
-      <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="7.Text Check"/>
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="5.Support"/>
+      <TeleportBubble onClick={handleTeleportNext} color="rainbow" position="right" text="Party Time!"/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="6.Support"/>
         
       {/* Global styles for animations */}
       <style>{`        
