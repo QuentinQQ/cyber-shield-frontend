@@ -15,15 +15,13 @@ import { useNavigate } from "react-router-dom";
  * where users learn to identify and filter out harmful or negative online comments.
  * It features different game states: an optional intro screen, the main game screen,
  * and a result screen upon completion. It also handles loading and error states.
- */
+ */ 
 
 interface CleanFeedProps {
   skipIntro?: boolean;
 }
 
-const CleanFeed: React.FC<CleanFeedProps> = ({
-  skipIntro = false
-}) => {
+const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
   const {
     gameStarted,
     gameOver,
@@ -44,13 +42,13 @@ const CleanFeed: React.FC<CleanFeedProps> = ({
   const handleTeleportBack = () => {
     navigate("/scenario");
   };
-
+  
   // Clear localStorage items related to the game when component mounts
   useEffect(() => {
     // Remove any local storage items related to the Clean Feed game
-    const keysToRemove = Object.keys(localStorage).filter(key =>
+    const keysToRemove = Object.keys(localStorage).filter(key => 
       key.startsWith('cleanFeed') || key.includes('cleanFeed') || key.includes('feed_result'));
-
+    
     keysToRemove.forEach(key => {
       localStorage.removeItem(key);
     });
@@ -68,28 +66,27 @@ const CleanFeed: React.FC<CleanFeedProps> = ({
     if (isLoading) {
       return <LoadingOverlay message="Loading result..." />;
     }
-
+    
     if (!result) {
       // Handle case where result is null but game is over
       return <EmptyAnswerScreen onRestart={startGame} />;
     }
-
-    return result.answered > 0
-      ? <ResultScreen result={result} onRestart={resetGame} />
+    
+    return result.answered > 0 
+      ? <ResultScreen result={result} onRestart={resetGame} /> 
       : <EmptyAnswerScreen onRestart={startGame} />;
   };
 
   return (
 
-
+    
 
     <div
-      className="relative w-full min-h-screen bg-cover bg-center text-white p-4"
-      style={{ backgroundImage: `url('/space2.png')` }}
-    >
+    className="relative w-full min-h-screen bg-cover bg-center text-white p-4"
+    style={{ backgroundImage: `url('/space2.png')` }}
+  >
 
       <div className="relative z-10">
-
         {/* Onboarding Screen - only show if not skipping intro */}
         {!skipIntro && !gameStarted && !gameOver && (
           <StartScreen onStart={startGame} />
@@ -127,9 +124,9 @@ const CleanFeed: React.FC<CleanFeedProps> = ({
         <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="6.Text Checker" />
         <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="4. Scenarios" />
       </div>
-
+      
       {/* Background styles */}
-    </div>
+      </div>
   );
 };
 
