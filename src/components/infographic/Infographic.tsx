@@ -25,7 +25,6 @@ const Infographic: React.FC = () => {
     calculateIconSize
   } = useInfographicViewModel();
 
-  const navigate = useNavigate();
   
   const { studentCount, showCaptions, icons, isAnimating, currentStep } = state;
   
