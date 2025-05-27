@@ -9,13 +9,14 @@ const Header = () => {
 
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "1.Cyber Stats", path: "/quiz" },            
-    { label: "2.Voices", path: "/story" },               
-    { label: "3.Scenarios", path: "/scenario" },         
-    { label: "4.Clean Feed", path: "/clean-feed" },
-    { label: "5.Text Check", path: "/text-checker" },
-    { label: "6.Support", path: "/safe-people" },        
-    { label: "7.Relax", path: "/relax" },              
+    { label: "1.Cyber Stats", path: "/quiz" },  
+    { label: "2.Net Quiz", path: "/quiz-2" },           
+    { label: "3.Voices", path: "/story" },               
+    { label: "4.Scenario", path: "/scenario" },         
+    { label: "5.Clean Feed", path: "/clean-feed" },
+    { label: "6.Text Check", path: "/text-checker" },
+    { label: "7.Support", path: "/safe-people" },        
+    { label: "8.Relax", path: "/relax" },             
     { label: "Get Help", path: "/get-help" },
     { label: "Privacy", path: "/privacy-policy", isSpecial: true },
   ];
@@ -47,17 +48,17 @@ const Header = () => {
       </header>
 
       {/* Repositioned and enlarged Circular Menu */}
-      <div className="fixed top-20 right-40 z-50">
+      <div className="fixed top-41 right-72 z-50">
         {/* Toggle Button */}
         <motion.div
-          className="w-20 h-20 rounded-full bg-[#F4A261] flex items-center justify-center cursor-pointer shadow-lg text-lg font-bold"
+          className="w-20 h-20 rounded-full bg-[#F4A261] flex items-center justify-center cursor-pointer shadow-lg text-lg font-bold absolute top-0 left-0"
           onClick={() => setIsOpen(!isOpen)}
           animate={{
             scale: [1, 1.08, 1],
             boxShadow: [
-              "0 0 10px rgba(0,0,0,0.2)",
-              "0 0 20px rgba(0,0,0,0.3)",
-              "0 0 10px rgba(0,0,0,0.2)"
+              "0 0 10px rgba(244, 162, 97, 0.4), 0 0 20px rgba(244, 162, 97, 0.2)",
+              "0 0 20px rgba(244, 162, 97, 0.6), 0 0 30px rgba(244, 162, 97, 0.3)",
+              "0 0 10px rgba(244, 162, 97, 0.4), 0 0 20px rgba(244, 162, 97, 0.2)"
             ],
             rotate: isOpen ? 45 : 0,
           }}
@@ -72,7 +73,6 @@ const Header = () => {
           </div>
         </motion.div>
 
-
         {/* Menu Items */}
         {navItems.map((item, index) => {
           const numItems = navItems.length;
@@ -86,17 +86,20 @@ const Header = () => {
           // Calculate background color based on index
           const hue = (index * (360 / numItems)) % 360;
           const bgColor = item.isSpecial ? '#A78BFA' : `hsl(${hue}, 80%, 65%)`;
+          
+          // Create glow color based on background color
+          const glowColor = item.isSpecial ? 'rgba(167, 139, 250, 0.6)' : `hsla(${hue}, 80%, 65%, 0.6)`;
 
           return (
             <Link
               key={index}
               to={item.path}
-              className={`absolute w-16 h-16 rounded-full flex items-center justify-center text-black text-xs font-bold shadow-md transition-all duration-500`}
-
+              className={`absolute w-16 h-16 rounded-full flex items-center justify-center text-black text-xs font-bold shadow-md transition-all duration-500 hover:scale-110`}
               style={{
                 transform: `translate(${posX}px, ${posY}px) scale(${isOpen ? 1 : 0})`,
                 opacity: isOpen ? 1 : 0,
                 backgroundColor: bgColor,
+                boxShadow: isOpen ? `0 0 15px ${glowColor}, 0 0 25px ${glowColor.replace('0.6', '0.3')}` : 'none',
                 zIndex: 40 - index,
                 transitionDelay: `${index * 0.05}s`,
               }}
