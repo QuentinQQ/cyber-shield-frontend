@@ -10,8 +10,7 @@ import {
   ChevronUp,
   ExternalLink,
 } from "lucide-react";
-import { TeleportBubble } from "@/components/TeleportBubble";
-import { useNavigate } from "react-router-dom";
+
 
 interface ContentItem {
   label: string;
@@ -182,10 +181,6 @@ const GetHelp: React.FC = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
-  const navigate = useNavigate();
-  const handleTeleportBack = () => {
-    navigate(-1);
-  };
 
   const checkMobile = useCallback(() => {
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -420,8 +415,6 @@ const GetHelp: React.FC = () => {
           </div>
         ))}
       </div>
-      
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="7.Text Check"/>
     </div>
   );
 
@@ -530,7 +523,6 @@ const GetHelp: React.FC = () => {
             )}
           </div>
         )}
-        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="7.Text Check"/>
       </div>
     );
   };
