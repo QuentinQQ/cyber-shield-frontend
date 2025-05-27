@@ -181,15 +181,16 @@ const QuizPage: React.FC = () => {
                   zIndex: 40,
                 }}
               >
-<motion.div 
-  className="text-lg font-medium text-gray-800 z-10 relative"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ delay: 0.2, duration: 0.8 }}
-  style={{ position: "relative", zIndex: 5 }}
->
-  Count your classmates!
-</motion.div>
+                <motion.div 
+                  className="text-lg font-medium text-gray-800 z-10 relative"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
+                  style={{ position: "relative", zIndex: 5 }}
+                >
+                  {dialogStep === 1 ? "Count your classmates!" : "Count your classmates!"}
+                </motion.div>
+
               </motion.div>
             )}
           </AnimatePresence>
