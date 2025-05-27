@@ -10,7 +10,7 @@ import {
   ChevronUp,
   ExternalLink,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 
 interface ContentItem {
   label: string;
@@ -181,7 +181,6 @@ const GetHelp: React.FC = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
-  const navigate = useNavigate();
 
   const checkMobile = useCallback(() => {
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
