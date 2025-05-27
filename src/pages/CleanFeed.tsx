@@ -121,7 +121,7 @@ const CleanFeed: React.FC<CleanFeedProps> = ({ skipIntro = false }) => {
 
       {/* Teleport Bubbles with higher z-index */}
       <div className="relative">
-        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="5.Text Checker" />
+        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="6.Text Checker" />
         <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="4. Scenarios" />
       </div>
       
