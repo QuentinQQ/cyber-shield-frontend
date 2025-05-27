@@ -3,7 +3,6 @@ import { useInfographicViewModel } from '@/hooks/useInfoGraphic';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import './Infographic.css';
-import { useNavigate } from 'react-router-dom';
 
 /**
  * Interactive visualization demonstrating cyberbullying statistics.
