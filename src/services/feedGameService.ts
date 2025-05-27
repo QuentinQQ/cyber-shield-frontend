@@ -44,7 +44,7 @@ export const postGameResultV2WithSession = (
       `${BASE_URL}/api/feed-game/submit-v2`,
       { submission },
       {
-        withCredentials: true,
+        // withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -54,4 +54,4 @@ export const postGameResultV2WithSession = (
 };
 
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;

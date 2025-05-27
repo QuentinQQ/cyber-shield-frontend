@@ -1,4 +1,3 @@
-// CleanFeed.tsx
 import React, { useEffect } from "react";
 import StartScreen from "../components/cleanFeed/StartScreen";
 import GameScreen from "../components/cleanFeed/GameScreen";
