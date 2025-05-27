@@ -399,63 +399,11 @@ const Infographic: React.FC = () => {
         />
         
         {/* Reset button appears after animation completes */}
-        {!isAnimating && showCaptions && (
-          <div className="relative">
-            {/* Shadow beneath the button */}
-            <motion.div 
-              className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
-              animate={{
-                width: ['90%', '60%', '90%'],
-                x: ['5%', '20%', '5%']
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            />
-            
-            <motion.button
-              className={cn(
-                // Base styles
-                'relative font-bold rounded-full px-8 py-4 shadow-lg z-10',
-                // Color styles
-                'bg-[#C2E764] text-black -rotate-6 hover:rotate-0',
-              )}
-              // Button animations
-              variants={buttonVariants}
-              initial="initial"
-              whileHover="hover"
-              whileTap="tap"
-              // Add a bouncing animation
-              animate={{
-                y: [0, -8, 0],
-              }}
-              transition={{
-                y: {
-                  duration: 1.2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }
-              }}
-              onClick={() => navigate('/quiz-2')}
-            >
-              Discover App Dangers!
-              
-              {/* Ring orbits */}
-              <motion.div
-                className="absolute inset-0 border-2 border-black/10 rounded-full"
-                animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              />
-              <motion.div
-                className="absolute inset-0 border-2 border-black/5 rounded-full"
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
-                transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
-              />
-            </motion.button>
-          </div>
-        )}
+        {false && !isAnimating && showCaptions && (
+  <div className="relative">
+    {/* button "Discover App Dangers!" */}
+  </div>
+)}
       </div>
   );
 };
