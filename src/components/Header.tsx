@@ -48,7 +48,7 @@ const Header = () => {
       </header>
 
       {/* Repositioned and enlarged Circular Menu */}
-      <div className="fixed top-41 right-72 z-50">
+      <div className="fixed top-30 right-72 z-50">
         {/* Toggle Button */}
         <motion.div
           className="w-20 h-20 rounded-full bg-[#F4A261] flex items-center justify-center cursor-pointer shadow-lg text-lg font-bold absolute top-0 left-0"
