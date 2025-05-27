@@ -675,7 +675,7 @@ const RelaxPage = () => {
       </div>
 
       <TeleportBubble onClick={handleTeleportNext} color="rainbow" position="right" text="Party Time!"/>
-      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="6.Support"/>
+      <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="7.Support"/>
         
       {/* Global styles for animations */}
       <style>{`        

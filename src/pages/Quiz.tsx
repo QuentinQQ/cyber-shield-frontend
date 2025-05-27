@@ -18,6 +18,7 @@ const QuizPage: React.FC = () => {
   const [showDialog, setShowDialog] = useState(true);
   const [dialogStep, setDialogStep] = useState(1);  
 
+
   // Speech bubble timeout ref to clear on new clicks
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null); 
 
@@ -91,7 +92,7 @@ const QuizPage: React.FC = () => {
 
   // Navigation handler for teleport button
   const handleTeleportToNext = () => {
-    navigate("/story");
+    navigate("/quiz-2");
   };
 
   const handleTeleportToBack = () => {
@@ -204,7 +205,7 @@ const QuizPage: React.FC = () => {
                   transition={{ delay: 0.2, duration: 0.8 }}
                   style={{ position: "relative", zIndex: 5 }}
                 >
-                  {dialogStep === 1 ? "Count your classmates!" : "Hang on until the animation's done — then help me pick an app!!"}
+                  {dialogStep === 1 ? "Count your classmates!" : "Hang on until the animation's done — then help me pick my first app!!"}
                 </motion.div>
               </motion.div>
             )}
@@ -272,7 +273,7 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="2.Voices" />
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="2.Net Quiz" />
       <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text="Intro" />
     </PageWrapper>
   );

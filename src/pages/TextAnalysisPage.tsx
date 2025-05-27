@@ -292,8 +292,8 @@ const TextCheckerPage = () => {
         </div>
         
         {/* Both Teleport Bubbles */}
-        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="6.Support" />
-        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="4.clean feed" />
+        <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="7.Support" />
+        <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="5.clean feed" />
       </PageWrapper>
 
       <footer className="text-[14px] text-center text-[#fbe9e4] opacity-80 py-2">
