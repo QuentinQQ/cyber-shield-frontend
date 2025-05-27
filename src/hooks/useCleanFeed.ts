@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CommentData, GameResultV2, GameSubmission } from "../types/types";
-import { fetchCommentsWithSession, postGameResultV2WithSession } from "../services/feedGameService";
+import { fetchCommentsV2, postGameResultV2 } from "../services/feedGameService";
 
 /**
  * @hook useCleanFeed
@@ -29,10 +29,6 @@ export const useCleanFeed = () => {
   const [result, setResult] = useState<GameResultV2 | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sessionInfo, setSessionInfo] = useState<{
-    session_id?: string;
-    total_questions?: number
-  } | null>(null);
 
   /**
    * @function startGame
@@ -76,24 +72,21 @@ export const useCleanFeed = () => {
    */
   const handleGameEnd = (submissions: GameSubmission[]) => {
     setGameOver(true);
-  
+
     if (submissions.length === 0) {
+      // No answers, skip submission
       setResult(null);
       return;
     }
-  
+
     setIsLoading(true);
-    postGameResultV2WithSession(submissions)
+    postGameResultV2(submissions)
       .then((res) => {
         setResult(res);
         localStorage.setItem(CLEAN_FEED_RESULT_KEY, JSON.stringify(res));
       })
-      .catch((error) => {
-        if (error.response?.status === 401) {
-          setError("Your session has expired. Please refresh the page and try again.");
-        } else {
-          setError("Failed to submit your answers. Please try again.");
-        }
+      .catch(() => {
+        setError("Failed to submit your answers. Please try again.");
       })
       .finally(() => {
         setIsLoading(false);
@@ -104,31 +97,20 @@ export const useCleanFeed = () => {
    * @effect Load comments when game starts.
    */
   useEffect(() => {
-    if (gameStarted && comments.length === 0 && !gameOver) {
+    if (gameStarted && comments.length === 0) {
       setIsLoading(true);
-      setError(null);
-  
-      fetchCommentsWithSession()
+      fetchCommentsV2()
         .then((res) => {
-          setComments(res.comments);
-          setSessionInfo({
-            session_id: res.session_id,
-            total_questions: res.total_questions
-          });
+          setComments(res.data.data || []);
         })
-        .catch((error) => {
-          if (error.response?.status === 401) {
-            setError("Your session has expired. Please refresh the page and try again.");
-          } else {
-            setError("Failed to load comments. Please refresh the page and try again.");
-          }
+        .catch(() => {
+          setError("Failed to load comments. Please try again.");
         })
         .finally(() => {
           setIsLoading(false);
         });
     }
-  }, [gameStarted, comments.length, gameOver]);
-
+  }, [gameStarted]);
 
   /**
    * @effect Restore game result on first load (refresh-safe).
@@ -155,6 +137,5 @@ export const useCleanFeed = () => {
     startGame,
     handleGameEnd,
     resetGame,
-    sessionInfo,
   };
 };
