@@ -273,7 +273,7 @@ const StoryPage: React.FC = () => {
             </div>
 
             {/* Teleport Bubble - always visible */}
-            <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="3.Scenarios" />
+            <TeleportBubble onClick={handleTeleportNext} color="blue" position="right" text="4.Scenarios" />
             <TeleportBubble onClick={handleTeleportBack} color="purple" position="left" text="1.Cyber stats" />
 
             <div className="relative z-10 w-full h-full flex flex-col">
