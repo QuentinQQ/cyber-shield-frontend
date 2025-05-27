@@ -18,6 +18,7 @@ const SocialMediaQuestion: React.FC = () => {
   const [textColor, setTextColor] = useState<string>("white");
   const [gifKey, setGifKey] = useState<number>(0);
   const [showBubble, setShowBubble] = useState<boolean>(true);
+  const [secondaryText, setSecondaryText] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -39,6 +40,8 @@ const SocialMediaQuestion: React.FC = () => {
         { text: "Just because Facebook is popular doesn't mean it's always safe — use it wisely.", color: "#1e3a8a", delay: 12000 },
         { text: "If something feels wrong, report it and say someone you trust. Don't stay silent.", color: "#1e3a8a", delay: 15000 }
       ];
+
+      setSecondaryText("<a href=\"https://www.facebook.com/help/200526129992122/list/\" target=\"_blank\" class=\"underline text-blue-800 font-semibold\">Report on Facebook<span>↗</span></a>");
 
       textSequence.forEach(({ text, color, delay }) => {
         setTimeout(() => {
@@ -64,6 +67,9 @@ const SocialMediaQuestion: React.FC = () => {
         { text: "Social media isn't bad — but silence can be. ", color: "#1e3a8a", delay: 12000 },
         { text: "You're not alone. There are tools to help — and people who care.", color: "#1e3a8a", delay: 15000 }
       ];
+      setSecondaryText("<a href=\"https://help.instagram.com/\" target=\"_blank\" class=\"underline text-blue-800 font-semibold\">Report on Instagram<span>↗</span></a>");
+
+
 
       textSequence.forEach(({ text, color, delay }) => {
         setTimeout(() => {
@@ -89,6 +95,8 @@ const SocialMediaQuestion: React.FC = () => {
       { text: "And it gets worse — nearly 1 in 5 teens have seen bullying here, even if it wasn't about them.", color: "#A349A4", delay: 8300 },
       { text: "Guess bullying can hide anywhere — even in everyday apps like this — speak up if you see it.", color: "#1e3a8a", delay: 14000 }
     ];
+    setSecondaryText("<a href=\"https://faq.whatsapp.com/1313491802751163/?locale=en_US&category=5245250\" target=\"_blank\" class=\"underline text-blue-800 font-semibold\">Report on WhatsApp<span>↗</span></a>");
+
 
     textSequence.forEach(({ text, color, delay }) => {
       setTimeout(() => {
@@ -113,6 +121,8 @@ useEffect(() => {
       { text: "Okay… not just fun and filters.", color: "#1e3a8a", delay: 8300 },
       { text: "Makes sense. Use it, enjoy it — but speak up if it crosses the line. Staying silent just lets it keep going", color: "#1e3a8a", delay: 11000 }
     ];
+    setSecondaryText("<a href=\"https://support.snapchat.com/\" target=\"_blank\" class=\"underline text-blue-800 font-semibold\">Report on Snapchat<span>↗</span></a>");
+
 
     textSequence.forEach(({ text, color, delay }) => {
       setTimeout(() => {
@@ -261,73 +271,113 @@ useEffect(() => {
       {showResult && selected === "facebook" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
           <img key={gifKey} src={`/facebook1.gif?${gifKey}`} alt="Facebook" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-          <div
-            className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
-            style={{
-              top: "calc(50% - 1cm)",
-              right: "6%",
-              background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
-          </div>
+          <div className="fixed w-[28rem]" style={{ top: "calc(50% - 1cm)", right: "6%" }}>
+        <div className="p-4 rounded-[20px] text-2xl border-4 border-cyan-400 shadow-xl"
+          style={{
+            background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
+            backdropFilter: "blur(4px)",
+          }}>
+          <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
+        </div>
+        <div className="p-4 rounded-[20px] text-lg border-4 shadow-xl absolute"
+          style={{
+            top: "5cm",
+            marginTop: "-4cm",
+            transform: "translateY(4cm)",
+            width: "fit-content",
+            maxWidth: "100%",
+            background: "white",
+            border: "3px solid #C2E764",
+          }}>
+          <p className="text-black font-medium" dangerouslySetInnerHTML={{ __html: secondaryText }} />
+        </div>
+      </div>
         </div>
       )}
 
       {showResult && selected === "instagram" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
           <img key={gifKey} src={`/insta1.gif?${gifKey}`} alt="Instagram" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-          <div
-            className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
+          <div className="fixed w-[28rem]" style={{ top: "calc(50% - 1cm)", right: "6%" }}>
+          <div className="p-4 rounded-[20px] text-2xl border-4 border-cyan-400 shadow-xl"
             style={{
-              top: "calc(50% - 1cm)",
-              right: "6%",
               background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
               backdropFilter: "blur(4px)",
-            }}
-          >
+            }}>
             <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
           </div>
+          <div className="p-4 rounded-[20px] text-lg border-4 shadow-xl absolute"
+            style={{
+              top: "5cm",
+              marginTop: "-4cm",
+              transform: "translateY(4cm)",
+              width: "fit-content",
+              maxWidth: "100%",
+              background: "white",
+              border: "3px solid #C2E764",
+            }}>
+            <p className="text-black font-medium" dangerouslySetInnerHTML={{ __html: secondaryText }} />
+          </div>
+        </div>
         </div>
       )}
 
       {showResult && selected === "whatsapp" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
           <img key={gifKey} src={`/whatsapp1.gif?${gifKey}`} alt="WhatsApp" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-          <div
-            className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
+          <div className="fixed w-[28rem]" style={{ top: "calc(50% - 1cm)", right: "6%" }}>
+          <div className="p-4 rounded-[20px] text-2xl border-4 border-cyan-400 shadow-xl"
             style={{
-              top: "calc(50% - 1cm)",
-              right: "6%",
               background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
               backdropFilter: "blur(4px)",
-            }}
-          >
+            }}>
             <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
           </div>
+          <div className="p-4 rounded-[20px] text-lg border-4 shadow-xl absolute"
+            style={{
+              top: "5cm",
+              marginTop: "-4cm",
+              transform: "translateY(4cm)",
+              width: "fit-content",
+              maxWidth: "100%",
+              background: "white",
+              border: "3px solid #C2E764",
+            }}>
+            <p className="text-black font-medium" dangerouslySetInnerHTML={{ __html: secondaryText }} />
+          </div>
+        </div>
         </div>
       )}
 
       {showResult && selected === "snapchat" && (
         <div className="flex items-start justify-center h-full pt-20 gap-8">
           <img key={gifKey} src={`/snapchat1.gif?${gifKey}`} alt="WhatsApp" className="w-[41rem] h-[41rem] object-contain translate-x-[-3cm]" />
-          <div
-            className="p-4 rounded-[20px] w-[28rem] text-2xl fixed border-4 border-cyan-400 shadow-xl"
-            style={{
-              top: "calc(50% - 1cm)",
-              right: "6%",
-              background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
+          <div className="fixed w-[28rem]" style={{ top: "calc(50% - 1cm)", right: "6%" }}>
+            <div className="p-4 rounded-[20px] text-2xl border-4 border-cyan-400 shadow-xl"
+              style={{
+                background: "linear-gradient(180deg, #a0f0f9 0%, #b8f6e9 90%, #c2fbd7 100%)",
+                backdropFilter: "blur(4px)",
+              }}>
+              <p style={{ color: textColor, fontWeight: 'bold' }}>{currentText}</p>
+            </div>
+            <div className="p-4 rounded-[20px] text-lg border-4 shadow-xl absolute"
+              style={{
+                top: "5cm",
+                marginTop: "-4cm",
+                transform: "translateY(4cm)",
+                width: "fit-content",
+                maxWidth: "100%",
+                background: "white",
+                border: "3px solid #C2E764",
+              }}>
+              <p className="text-black font-medium" dangerouslySetInnerHTML={{ __html: secondaryText }} />
+            </div>
           </div>
         </div>
       )}
 
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text='2.Voices'/>
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text='3.Voices'/>
       <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text='Back'/>
     </div>
   );

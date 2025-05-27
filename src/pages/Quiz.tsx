@@ -17,6 +17,7 @@ const QuizPage: React.FC = () => {
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; opacity: number; blinkDuration: number; }[]>([]);
   const [showDialog, setShowDialog] = useState(true);
 
+
   // Speech bubble timeout ref to clear on new clicks
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null); 
 
@@ -180,15 +181,15 @@ const QuizPage: React.FC = () => {
                   zIndex: 40,
                 }}
               >
-                <motion.div 
-                  className="text-lg font-medium text-gray-800 z-10 relative"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.8 }}
-                  style={{ position: "relative", zIndex: 5 }}
-                >
-                  Count your classmates!
-                </motion.div>
+<motion.div 
+  className="text-lg font-medium text-gray-800 z-10 relative"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.2, duration: 0.8 }}
+  style={{ position: "relative", zIndex: 5 }}
+>
+  Count your classmates!
+</motion.div>
               </motion.div>
             )}
           </AnimatePresence>

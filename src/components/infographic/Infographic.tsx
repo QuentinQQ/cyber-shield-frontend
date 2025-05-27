@@ -244,233 +244,219 @@ const Infographic: React.FC = () => {
         </motion.span>
       </motion.h1>
       
-      <motion.div 
-        className="glass-container flex flex-col sm:flex-row items-center gap-5 p-7 mx-auto"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.7 }}
-        style={{ 
-          maxWidth: "500px", 
-          transform: "translateX(-60px)" // Move the container to the left
-        }}
+      {icons.length === 0 && (
+    <motion.div 
+      className="glass-container flex flex-col sm:flex-row items-center gap-5 p-7 mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.6, duration: 0.7 }}
+      style={{ maxWidth: "500px", transform: "translateX(-60px)" }}
+    >
+      <motion.div
+        animate={{ y: [0, -5, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <motion.div
+        <input
+          className="input-field"
+          type="number"
+          min="10"
+          max="200"
+          placeholder="?"
+          value={studentCount || ''}
+          onChange={handleInputChange}
+        />
+      </motion.div>
+
+      <div className="relative">
+        <motion.div 
+          className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
           animate={{
-            y: [0, -5, 0],
+            width: ['90%', '60%', '90%'],
+            x: ['5%', '20%', '5%']
           }}
           transition={{
-            duration: 2.5,
+            duration: 2,
             repeat: Infinity,
-            ease: "easeInOut"
+            repeatType: "reverse"
+          }}
+        />
+        
+        <motion.button
+          className={cn(
+            'relative font-bold rounded-full px-8 py-4 shadow-lg z-10',
+            'bg-[#C2E764] text-black -rotate-6 hover:rotate-0',
+          )}
+          variants={buttonVariants}
+          initial="initial"
+          whileHover="hover"
+          whileTap="tap"
+          animate={{ y: [0, -8, 0] }}
+          transition={{
+            y: {
+              duration: 1.2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          }}
+          onClick={handleButtonClick}
+          disabled={isAnimating}
+        >
+          {isAnimating ? 'Getting Facts...' : 'Show Me!'}
+
+          {/* Ring orbits */}
+          <motion.div
+            className="absolute inset-0 border-2 border-black/10 rounded-full"
+            animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute inset-0 border-2 border-black/5 rounded-full"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
+            transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
+          />
+        </motion.button>
+      </div>
+    </motion.div>
+  )}
+        
+        {/* Grid for student icons */}
+        <motion.div 
+          ref={gridRef}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: icons.length > 0 ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+          className="grid gap-2 justify-center w-full max-w-3xl mt-18 rounded-xl p-6 shadow-lg"
+          style={{
+            backgroundColor: ' rgba(143, 175, 217, 0.9)', 
+            border: '2px solid rgba(230, 218, 203, 0.5)',
+            borderRadius: '20px',
+            padding: '2rem',
           }}
         >
-          <input
-            className="input-field"
-            type="number"
-            min="10"
-            max="200"
-            placeholder="?"
-            value={studentCount || ''}
-            onChange={handleInputChange}
-          />
+          {icons.map((icon, index) => (
+            <motion.img
+              key={icon.id}
+              src={getIconSrc(icon.gender, icon.state)}
+              initial={{ scale: 0 }}
+              animate={{ 
+                scale: 1,
+                transition: { 
+                  type: 'spring', 
+                  stiffness: 200, 
+                  damping: 10,
+                  delay: index * 0.01 // Staggered appearance
+                } 
+              }}
+              className={`icon-hover transition-all duration-300 ${
+                icon.highlighted ? 'brightness-120 scale-105 z-10' : ''
+              }`}
+              style={{ width: iconSize, height: iconSize }}
+              title={tooltipTexts[icon.state]}
+              alt={`${icon.gender} icon`}
+              whileHover={{ 
+                scale: 1.1,
+                transition: { duration: 0.2 } 
+              }}
+            />
+          ))}
         </motion.div>
         
-        <div className="relative">
-          {/* Shadow beneath the button */}
+        {/* Animated caption container */}
+        {showCaptions && (
           <motion.div 
-            className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
-            animate={{
-              width: ['90%', '60%', '90%'],
-              x: ['5%', '20%', '5%']
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-          />
-          
-          <motion.button
-            className={cn(
-              // Base styles
-              'relative font-bold rounded-full px-8 py-4 shadow-lg z-10',
-              // Color styles
-              'bg-[#C2E764] text-black -rotate-6 hover:rotate-0',
-            )}
-            // Button animations
-            variants={buttonVariants}
-            initial="initial"
-            whileHover="hover"
-            whileTap="tap"
-            // Add a bouncing animation
-            animate={{
-              y: [0, -8, 0],
-            }}
-            transition={{
-              y: {
-                duration: 1.2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }
-            }}
-            onClick={handleButtonClick}
-            disabled={isAnimating}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="caption-container w-full max-w-[600px]"
           >
-            {isAnimating ? 'Getting Facts...' : 'Show Me!'}
+            <div className={`caption ${currentStep === 1 ? 'show orange' : 'hide'}`}>
+              30% of students have experienced cyberbullying.
+            </div>
             
-            {/* Ring orbits */}
-            <motion.div
-              className="absolute inset-0 border-2 border-black/10 rounded-full"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-            <motion.div
-              className="absolute inset-0 border-2 border-black/5 rounded-full"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
-              transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
-            />
-          </motion.button>
-        </div>
-      </motion.div>
-      
-      {/* Grid for student icons */}
-      <motion.div 
-        ref={gridRef}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: icons.length > 0 ? 1 : 0 }}
-        transition={{ duration: 0.5 }}
-        className="grid gap-2 justify-center w-full max-w-3xl mt-8 rounded-xl p-6 shadow-lg"
-        style={{
-          backgroundColor: ' rgba(143, 175, 217, 0.9)', 
-          border: '2px solid rgba(230, 218, 203, 0.5)',
-          borderRadius: '20px',
-          padding: '2rem',
-        }}
-      >
-        {icons.map((icon, index) => (
-          <motion.img
-            key={icon.id}
-            src={getIconSrc(icon.gender, icon.state)}
-            initial={{ scale: 0 }}
-            animate={{ 
-              scale: 1,
-              transition: { 
-                type: 'spring', 
-                stiffness: 200, 
-                damping: 10,
-                delay: index * 0.01 // Staggered appearance
-              } 
-            }}
-            className={`icon-hover transition-all duration-300 ${
-              icon.highlighted ? 'brightness-120 scale-105 z-10' : ''
-            }`}
-            style={{ width: iconSize, height: iconSize }}
-            title={tooltipTexts[icon.state]}
-            alt={`${icon.gender} icon`}
-            whileHover={{ 
-              scale: 1.1,
-              transition: { duration: 0.2 } 
-            }}
-          />
-        ))}
-      </motion.div>
-      
-      {/* Animated caption container */}
-      {showCaptions && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="caption-container w-full max-w-[600px]"
-        >
-          <div className={`caption ${currentStep === 1 ? 'show orange' : 'hide'}`}>
-            30% of students have experienced cyberbullying.
-          </div>
-          
-          <div className={`caption ${currentStep === 2 ? 'show orange' : 'hide'}`}>
-            Girls are more likely than boys to be targeted.
-          </div>
-          
-          <div className={`caption ${currentStep === 3 ? 'show maroon' : 'hide'}`}>
-            Only one in five who face cyberbullying share their pain with their parents.
-          </div>
-          
-          <div className={`caption ${currentStep === 4 ? 'show blue' : 'hide'}`}>
-            You don't have to face this alone - reach out for support.
-          </div>
-          
-          <div className={`caption ${currentStep === 5 ? 'show blue' : 'hide'}`}>
-            Talk to an adult, and together we can stop it!
-          </div>
-        </motion.div>
-      )}
-      
-      {/* Sound effect for icon transitions */}
-      <audio 
-        ref={audioRef}
-        src="/quizPage/95265__department64__tree_pop.wav"
-        preload="auto"
-      />
-      
-      {/* Reset button appears after animation completes */}
-      {!isAnimating && showCaptions && (
-        <div className="relative">
-          {/* Shadow beneath the button */}
-          <motion.div 
-            className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
-            animate={{
-              width: ['90%', '60%', '90%'],
-              x: ['5%', '20%', '5%']
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-          />
-          
-          <motion.button
-            className={cn(
-              // Base styles
-              'relative font-bold rounded-full px-8 py-4 shadow-lg z-10',
-              // Color styles
-              'bg-[#C2E764] text-black -rotate-6 hover:rotate-0',
-            )}
-            // Button animations
-            variants={buttonVariants}
-            initial="initial"
-            whileHover="hover"
-            whileTap="tap"
-            // Add a bouncing animation
-            animate={{
-              y: [0, -8, 0],
-            }}
-            transition={{
-              y: {
-                duration: 1.2,
+            <div className={`caption ${currentStep === 2 ? 'show orange' : 'hide'}`}>
+              Girls are more likely than boys to be targeted.
+            </div>
+            
+            <div className={`caption ${currentStep === 3 ? 'show maroon' : 'hide'}`}>
+              Only one in five who face cyberbullying share their pain with their parents.
+            </div>
+            
+            <div className={`caption ${currentStep === 4 ? 'show blue' : 'hide'}`}>
+              You don't have to face this alone - reach out for support.
+            </div>
+            
+            <div className={`caption ${currentStep === 5 ? 'show blue' : 'hide'}`}>
+              Talk to an adult, and together we can stop it!
+            </div>
+          </motion.div>
+        )}
+        
+        {/* Sound effect for icon transitions */}
+        <audio 
+          ref={audioRef}
+          src="/quizPage/95265__department64__tree_pop.wav"
+          preload="auto"
+        />
+        
+        {/* Reset button appears after animation completes */}
+        {!isAnimating && showCaptions && (
+          <div className="relative">
+            {/* Shadow beneath the button */}
+            <motion.div 
+              className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
+              animate={{
+                width: ['90%', '60%', '90%'],
+                x: ['5%', '20%', '5%']
+              }}
+              transition={{
+                duration: 2,
                 repeat: Infinity,
-                ease: "easeInOut"
-              }
-            }}
-            onClick={() => navigate('/quiz-2')}
-          >
-            Discover App Dangers!
+                repeatType: "reverse"
+              }}
+            />
             
-            {/* Ring orbits */}
-            <motion.div
-              className="absolute inset-0 border-2 border-black/10 rounded-full"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-            <motion.div
-              className="absolute inset-0 border-2 border-black/5 rounded-full"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
-              transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
-            />
-          </motion.button>
-        </div>
-      )}
-    </div>
+            <motion.button
+              className={cn(
+                // Base styles
+                'relative font-bold rounded-full px-8 py-4 shadow-lg z-10',
+                // Color styles
+                'bg-[#C2E764] text-black -rotate-6 hover:rotate-0',
+              )}
+              // Button animations
+              variants={buttonVariants}
+              initial="initial"
+              whileHover="hover"
+              whileTap="tap"
+              // Add a bouncing animation
+              animate={{
+                y: [0, -8, 0],
+              }}
+              transition={{
+                y: {
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }
+              }}
+              onClick={() => navigate('/quiz-2')}
+            >
+              Discover App Dangers!
+              
+              {/* Ring orbits */}
+              <motion.div
+                className="absolute inset-0 border-2 border-black/10 rounded-full"
+                animate={{ scale: [1, 1.1, 1], opacity: [0.7, 0.5, 0.7] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <motion.div
+                className="absolute inset-0 border-2 border-black/5 rounded-full"
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
+                transition={{ duration: 3, delay: 0.2, repeat: Infinity }}
+              />
+            </motion.button>
+          </div>
+        )}
+      </div>
   );
 };
 
