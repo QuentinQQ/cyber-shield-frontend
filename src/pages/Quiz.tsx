@@ -16,7 +16,6 @@ import { TeleportBubble } from "@/components/TeleportBubble";
 const QuizPage: React.FC = () => {
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; opacity: number; blinkDuration: number; }[]>([]);
   const [showDialog, setShowDialog] = useState(true);
-  const [dialogStep, setDialogStep] = useState(1);  
 
   // Speech bubble timeout ref to clear on new clicks
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null); 
@@ -49,44 +48,31 @@ const QuizPage: React.FC = () => {
   }, []);
   
   // Auto-hide the speech bubble after a few seconds
-    useEffect(() => {  
-      runDialogSequence();
+  useEffect(() => {  
+    setShowDialog(true);
     
-      return () => { 
-        if (timeoutRef.current) clearTimeout(timeoutRef.current); 
-      };
-    }, []);
+    // Hide the dialog after 3 seconds
+    timeoutRef.current = setTimeout(() => {
+      setShowDialog(false);
+    }, 3000);
     
-    const runDialogSequence = () => {
-      setDialogStep(1);
-      setShowDialog(true);
-     
-      // first timeout to hide the dialog after 3 seconds
-      timeoutRef.current = setTimeout(() => {
-        setShowDialog(false);
-     
-        // second timeout to show the dialog again after 2 seconds
-        timeoutRef.current = setTimeout(() => {
-          setDialogStep(2);
-          setShowDialog(true);
-    
-          // Hide the dialog 
-          timeoutRef.current = setTimeout(() => {
-            setShowDialog(false);
-          }, 5000);
-        }, 2000);  
-      }, 3000); 
+    return () => { 
+      if (timeoutRef.current) clearTimeout(timeoutRef.current); 
     };
+  }, []);
 
   // Handle character click
-    const handleCharacterClick = () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-     
-      runDialogSequence();
-    }; 
+  const handleCharacterClick = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    
+    setShowDialog(true);
+    
+    // Hide the dialog after 3 seconds
+    timeoutRef.current = setTimeout(() => {
+      setShowDialog(false);
+    }, 3000);
+  }; 
    
-
-  
   const navigate = useNavigate();
 
   // Navigation handler for teleport button
@@ -98,9 +84,6 @@ const QuizPage: React.FC = () => {
     navigate("/character-intro");
   };
 
-  // const handleTeleportToBack = () => {
-  //   navigate("/");
-  // };
   
   return (
     <PageWrapper className="min-h-screen bg-gradient-to-b from-[#4DC0BE] to-[#23A2DA] text-white overflow-hidden relative">
@@ -204,7 +187,7 @@ const QuizPage: React.FC = () => {
                   transition={{ delay: 0.2, duration: 0.8 }}
                   style={{ position: "relative", zIndex: 5 }}
                 >
-                  {dialogStep === 1 ? "Count your classmates!" : "Hang on until the animation's done — then help me pick an app!!"}
+                  Count your classmates!
                 </motion.div>
               </motion.div>
             )}
@@ -237,37 +220,6 @@ const QuizPage: React.FC = () => {
       <div className="container mx-auto py-10 relative z-10">
         <div className="ml-32 md:ml-40 lg:ml-48">
           <Infographic />
-
-          {/* Button wrapper */}
-          <div className="mt-10 flex justify-center">
-            <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 2.2,
-                delay: 0.3,
-                type: "spring",
-                stiffness: 100,
-                damping: 10,
-              }}
-              className="relative"
-            >
-              {/* Shadow beneath the button */}
-              <motion.div 
-                className="absolute w-full h-4 bg-black/20 rounded-full blur-md bottom-0 left-0"
-                animate={{
-                  width: ['90%', '60%', '90%'],
-                  x: ['5%', '20%', '5%']
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-              />
-
-            </motion.div>
-          </div>
         </div>
       </div>
       
