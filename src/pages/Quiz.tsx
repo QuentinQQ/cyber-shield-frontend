@@ -92,7 +92,7 @@ const QuizPage: React.FC = () => {
 
   // Navigation handler for teleport button
   const handleTeleportToNext = () => {
-    navigate("/story");
+    navigate("/quiz-2");
   };
 
   const handleTeleportToBack = () => {
@@ -273,7 +273,7 @@ const QuizPage: React.FC = () => {
       </div>
       
       {/* Teleport Bubble */}
-      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="2.Voices" />
+      <TeleportBubble onClick={handleTeleportToNext} color="blue" position="right" text="2.Net Quiz" />
       <TeleportBubble onClick={handleTeleportToBack} color="purple" position="left" text="Intro" />
     </PageWrapper>
   );
